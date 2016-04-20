@@ -1,0 +1,9 @@
+D:\A.学习【Learning】\A2.Mathematics\VC\C++workspace\jlq_MBE_BattleSimulation\jlq_MBE_BattleSimulation\bin\Debug\jlq_MBE_BattleSimulation.exe.config
+D:\A.学习【Learning】\A2.Mathematics\VC\C++workspace\jlq_MBE_BattleSimulation\jlq_MBE_BattleSimulation\obj\Debug\jlq_MBE_BattleSimulation.csprojResolveAssemblyReference.cache
+D:\A.学习【Learning】\A2.Mathematics\VC\C++workspace\jlq_MBE_BattleSimulation\jlq_MBE_BattleSimulation\obj\Debug\jlq_MBE_BattleSimulation.Form1.resources
+D:\A.学习【Learning】\A2.Mathematics\VC\C++workspace\jlq_MBE_BattleSimulation\jlq_MBE_BattleSimulation\obj\Debug\jlq_MBE_BattleSimulation.Properties.Resources.resources
+D:\A.学习【Learning】\A2.Mathematics\VC\C++workspace\jlq_MBE_BattleSimulation\jlq_MBE_BattleSimulation\obj\Debug\jlq_MBE_BattleSimulation.csproj.GenerateResource.Cache
+D:\A.学习【Learning】\A2.Mathematics\VC\C++workspace\jlq_MBE_BattleSimulation\jlq_MBE_BattleSimulation\bin\Debug\jlq_MBE_BattleSimulation.exe
+D:\A.学习【Learning】\A2.Mathematics\VC\C++workspace\jlq_MBE_BattleSimulation\jlq_MBE_BattleSimulation\bin\Debug\jlq_MBE_BattleSimulation.pdb
+D:\A.学习【Learning】\A2.Mathematics\VC\C++workspace\jlq_MBE_BattleSimulation\jlq_MBE_BattleSimulation\obj\Debug\jlq_MBE_BattleSimulation.exe
+D:\A.学习【Learning】\A2.Mathematics\VC\C++workspace\jlq_MBE_BattleSimulation\jlq_MBE_BattleSimulation\obj\Debug\jlq_MBE_BattleSimulation.pdb
