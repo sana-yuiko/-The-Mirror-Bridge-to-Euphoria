@@ -574,6 +574,105 @@ bugs:加人模式里可以把几个人放到同一个格子里，
                 case 0:
                     chcts.Add(new reimu(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
                     break;
+                case 1:
+                    chcts.Add(new marisa(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 2:
+                    chcts.Add(new rin(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 3:
+                    chcts.Add(new rumia(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 4:
+                    chcts.Add(new daiyousei(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 5:
+                    chcts.Add(new cirno(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 6:
+                    chcts.Add(new meirin(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 7:
+                    chcts.Add(new koakuma(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 8:
+                    chcts.Add(new patchouli(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 9:
+                    chcts.Add(new sakuya(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 10:
+                    chcts.Add(new reimiria(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 11:
+                    chcts.Add(new flandre(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 12:
+                    chcts.Add(new letty(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 13:
+                    chcts.Add(new chen(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 14:
+                    chcts.Add(new alice(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 15:
+                    chcts.Add(new lilywhite(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 16:
+                    chcts.Add(new lunasa(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 17:
+                    chcts.Add(new merlin(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 18:
+                    chcts.Add(new lyrica(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 19:
+                    chcts.Add(new leira(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 20:
+                    chcts.Add(new youmu(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 21:
+                    chcts.Add(new yuyuko(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 22:
+                    chcts.Add(new ran(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 23:
+                    chcts.Add(new yukari(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 24:
+                    chcts.Add(new suika(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 25:
+                    chcts.Add(new wriggle(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 26:
+                    chcts.Add(new mystia(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 27:
+                    chcts.Add(new keine(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 28:
+                    chcts.Add(new tewi(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 29:
+                    chcts.Add(new reisen(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 30:
+                    chcts.Add(new eirin(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 31:
+                    chcts.Add(new kaguya(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 32:
+                    chcts.Add(new mokou(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
+                case 33:
+                    chcts.Add(new gedama(chcts.Count, p, e != MouseButtons.Left ? (e != MouseButtons.Right ? 0 : 1) : -1, this));
+                    break;
             }
         }
 
@@ -715,28 +814,28 @@ bugs:加人模式里可以把几个人放到同一个格子里，
         public string display { get; protected set; }     //屏幕上显示什么文字
         public int hp { get; protected set; }             //血量
         public int mp { get; protected set; }             //灵力
-        private readonly int att;                         //攻击
+        protected readonly int att;                         //攻击
         private float attx = 1.0f;
         public int Att { get { return (int)Math.Floor(attx * att); } }
-        private readonly int def;                         //防御
+        protected readonly int def;                         //防御
         private float defx = 1.0f;
         public int Def { get { return (int)Math.Floor(defx * def); } }
-        private readonly int hit;                         //命中
+        protected readonly int hit;                         //命中
         private float hitx = 1.0f;
         public int Hit { get { return (int)Math.Floor(hitx * hit); } }
-        private readonly int dod;                         //闪避
+        protected readonly int dod;                         //闪避
         private float dodx = 1.0f;
         public int Dod { get { return (int)Math.Floor(dodx * dod); } }
-        private readonly float clo;                       //近战补正
+        protected readonly float clo;                       //近战补正
         private float clox = 1.0f;
         public float Clo { get { return (int)Math.Floor(clox * clo); } }
-        private readonly int spd;                         //行动间隔
+        protected readonly int spd;                         //行动间隔
         private float spdx = 1.0f;
         public int Spd { get { return (int)Math.Floor(spdx * spd); } }
-        private readonly int mov;                         //机动
+        protected readonly int mov;                         //机动
         private int movx = 0;
         public int Mov { get { return mov + movx; } }
-        private readonly int rang;                        //普攻范围
+        protected readonly int rang;                        //普攻范围
         private int rangx = 0;
         public int Rang { get { return rang + rangx; } }
         public int curTime { get; protected set; }        //行动间隔到多少了
@@ -751,7 +850,7 @@ bugs:加人模式里可以把几个人放到同一个格子里，
         public List<buff> buffList { get; protected set; }
         public pad pad;
 
-        public chct(int id, pos pos, int where, pad pad)
+        public chct(charc whoc, int id, pos pos, int where, pad pad)
         {
             this.id = id;
             this.pos = pos;
@@ -759,7 +858,7 @@ bugs:加人模式里可以把几个人放到同一个格子里，
             isRounded = false;
             this.pad = pad;
             chctdata who = (from c in cal.chctdataList
-                            where c.who == this.who
+                            where c.who == whoc
                             select c).ElementAt(0);
             maxHp = who.maxHp;
             hp = maxHp;
@@ -990,9 +1089,12 @@ bugs:加人模式里可以把几个人放到同一个格子里，
 
     public class reimu : chct
     {
-        public new charc who { get { return charc.Reimu; } }
+        public static new charc who { get { return charc.Reimu; } }
 
-        public reimu(int id, pos pos, int where, pad pad) : base(id, pos, where, pad) { }
+        public reimu(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad)
+        {
+            
+        }
 
         //天赋，移动无视单位体积碰撞
         public new bool OnMovingIgnoreEnm { get { return true; } }
@@ -1003,14 +1105,26 @@ bugs:加人模式里可以把几个人放到同一个格子里，
         {
 
         }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
     }
 
     public class marisa : chct
     {
-        public new charc who { get { return charc.Marisa; } }
+        public static new charc who { get { return charc.Marisa; } }
 
-        public marisa(int id, pos pos, int where, pad pad) : base(id, pos, where, pad) { }
-        
+        public marisa(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
         //天赋
 
         //符卡01
@@ -1018,6 +1132,862 @@ bugs:加人模式里可以把几个人放到同一个格子里，
         {
 
         }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class rin : chct
+    {
+        public static new charc who { get { return charc.Rin; } }
+
+        public rin(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class rumia : chct
+    {
+        public static new charc who { get { return charc.Rumia; } }
+
+        public rumia(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class daiyousei : chct
+    {
+        public static new charc who { get { return charc.Daiyousei; } }
+
+        public daiyousei(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class cirno : chct
+    {
+        public static new charc who { get { return charc.Cirno; } }
+
+        public cirno(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class meirin : chct
+    {
+        public static new charc who { get { return charc.Meirin; } }
+
+        public meirin(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class koakuma : chct
+    {
+        public static new charc who { get { return charc.Koakuma; } }
+
+        public koakuma(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class patchouli : chct
+    {
+        public static new charc who { get { return charc.Patchouli; } }
+
+        public patchouli(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class sakuya : chct
+    {
+        public static new charc who { get { return charc.Sakuya; } }
+
+        public sakuya(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class reimiria : chct
+    {
+        public static new charc who { get { return charc.Reimiria; } }
+
+        public reimiria(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class flandre : chct
+    {
+        public static new charc who { get { return charc.Flandre; } }
+
+        public flandre(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class letty : chct
+    {
+        public static new charc who { get { return charc.Letty; } }
+
+        public letty(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class chen : chct
+    {
+        public static new charc who { get { return charc.Chen; } }
+
+        public chen(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class alice : chct
+    {
+        public static new charc who { get { return charc.Alice; } }
+
+        public alice(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class lilywhite : chct
+    {
+        public static new charc who { get { return charc.LilyWhite; } }
+
+        public lilywhite(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class lunasa : chct
+    {
+        public static new charc who { get { return charc.Lunasa; } }
+
+        public lunasa(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class merlin : chct
+    {
+        public static new charc who { get { return charc.Merlin; } }
+
+        public merlin(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class lyrica : chct
+    {
+        public static new charc who { get { return charc.Lyrica; } }
+
+        public lyrica(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class leira : chct
+    {
+        public static new charc who { get { return charc.Leira; } }
+
+        public leira(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class youmu : chct
+    {
+        public static new charc who { get { return charc.Youmu; } }
+
+        public youmu(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class yuyuko : chct
+    {
+        public static new charc who { get { return charc.Yuyuko; } }
+
+        public yuyuko(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class ran : chct
+    {
+        public static new charc who { get { return charc.Ran; } }
+
+        public ran(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class yukari : chct
+    {
+        public static new charc who { get { return charc.Yukari; } }
+
+        public yukari(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class suika : chct
+    {
+        public static new charc who { get { return charc.Suika; } }
+
+        public suika(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class wriggle : chct
+    {
+        public static new charc who { get { return charc.Wriggle; } }
+
+        public wriggle(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class mystia : chct
+    {
+        public static new charc who { get { return charc.Mystia; } }
+
+        public mystia(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class keine : chct
+    {
+        public static new charc who { get { return charc.Keine; } }
+
+        public keine(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class tewi : chct
+    {
+        public static new charc who { get { return charc.Tewi; } }
+
+        public tewi(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class reisen : chct
+    {
+        public static new charc who { get { return charc.Reisen; } }
+
+        public reisen(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class eirin : chct
+    {
+        public static new charc who { get { return charc.Eirin; } }
+
+        public eirin(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class kaguya : chct
+    {
+        public static new charc who { get { return charc.Kaguya; } }
+
+        public kaguya(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class mokou : chct
+    {
+        public static new charc who { get { return charc.Mokou; } }
+
+        public mokou(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
+
+        //天赋
+
+        //符卡01
+        public new void SC01()
+        {
+
+        }
+
+        //符卡02
+        public new void SC02()
+        {
+
+        }
+
+        //符卡03
+        public new void SC03()
+        {
+
+        }
+    }
+
+    public class gedama : chct
+    {
+        public static new charc who { get { return charc.Gedama; } }
+
+        public gedama(int id, pos pos, int where, pad pad) : base(who, id, pos, where, pad) { }
     }
 
     public class buff
