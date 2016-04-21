@@ -26,14 +26,14 @@ namespace JLQ_MBE_BattleSimulation
 
         //可变字段
         //增益
-        private float attackX;
-        private float defenceX;
-        private float hitRateX;
-        private float dodgeRateX;
-        private float closeAmendmentX;
-        private float intervalX;
-        private int moveAbilityX;
-        private int attackRangeX;
+        private float attackX = 1.0f;
+        private float defenceX = 1.0f;
+        private float hitRateX = 1.0f;
+        private float dodgeRateX = 1.0f;
+        private float closeAmendmentX = 1.0f;
+        private float intervalX = 1.0f;
+        private int moveAbilityX = 0;
+        private int attackRangeX = 0;
 
         private Random random;
 
@@ -74,7 +74,7 @@ namespace JLQ_MBE_BattleSimulation
             IsAttacked = false;
             var data = Calculate.characterDataList.Where(cd => cd.name == this.GetType().ToString()).ElementAt(0);
             this.maxHp = data.maxHp;
-            this.Hp = maxHp;
+            this.Hp = this.maxHp;
             this.maxMp = 1000;
             this.Mp = maxMp;
             Display = data.display;
@@ -86,7 +86,7 @@ namespace JLQ_MBE_BattleSimulation
             this.interval = data.interval;
             this.moveAbility = data.moveAbility;
             this.attackRange = data.attackRange;
-            this.CurrentTime = interval;
+            this.CurrentTime = this.interval;
             this.random = random;
         }
 
@@ -123,7 +123,7 @@ namespace JLQ_MBE_BattleSimulation
                 {
                     damage *= this.CriticalHitGain;
                 }
-                target.Damage((int)damage);
+                target.BeAttacked((int) damage, this);
             }
             return isCriticalHit;
         }
