@@ -21,22 +21,5 @@ namespace JLQ_MBE_BattleSimulation
         public int attackRange = 3;//普攻范围
         public string[] scName = { "", "", "", "" };//符卡名
         public string[] scDisc = { "", "", "", "" };//符卡描述
-
-        public override string ToString()
-        {
-            string result = String.Format("{0}\n{1}\n{2} {3} {4} {5} {6} {7} {8} {9} {10}\n", name, display, maxHp, attack,
-                defence, hitRate, dodgeRate, closeAmendment, interval, moveAbility, attackRange);
-            foreach (var n in scName)
-            {
-                result += n;
-                result += "\n";
-            }
-            foreach (var n in scDisc)
-            {
-                result += n;
-                result += "\n";
-            }
-            return result;
-        }
     }
 }

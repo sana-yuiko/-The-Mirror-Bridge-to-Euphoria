@@ -7,22 +7,15 @@ using System.Windows;
 
 namespace JLQ_MBE_BattleSimulation
 {
-    enum Group { Middle,Own,Enemy }
-    class Character
+    enum Group { Middle,Friend,Enemy=-1 }
+    abstract class Character
     {
         //以下为字段
         //只读字段
         private readonly int id;//ID
-        private readonly int maxHp;//最大血量
+        public readonly CharacterData data;//角色数据
         private readonly int maxMp;//最大灵力
-        private readonly int attack;//攻击
-        private readonly int defence;//防御
-        private readonly int hitRate;//命中率
-        private readonly int dodgeRate;//闪避率
-        private readonly float closeAmendment;//近战补正
-        private readonly int interval;//间隔
-        private readonly int moveAbility;//机动
-        private readonly int attackRange;//攻击范围
+        public readonly Group group;//阵营
 
         //可变字段
         //增益
@@ -36,58 +29,49 @@ namespace JLQ_MBE_BattleSimulation
         private int attackRangeX = 0;
 
         private Random random;
+        private Game game;
 
         //属性
         //自动属性
-        public string Display { get; protected set; }//屏幕显示
         public int Hp { get; protected set; }//血量
         public int Mp { get; protected set; }//灵力
         public int CurrentTime { get; protected set; }//当前行动间隔
         public Point Posotion { get; protected set; }//位置
-        public Group Group { get; protected set; }//阵营
         public bool IsRounded { get; private set; }//是否已行动
         public bool IsMoved { get; private set; }//是否已移动
         public bool IsAttacked { get; private set; }//是否已攻击
         //TODO get a list of buff
         //只读属性
-        public int Attack => (int) Math.Floor(attackX*attack);//攻击
-        public int Defence => (int) Math.Floor(defence*defenceX);//防御
-        public int HitRate => (int) Math.Floor(hitRate*hitRateX);//命中率
-        public int DodgeRate => (int) Math.Floor(dodgeRate*dodgeRateX);//闪避率
-        public int CloseAmendment => (int) Math.Floor(closeAmendment*closeAmendmentX);//近战补正
-        public int Interval => (int) Math.Floor(interval*intervalX);//行动间隔
-        public int MoveAbility => moveAbility + moveAbilityX;//机动
-        public int AttackRange => attackRange + attackRangeX;//攻击范围
+        public int Attack => (int) Math.Floor(data.attack*attackX);//攻击
+        public int Defence => (int) Math.Floor(data.defence*defenceX);//防御
+        public int HitRate => (int) Math.Floor(data.hitRate*hitRateX);//命中率
+        public int DodgeRate => (int) Math.Floor(data.dodgeRate*dodgeRateX);//闪避率
+        public int CloseAmendment => (int) Math.Floor(data.closeAmendment*closeAmendmentX);//近战补正
+        public int Interval => (int) Math.Floor(data.interval*intervalX);//行动间隔
+        public int MoveAbility => data.moveAbility + moveAbilityX;//机动
+        public int AttackRange => data.attackRange + attackRangeX;//攻击范围
         private float CriticalHitGain => 1.5f;//暴击增益
         private float CriticalHitRate => 0.2f;//暴击率
         private float DamageFloat => 0.1f;//伤害浮动
         private bool IsDead => Hp <= 0;//是否死亡
 
         //构造函数
-        public Character(int id, Point position, Group group, Random random)
+        protected Character(int id, Point position, Group group, Random random, Game game)
         {
             this.id = id;
             this.Posotion = position;
-            this.Group = group;
+            this.group = group;
             IsRounded = false;
             IsMoved = false;
             IsAttacked = false;
-            var data = Calculate.characterDataList.Where(cd => cd.name == this.GetType().ToString()).ElementAt(0);
-            this.maxHp = data.maxHp;
-            this.Hp = this.maxHp;
+            this.data = Calculate.characterDataList.Where(cd => cd.name == this.GetType().ToString()).ElementAt(0);
+            this.Hp = this.data.maxHp;
             this.maxMp = 1000;
             this.Mp = maxMp;
-            Display = data.display;
-            this.attack = data.attack;
-            this.defence = data.defence;
-            this.hitRate = data.hitRate;
-            this.dodgeRate = data.dodgeRate;
-            this.closeAmendment = data.closeAmendment;
-            this.interval = data.interval;
-            this.moveAbility = data.moveAbility;
-            this.attackRange = data.attackRange;
-            this.CurrentTime = this.interval;
+            this.CurrentTime = this.data.interval;
+
             this.random = random;
+            this.game = game;
         }
 
         //被攻击
@@ -161,10 +145,11 @@ namespace JLQ_MBE_BattleSimulation
             =>
                 String.Format("HP: {0} / {1}\nAttack: {2}\nDefence: {3}\n" +
                               "Hit Rate: {4}\nDodge Rate: {5}\nClose Gain: {6}{7}\n" +
-                              "Interval: {8}\nMove Ability: {9}\nAttack Range: {10}\nCurrent Time: {11}", Hp, maxHp,
+                              "Interval: {8}\nMove Ability: {9}\nAttack Range: {10}\nCurrent Time: {11}", Hp, data.maxHp,
                     Attack, Defence, HitRate, DodgeRate, CloseAmendment, (CloseAmendment%1 == 0) ? ".0" : "", Interval,
                     MoveAbility, AttackRange, CurrentTime);
 
+        //提示
         public string Tip(Character attacker)
         {
             return String.Format("Rate: {0}%\nDamage: {1}",
@@ -176,9 +161,14 @@ namespace JLQ_MBE_BattleSimulation
         public void Reset()
         {
             CurrentTime = Interval;
-            Hp = maxHp;
+            Hp = data.maxHp;
             IsRounded = false;
         }
+
+        //以下为符卡
+        public virtual void SC01() {}//符卡01
+        public virtual void SC02() {}//符卡02
+        public virtual void SC03() {}//符卡03
 
 
         //以下为私有函数
