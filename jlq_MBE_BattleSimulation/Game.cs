@@ -12,8 +12,6 @@ namespace JLQ_MBE_BattleSimulation
     {
         private Random random;//随机数对象
 
-        private const int Column = 9;//列数
-        private const int Row = 9;//行数
 
         public List<Character> Characters { get; private set; }//所有角色 
         private Character currentCharacter = null;//当前行动者
@@ -65,7 +63,7 @@ namespace JLQ_MBE_BattleSimulation
                              c.group == (Group)(-(int)currentCharacter.group))));
 
         //每个格子能否被到达
-        public bool[,] CanReachPoint = new bool[Column, Row];
+        public bool[,] CanReachPoint = new bool[MainWindow.Column, MainWindow.Row];
 
         //格子的文字显示
         public string StringShow(Point position)
@@ -82,9 +80,9 @@ namespace JLQ_MBE_BattleSimulation
         //生成bool二维数组
         public void Generate_CanReachPoint()
         {
-            for (var i = 0; i < Column; i++)
+            for (var i = 0; i < MainWindow.Column; i++)
             {
-                for (var j = 0; j < Row; j++)
+                for (var j = 0; j < MainWindow.Row; j++)
                 {
                     CanReachPoint[i, j] = false;
                 }
@@ -103,7 +101,7 @@ namespace JLQ_MBE_BattleSimulation
             CanReachPoint[(int)origin.X, (int)origin.Y] = true;
             if (step == 0) return;
             var enm = this.EnemyAsCurrent.Select(c => c.Posotion);
-            if (origin.Y < Row - 1 && !enm.Contains(new Point(origin.X, origin.Y + 1)))
+            if (origin.Y < MainWindow.Row - 1 && !enm.Contains(new Point(origin.X, origin.Y + 1)))
             {
                 AssignPointCanReach(new Point(origin.X, origin.Y + 1), step - 1);
             }
@@ -111,7 +109,7 @@ namespace JLQ_MBE_BattleSimulation
             {
                 AssignPointCanReach(new Point(origin.X, origin.Y - 1), step - 1);
             }
-            if (origin.X < Column - 1 && !enm.Contains(new Point(origin.X + 1, origin.Y)))
+            if (origin.X < MainWindow.Column - 1 && !enm.Contains(new Point(origin.X + 1, origin.Y)))
             {
                 AssignPointCanReach(new Point(origin.X + 1, origin.Y), step - 1);
             }

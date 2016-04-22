@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using System.Xml;
 
 namespace JLQ_MBE_BattleSimulation
@@ -21,6 +22,15 @@ namespace JLQ_MBE_BattleSimulation
     /// </summary>
     public partial class MainWindow : Window
     {
+        //棋盘列数与行数
+        public const int Column = 9;//列数
+        public const int Row = 9;//行数
+
+        private DispatcherTimer timer = new DispatcherTimer { Interval = new TimeSpan(0 /*TODO Set Interval*/) };//Timer对象
+        private Border[,] borders = new Border[Column, Row];//棋盘网格线
+        private Button[,] buttons = new Button[Column, Row];//感知单击
+
+        //构造函数
         public MainWindow()
         {
             InitializeComponent();
@@ -58,23 +68,78 @@ namespace JLQ_MBE_BattleSimulation
                 cd.scDisc[2] = xnscll.Item(6).InnerText;
                 cd.scDisc[3] = xnscll.Item(7).InnerText;
                 Calculate.characterDataList.Add(cd);
-                //加入备选的comboBox里
+                comboBoxDisplay.Items.Add(cd.display);
             }
             reader.Close();
         }
+
+        private void GridPadMouseDown(int column, int row)
+        {
+            //TODO Pad Mouse Down
+        }
         
+        //帮助菜单
         private void menuHelp_Click(object sender, RoutedEventArgs e)
         {
+            //TODO Pause
             MessageBox.Show("鼠标中键可以添加中立单位\n按住shift微移鼠标显示单位信息\n若已移动完毕，点击自身可跳过攻击阶段\n若暴击则会beep", "帮助", MessageBoxButton.OK,
                 MessageBoxImage.Question);
+            //TODO Continue
         }
 
+        //询问是否关闭窗口
         private void window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show("是否退出？", "退出", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (result == MessageBoxResult.No)
             {
                 e.Cancel = true;
+            }
+        }
+
+        //生成棋盘网格线
+        private void gridPad_Loaded(object sender, RoutedEventArgs e)
+        {
+            for (var i = 0; i < Column; i++)
+            {
+                for (var j = 0; j < Row; j++)
+                {
+                    borders[i, j] = new Border
+                    {
+                        BorderBrush = new SolidColorBrush(Colors.Blue),
+                        BorderThickness = new Thickness(1),
+                        Margin = new Thickness(0),
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        VerticalAlignment = VerticalAlignment.Stretch
+                    };
+                    borders[i, j].SetValue(Grid.ColumnProperty, i);
+                    borders[i, j].SetValue(Grid.RowProperty, j);
+                    borders[i, j].SetValue(Grid.ColumnSpanProperty, 1);
+                    borders[i, j].SetValue(Grid.RowSpanProperty, 1);
+                    borders[i, j].SetValue(Panel.ZIndexProperty, 1);
+                    gridPad.Children.Add(borders[i, j]);
+
+                    buttons[i, j] = new Button
+                    {
+                        Margin = new Thickness(1),
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        VerticalAlignment = VerticalAlignment.Stretch,
+                        Opacity = 0
+                    };
+                    buttons[i, j].SetValue(Grid.ColumnProperty, i);
+                    buttons[i, j].SetValue(Grid.RowProperty, j);
+                    buttons[i, j].SetValue(Grid.ColumnSpanProperty, 1);
+                    buttons[i, j].SetValue(Grid.RowSpanProperty, 1);
+                    buttons[i, j].SetValue(Panel.ZIndexProperty, 1);
+                    gridPad.Children.Add(buttons[i, j]);
+                }
+            }
+            foreach (var button in buttons)
+            {
+                button.Click +=
+                    (s, ev) =>
+                        GridPadMouseDown((int) button.GetValue(Grid.ColumnProperty),
+                            (int) button.GetValue(Grid.RowProperty));
             }
         }
     }

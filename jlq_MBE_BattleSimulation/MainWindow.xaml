@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:JLQ_MBE_BattleSimulation"
         mc:Ignorable="d"
-        Title="The Mirror Bridge to Euphoria" Height="602" Width="906" Closing="window_Closing">
+        Title="The Mirror Bridge to Euphoria" Height="602" Width="906" Closing="window_Closing" MinHeight="250" MinWidth="250">
     <Window.Resources>
-        
+
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -20,8 +20,8 @@
             <RowDefinition Height="3*"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" Grid.Row="1" VerticalAlignment="Stretch">
-            <Grid  ShowGridLines="True">
+        <Border BorderBrush="Blue" BorderThickness="1" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" Grid.Row="1" VerticalAlignment="Stretch">
+            <Grid x:Name="gridPad" Loaded="gridPad_Loaded">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
@@ -60,16 +60,19 @@
                 <RowDefinition Height="3*"/>
                 <RowDefinition Height="6*"/>
             </Grid.RowDefinitions>
-            <Border BorderBrush="Blue" BorderThickness="1" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch"/>
-            <Border BorderBrush="Blue" BorderThickness="1" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Grid.Row="2"/>
-            <Border BorderBrush="Blue" BorderThickness="1" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Grid.Row="4"/>
+            <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch"/>
+            <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Grid.Row="2"/>
+            <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Grid.Row="4"/>
         </Grid>
-        <StackPanel HorizontalAlignment="Stretch" Height="100" Margin="0" VerticalAlignment="Top" Grid.ColumnSpan="3">
+        <StackPanel HorizontalAlignment="Stretch" Height="28" Margin="0" VerticalAlignment="Top" Grid.ColumnSpan="3">
             <Menu x:Name="menu" Height="22">
                 <MenuItem Header="加人模式"></MenuItem>
                 <MenuItem Header="清除所有单位"></MenuItem>
                 <MenuItem Header="帮助" Name="menuHelp" Click="menuHelp_Click"></MenuItem>
             </Menu>
         </StackPanel>
+        <ComboBox x:Name="comboBoxDisplay" HorizontalAlignment="Left" Margin="22,44,0,0" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="buttonSave" Content="Save" HorizontalAlignment="Left" Margin="162,44,0,0" VerticalAlignment="Top" Width="75" Height="21"/>
+        <Button x:Name="buttonLoad" Content="Load" HorizontalAlignment="Left" Margin="274,44,0,0" VerticalAlignment="Top" Width="75" Height="21"/>
     </Grid>
 </Window>

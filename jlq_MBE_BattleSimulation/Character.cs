@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -28,15 +29,15 @@ namespace JLQ_MBE_BattleSimulation
         private int moveAbilityX = 0;
         private int attackRangeX = 0;
 
-        private Random random;
-        private Game game;
+        protected Random random;
+        protected Game game;
 
         //属性
         //自动属性
         public int Hp { get; protected set; }//血量
         public int Mp { get; protected set; }//灵力
         public int CurrentTime { get; protected set; }//当前行动间隔
-        public Point Posotion { get; protected set; }//位置
+        public Point Posotion { get; protected set; }//位置，X为Grid.Column，Y为Grid.Row
         public bool IsRounded { get; private set; }//是否已行动
         public bool IsMoved { get; private set; }//是否已移动
         public bool IsAttacked { get; private set; }//是否已攻击
@@ -179,10 +180,35 @@ namespace JLQ_MBE_BattleSimulation
             //TODO whether dead
         }
 
-        //移动
+        //移动至指定坐标
         private void Move(Point end)
         {
             this.Posotion = end;
+        }
+
+        //在各方向移动指定的值，若超限则取边界
+        private void Move(int relativeX, int relativeY)
+        {
+            this.Posotion = new Point(GetValidPosition((int) this.Posotion.X + relativeX, MainWindow.Column),
+                GetValidPosition((int) this.Posotion.Y + relativeY, MainWindow.Row));
+
+        }
+
+        //将不合法的Position坐标项转化为合法值
+        private int GetValidPosition(int coordinate,int max)
+        {
+            if (coordinate < 0)
+            {
+                return 0;
+            }
+            else if (coordinate > max)
+            {
+                return max;
+            }
+            else
+            {
+                return coordinate;
+            }
         }
 
     }
