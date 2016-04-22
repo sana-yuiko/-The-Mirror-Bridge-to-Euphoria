@@ -56,7 +56,7 @@ namespace JLQ_MBE_BattleSimulation
         private bool IsDead => Hp <= 0;//是否死亡
 
         //构造函数
-        protected Character(int id, Point position, Group group, Random random, Game game)
+        public Character(int id, Point position, Group group, Random random, Game game)
         {
             this.id = id;
             this.Posotion = position;
