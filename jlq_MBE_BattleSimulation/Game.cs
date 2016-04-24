@@ -9,6 +9,7 @@ using System.Windows.Media.TextFormatting;
 
 namespace JLQ_MBE_BattleSimulation
 {
+    enum Section { Preparing,Round,End}
     /// <summary>游戏类</summary>
     class Game
     {
@@ -18,25 +19,32 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>当前行动者</summary>
         private Character currentCharacter = null;
 
-        /// <summary>游戏中所有角色列表</summary>
-        public List<Character> Characters { get; private set; } 
+        /// <summary>是否为战斗模式</summary>
+        public bool IsBattle = false;
 
-        /// <summary>Game类的构造函数</summary>
-        /// <param name="random">随机数对象</param>
-        public Game(Random random)
-        {
-            this.random = random;
-            Characters = new List<Character>();
-        }
-
-        //当前行动者属性
-
+        /// <summary>当前回合所在的阶段</summary>
+        public Section? Section { get; set; }
         /// <summary>当前行动者是否已移动</summary>
         public bool IsMoved => currentCharacter.IsMoved;
         /// <summary>当前行动者是否已攻击</summary>
         public bool IsAttacked => currentCharacter.IsAttacked;
+
+
+        /// <summary>游戏中所有角色列表</summary>
+        public List<Character> Characters { get; } 
+
+        /// <summary>Game类的构造函数</summary>
+        public Game(Random random)
+        {
+            Characters = new List<Character>();
+            this.Section = null;
+            this.random = random;
+        }
+
+        //当前行动者属性
+
         /// <summary>当前行动者的位置</summary>
-        public Point CurrentPosotion => currentCharacter.Posotion;
+        public Point CurrentPosotion => currentCharacter.Position;
         /// <summary>当前行动者的scName</summary>
         public string[] ScName => currentCharacter.Data.ScName;
         /// <summary>当前行动者的scDisc</summary>
@@ -55,7 +63,7 @@ namespace JLQ_MBE_BattleSimulation
                 Characters.Where(
                     c =>
                         c.Group != currentCharacter.Group &&
-                        Calculate.Distance(currentCharacter.Posotion, c.Posotion) <= currentCharacter.AttackRange);
+                        Calculate.Distance(currentCharacter.Position, c.Position) <= currentCharacter.AttackRange);
 
         /// <summary>对当前行动者的敌人列表</summary>
         public IEnumerable<Character> EnemyAsCurrent
@@ -69,7 +77,7 @@ namespace JLQ_MBE_BattleSimulation
                              c.Group == (Group)(-(int)currentCharacter.Group))));
 
         /// <summary>更新下个行动的角色,取currentTime最小的角色中Interval最大的角色中的随机一个</summary>
-        public void NextRoundCharacter()
+        public void GetNextRoundCharacter()
         {
             var stack = new Stack<Character>();
             stack.Push(Characters.ElementAt(0));
@@ -107,7 +115,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <returns>文字显示</returns>
         public string StringShow(Point position)
         {
-            return Characters.FirstOrDefault(c => c.Posotion == position)?.ToString() ?? String.Empty;
+            return Characters.FirstOrDefault(c => c.Position == position)?.ToString() ?? null;
         }
 
         /// <summary>格子的信息提示</summary>
@@ -115,7 +123,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <returns>信息提示</returns>
         public string TipShow(Point position)
         {
-            return Characters.FirstOrDefault(c => c.Posotion == position)?.Tip(currentCharacter) ?? String.Empty;
+            return Characters.FirstOrDefault(c => c.Position == position)?.Tip(currentCharacter) ?? null;
         }
 
         /// <summary>生成bool二维数组</summary>
@@ -128,8 +136,8 @@ namespace JLQ_MBE_BattleSimulation
                     CanReachPoint[i, j] = false;
                 }
             }
-            AssignPointCanReach(currentCharacter.Posotion, currentCharacter.MoveAbility);
-            var positionList = Characters.Where(c => c.Posotion != currentCharacter.Posotion).Select(c => c.Posotion);
+            AssignPointCanReach(currentCharacter.Position, currentCharacter.MoveAbility);
+            var positionList = Characters.Where(c => c.Position != currentCharacter.Position).Select(c => c.Position);
             foreach (var position in positionList)
             {
                 CanReachPoint[(int) position.X, (int) position.Y] = false;
@@ -143,7 +151,7 @@ namespace JLQ_MBE_BattleSimulation
         {
             CanReachPoint[(int)origin.X, (int)origin.Y] = true;
             if (step == 0) return;
-            var enm = this.EnemyAsCurrent.Select(c => c.Posotion);
+            var enm = this.EnemyAsCurrent.Select(c => c.Position);
             if (origin.Y < MainWindow.Row - 1 && !enm.Contains(new Point(origin.X, origin.Y + 1)))
             {
                 AssignPointCanReach(new Point(origin.X, origin.Y + 1), step - 1);

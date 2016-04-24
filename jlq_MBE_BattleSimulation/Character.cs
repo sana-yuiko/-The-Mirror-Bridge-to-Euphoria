@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace JLQ_MBE_BattleSimulation
 {
@@ -57,12 +60,17 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>当前剩余冷却时间</summary>
         public int CurrentTime { get; protected set; }
         /// <summary>位置，X为Grid.Column，Y为Grid.Row</summary>
-        public Point Posotion { get; protected set; }
+        public Point Position { get; protected set; }
         /// <summary>是否已移动</summary>
         public bool IsMoved { get; private set; }
         /// <summary>是否已攻击</summary>
         public bool IsAttacked { get; private set; }
-        //TODO get a list of buff
+        /// <summary>显示Display的Label</summary>
+        public Label LabelDisplay { get; set; }
+        /// <summary>buff列表</summary>
+        public List<Buff> BuffList { get; protected set; } 
+        /// <summary>用于显示Display的Label</summary>
+
         //只读属性
         /// <summary>攻击</summary>
         public int Attack => (int) Math.Floor(Data.Attack*_attackX);
@@ -89,7 +97,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>是否死亡</summary>
         private bool IsDead => Hp <= 0;
 
-        /// <summary>构造函数</summary>
+        /// <summary>Character类的构造函数</summary>
         /// <param name="id">角色ID</param>
         /// <param name="position">角色位置</param>
         /// <param name="group">角色阵营</param>
@@ -98,15 +106,39 @@ namespace JLQ_MBE_BattleSimulation
         public Character(int id, Point position, Group group, Random random, Game game)
         {
             this._id = id;
-            this.Posotion = position;
+            this.Position = position;
             this.Group = group;
             IsMoved = false;
             IsAttacked = false;
-            this.Data = Calculate.characterDataList.Where(cd => cd.Name == this.GetType().ToString()).ElementAt(0);
+            this.Data =
+                Calculate.CharacterDataList.Where(cd => cd.Name == this.GetType().ToString().Substring(25)).ElementAt(0);
             this.Hp = this.Data.MaxHp;
             this._maxMp = 1000;
             this.Mp = _maxMp;
             this.CurrentTime = this.Data.Interval;
+
+            this.LabelDisplay = new Label
+            {
+                Margin = new Thickness(0),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalContentAlignment = HorizontalAlignment.Center,
+                VerticalContentAlignment = VerticalAlignment.Center,
+                Content = this.Data.Display,
+            };
+            switch (this.Group)
+            {
+                case Group.Friend:
+                    LabelDisplay.Foreground = Brushes.Red;
+                    break;
+                case Group.Middle:
+                    LabelDisplay.Foreground = Brushes.Black;
+                    break;
+                default:
+                    LabelDisplay.Foreground = Brushes.Green;
+                    break;
+            }
+            SetLabel();
 
             this.random = random;
             this.game = game;
@@ -126,7 +158,7 @@ namespace JLQ_MBE_BattleSimulation
         public bool DoAttack(Character target)
         {
             bool isCriticalHit = false;
-            int distance = Calculate.Distance(this.Posotion, target.Posotion);
+            int distance = Calculate.Distance(this.Position, target.Position);
             //判断是否命中
             if (random.NextDouble() <= Calculate.HitRate(this, target))
             {
@@ -169,13 +201,6 @@ namespace JLQ_MBE_BattleSimulation
             IsAttacked = false;
         }
 
-        /// <summary>行动</summary>
-        /// <param name="clickPosition">单击的网格位置</param>
-        public void Round(Point clickPosition)
-        {
-            //TODO Round
-        }
-
         /// <summary>将各数据转化为字符串显示</summary>
         /// <returns>各数据字符串化的结果</returns>
         public override string ToString()
@@ -203,6 +228,26 @@ namespace JLQ_MBE_BattleSimulation
             Hp = Data.MaxHp;
         }
 
+        /// <summary>移动至指定坐标</summary>
+        /// <param name="end">移动的目标坐标</param>
+        public void Move(Point end)
+        {
+            this.Position = end;
+            SetLabel();
+        }
+
+        /// <summary>在各方向移动指定的值，若超限则取边界</summary>
+        /// <param name="relativeX">移动的列向相对坐标</param>
+        /// <param name="relativeY">移动的行向相对坐标</param>
+        public void Move(int relativeX, int relativeY)
+        {
+            this.Position = new Point(GetValidPosition((int)this.Position.X + relativeX, MainWindow.Column),
+                GetValidPosition((int)this.Position.Y + relativeY, MainWindow.Row));
+            SetLabel();
+
+        }
+
+
         //以下为符卡
 
         /// <summary>符卡01</summary>
@@ -221,23 +266,6 @@ namespace JLQ_MBE_BattleSimulation
         {
             Hp -= damage;
             //TODO whether dead
-        }
-
-        /// <summary>移动至指定坐标</summary>
-        /// <param name="end">移动的目标坐标</param>
-        private void Move(Point end)
-        {
-            this.Posotion = end;
-        }
-
-        /// <summary>在各方向移动指定的值，若超限则取边界</summary>
-        /// <param name="relativeX">移动的列向相对坐标</param>
-        /// <param name="relativeY">移动的行向相对坐标</param>
-        private void Move(int relativeX, int relativeY)
-        {
-            this.Posotion = new Point(GetValidPosition((int) this.Posotion.X + relativeX, MainWindow.Column),
-                GetValidPosition((int) this.Posotion.Y + relativeY, MainWindow.Row));
-
         }
 
         /// <summary>将不合法的Position坐标项转化为合法值</summary>
@@ -260,5 +288,10 @@ namespace JLQ_MBE_BattleSimulation
             }
         }
 
+        private void SetLabel()
+        {
+            LabelDisplay.SetValue(Grid.ColumnProperty, (int) Position.X);
+            LabelDisplay.SetValue(Grid.RowProperty, (int) Position.Y);
+        }
     }
 }

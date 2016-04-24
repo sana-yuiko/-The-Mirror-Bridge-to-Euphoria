@@ -27,7 +27,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <returns>命中率</returns>
         public static double HitRate(Character attacker, Character target)
         {
-            return HitRate(attacker.HitRate - target.DodgeRate, Distance(attacker.Posotion, target.Posotion));
+            return HitRate(attacker.HitRate - target.DodgeRate, Distance(attacker.Position, target.Position));
         }
 
         //伤害公式
@@ -43,7 +43,7 @@ namespace JLQ_MBE_BattleSimulation
         }
 
         /// <summary>储存角色列表中所有角色的原始数据</summary>
-        public static List<CharacterData> characterDataList = new List<CharacterData>();
+        public static List<CharacterData> CharacterDataList = new List<CharacterData>();
 
         /// <summary>求两点距离，参数可交换</summary>
         /// <param name="point1">点1</param>

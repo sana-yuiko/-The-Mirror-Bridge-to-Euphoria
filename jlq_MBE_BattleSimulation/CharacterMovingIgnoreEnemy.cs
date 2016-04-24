@@ -11,7 +11,7 @@ namespace JLQ_MBE_BattleSimulation
     abstract class CharacterMovingIgnoreEnemy:Character
     {
         /// <summary>
-        /// 构造函数
+        /// CharacterMovingIgnoreEnemy类的构造函数
         /// </summary>
         /// <param name="id">ID</param>
         /// <param name="position">角色位置</param>

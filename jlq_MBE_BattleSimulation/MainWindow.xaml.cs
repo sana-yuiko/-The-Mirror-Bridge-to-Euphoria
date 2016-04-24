@@ -32,10 +32,16 @@ namespace JLQ_MBE_BattleSimulation
         private Border[,] borders = new Border[Column, Row];
         /// <summary>用于感知单击的按钮二维数组</summary>
         private Button[,] buttons = new Button[Column, Row];
+
         /// <summary>随机数对象</summary>
-        private Random random = new Random();
+        private readonly Random random = new Random();
         /// <summary>game对象</summary>
-        private Game game;
+        private readonly Game game;
+
+        /// <summary>加人模式的当前ID</summary>
+        private int ID = 1;
+        /// <summary>加人模式上一个添加的角色</summary>
+        private Character characterLastAdd = null;
 
         /// <summary>构造函数</summary>
         public MainWindow()
@@ -51,12 +57,12 @@ namespace JLQ_MBE_BattleSimulation
             for (int i = 0, count = xnl.Count; i < count; i++)
             {
                 //读取角色数据
-                CharacterData cd = new CharacterData();
-                XmlElement xe = (XmlElement)xnl.Item(i);
-                XmlElement xesc = (XmlElement)xnscl.Item(i);
+                var cd = new CharacterData();
+                var xe = (XmlElement)xnl.Item(i);
+                var xesc = (XmlElement)xnscl.Item(i);
                 cd.Name = xe.GetAttribute("id");
-                XmlNodeList xnll = xe.ChildNodes;
-                XmlNodeList xnscll = xesc.ChildNodes;
+                var xnll = xe.ChildNodes;
+                var xnscll = xesc.ChildNodes;
                 cd.Display = xnll.Item(0).InnerText;
                 cd.MaxHp = Convert.ToInt32(xnll.Item(1).InnerText);
                 cd.Attack = Convert.ToInt32(xnll.Item(2).InnerText);
@@ -77,7 +83,7 @@ namespace JLQ_MBE_BattleSimulation
                 cd.ScDisc[2] = xnscll.Item(6).InnerText;
                 cd.ScDisc[3] = xnscll.Item(7).InnerText;
 
-                Calculate.characterDataList.Add(cd);
+                Calculate.CharacterDataList.Add(cd);
                 comboBoxDisplay.Items.Add(cd.Display);
             }
             reader.Close();
@@ -85,9 +91,40 @@ namespace JLQ_MBE_BattleSimulation
             game = new Game(random);
         }
 
-        private void GridPadMouseDown(int column, int row)
+        /// <summary>网格单击事件</summary>
+        /// <param name="column">单击位置的列向坐标</param>
+        /// <param name="row">单击位置的横向坐标</param>
+        /// <param name="leftButton">鼠标左键状态</param>
+        /// <param name="middleButton">鼠标中键状态</param>
+        /// <param name="rightButton">鼠标右键状态</param>
+        private void GridPadMouseDown(int column, int row, MouseButtonState leftButton, MouseButtonState middleButton,
+            MouseButtonState rightButton)
         {
             //TODO Pad Mouse Down
+            if (!game.IsBattle)
+            {
+                if (!String.IsNullOrEmpty(comboBoxDisplay.Text))
+                {
+                    if (game.Characters.Count(c => c.Position == new Point(column, row)) != 0) return;
+                    var characterData = Calculate.CharacterDataList.First(cd => cd.Display == comboBoxDisplay.Text);
+                    Type[] constructorTypes =
+                    {
+                        typeof (int), typeof (Point), typeof (Group), typeof (Random), typeof (Game)
+                    };
+                    var group = (leftButton == MouseButtonState.Pressed)
+                        ? Group.Friend
+                        : ((middleButton == MouseButtonState.Pressed) ? Group.Middle : Group.Enemy);
+                    object[] parameters = { ID, new Point(column, row), group, random, game };
+                    characterLastAdd =
+                        (Character)
+                            Type.GetType("JLQ_MBE_BattleSimulation." + characterData.Name).GetConstructors()[0].Invoke(
+                                parameters);
+                    gridPad.Children.Add(characterLastAdd.LabelDisplay);
+                    game.Characters.Add(characterLastAdd);
+                    labelID.Content = (++ID).ToString();
+                    menuBackout.IsEnabled = true;
+                }
+            }
         }
         
         /// <summary>帮助菜单</summary>
@@ -136,6 +173,7 @@ namespace JLQ_MBE_BattleSimulation
                     borders[i, j].SetValue(Grid.ColumnSpanProperty, 1);
                     borders[i, j].SetValue(Grid.RowSpanProperty, 1);
                     borders[i, j].SetValue(Panel.ZIndexProperty, 1);
+                    borders[i, j].SetValue(Panel.ZIndexProperty, 0);
                     gridPad.Children.Add(borders[i, j]);
                     //生成网格内用来响应事件的按钮
                     buttons[i, j] = new Button
@@ -158,9 +196,17 @@ namespace JLQ_MBE_BattleSimulation
             {
                 int column = (int) button.GetValue(Grid.ColumnProperty);
                 int row = (int) button.GetValue(Grid.RowProperty);
+                button.MouseDown += (s, ev) =>
+                {
+                    if (ev.LeftButton == MouseButtonState.Released)
+                    {
+                        GridPadMouseDown(column, row, MouseButtonState.Released, ev.MiddleButton, ev.RightButton);
+                    }
+                };
                 button.Click +=
                     (s, ev) =>
-                        GridPadMouseDown(column, row);
+                        GridPadMouseDown(column, row, MouseButtonState.Pressed, MouseButtonState.Released,
+                            MouseButtonState.Released);
                 button.MouseMove += (s, ev) =>
                 {
                     if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
@@ -172,6 +218,72 @@ namespace JLQ_MBE_BattleSimulation
                         button.ToolTip = game.StringShow(new Point(column, row));
                     }
                 };
+            }
+        }
+
+        /// <summary>退出菜单</summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void menuExit_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        /// <summary>清除已添加的所有单位</summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void menuClear_Click(object sender, RoutedEventArgs e)
+        {
+            var labels = game.Characters.Select(c => c.LabelDisplay);
+            foreach (var l in labels)
+            {
+                gridPad.Children.Remove(l);
+            }
+            game.Characters.Clear();
+            characterLastAdd = null;
+            menuBackout.IsEnabled = false;
+            ID = 1;
+            labelID.Content = "1";
+        }
+
+        /// <summary>模式切换</summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void menuPattern_Click(object sender, RoutedEventArgs e)
+        {
+            if (game.Characters.Count == 0)
+            {
+                MessageBox.Show("还未加人！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            menuPattern.IsEnabled = false;
+            menuBackout.IsEnabled = false;
+            menuClear.IsEnabled = false;
+            labelShow.Content = "战斗模式";
+            game.IsBattle = true;
+            game.GetNextRoundCharacter();
+            label2.Visibility = Visibility.Hidden;
+            labelID.Visibility = Visibility.Hidden;
+            labelShow.Foreground = Brushes.Black;
+        }
+
+        /// <summary>撤销上一次添加的角色</summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void menuBackout_Click(object sender, RoutedEventArgs e)
+        {
+            if (characterLastAdd == null) return;
+            gridPad.Children.Remove(characterLastAdd.LabelDisplay);
+            game.Characters.Remove(characterLastAdd);
+            labelID.Content = (--ID).ToString();
+            if (game.Characters.Count == 0)
+            {
+                characterLastAdd = null;
+                menuBackout.IsEnabled = false;
+            }
+            else
+            {
+                characterLastAdd = game.Characters.Last();
             }
         }
     }

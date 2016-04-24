@@ -91,7 +91,7 @@
             <param name="defence">防御者的防御值</param>
             <returns>伤害值</returns>
         </member>
-        <member name="F:JLQ_MBE_BattleSimulation.Calculate.characterDataList">
+        <member name="F:JLQ_MBE_BattleSimulation.Calculate.CharacterDataList">
             <summary>储存角色列表中所有角色的原始数据</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Calculate.Distance(System.Windows.Point,System.Windows.Point)">
@@ -157,7 +157,7 @@
         <member name="P:JLQ_MBE_BattleSimulation.Character.CurrentTime">
             <summary>当前剩余冷却时间</summary>
         </member>
-        <member name="P:JLQ_MBE_BattleSimulation.Character.Posotion">
+        <member name="P:JLQ_MBE_BattleSimulation.Character.Position">
             <summary>位置，X为Grid.Column，Y为Grid.Row</summary>
         </member>
         <member name="P:JLQ_MBE_BattleSimulation.Character.IsMoved">
@@ -165,6 +165,12 @@
         </member>
         <member name="P:JLQ_MBE_BattleSimulation.Character.IsAttacked">
             <summary>是否已攻击</summary>
+        </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Character.LabelDisplay">
+            <summary>显示Display的Label</summary>
+        </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Character.BuffList">
+            <summary>buff列表</summary>
         </member>
         <member name="P:JLQ_MBE_BattleSimulation.Character.Attack">
             <summary>攻击</summary>
@@ -203,7 +209,7 @@
             <summary>是否死亡</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Character.#ctor(System.Int32,System.Windows.Point,JLQ_MBE_BattleSimulation.Group,System.Random,JLQ_MBE_BattleSimulation.Game)">
-            <summary>构造函数</summary>
+            <summary>Character类的构造函数</summary>
             <param name="id">角色ID</param>
             <param name="position">角色位置</param>
             <param name="group">角色阵营</param>
@@ -220,10 +226,6 @@
             <param name="target">攻击目标</param>
             <returns>是否暴击</returns>
         </member>
-        <member name="M:JLQ_MBE_BattleSimulation.Character.Round(System.Windows.Point)">
-            <summary>行动</summary>
-            <param name="clickPosition">单击的网格位置</param>
-        </member>
         <member name="M:JLQ_MBE_BattleSimulation.Character.ToString">
             <summary>将各数据转化为字符串显示</summary>
             <returns>各数据字符串化的结果</returns>
@@ -235,6 +237,15 @@
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Character.Reset">
             <summary>重置属性</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.Move(System.Windows.Point)">
+            <summary>移动至指定坐标</summary>
+            <param name="end">移动的目标坐标</param>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.Move(System.Int32,System.Int32)">
+            <summary>在各方向移动指定的值，若超限则取边界</summary>
+            <param name="relativeX">移动的列向相对坐标</param>
+            <param name="relativeY">移动的行向相对坐标</param>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Character.SC01">
             <summary>符卡01</summary>
@@ -248,15 +259,6 @@
         <member name="M:JLQ_MBE_BattleSimulation.Character.Damage(System.Int32)">
             <summary>受伤</summary>
             <param name="damage">伤害值</param>
-        </member>
-        <member name="M:JLQ_MBE_BattleSimulation.Character.Move(System.Windows.Point)">
-            <summary>移动至指定坐标</summary>
-            <param name="end">移动的目标坐标</param>
-        </member>
-        <member name="M:JLQ_MBE_BattleSimulation.Character.Move(System.Int32,System.Int32)">
-            <summary>在各方向移动指定的值，若超限则取边界</summary>
-            <param name="relativeX">移动的列向相对坐标</param>
-            <param name="relativeY">移动的行向相对坐标</param>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Character.GetValidPosition(System.Int32,System.Int32)">
             <summary>将不合法的Position坐标项转化为合法值</summary>
@@ -305,7 +307,7 @@
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.CharacterMovingIgnoreEnemy.#ctor(System.Int32,System.Windows.Point,JLQ_MBE_BattleSimulation.Group,System.Random,JLQ_MBE_BattleSimulation.Game)">
             <summary>
-            构造函数
+            CharacterMovingIgnoreEnemy类的构造函数
             </summary>
             <param name="id">ID</param>
             <param name="position">角色位置</param>
@@ -322,18 +324,23 @@
         <member name="F:JLQ_MBE_BattleSimulation.Game.currentCharacter">
             <summary>当前行动者</summary>
         </member>
-        <member name="P:JLQ_MBE_BattleSimulation.Game.Characters">
-            <summary>游戏中所有角色列表</summary>
+        <member name="F:JLQ_MBE_BattleSimulation.Game.IsBattle">
+            <summary>是否为战斗模式</summary>
         </member>
-        <member name="M:JLQ_MBE_BattleSimulation.Game.#ctor(System.Random)">
-            <summary>Game类的构造函数</summary>
-            <param name="random">随机数对象</param>
+        <member name="P:JLQ_MBE_BattleSimulation.Game.Section">
+            <summary>当前回合所在的阶段</summary>
         </member>
         <member name="P:JLQ_MBE_BattleSimulation.Game.IsMoved">
             <summary>当前行动者是否已移动</summary>
         </member>
         <member name="P:JLQ_MBE_BattleSimulation.Game.IsAttacked">
             <summary>当前行动者是否已攻击</summary>
+        </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Game.Characters">
+            <summary>游戏中所有角色列表</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Game.#ctor(System.Random)">
+            <summary>Game类的构造函数</summary>
         </member>
         <member name="P:JLQ_MBE_BattleSimulation.Game.CurrentPosotion">
             <summary>当前行动者的位置</summary>
@@ -359,7 +366,7 @@
         <member name="P:JLQ_MBE_BattleSimulation.Game.EnemyAsCurrent">
             <summary>对当前行动者的敌人列表</summary>
         </member>
-        <member name="M:JLQ_MBE_BattleSimulation.Game.NextRoundCharacter">
+        <member name="M:JLQ_MBE_BattleSimulation.Game.GetNextRoundCharacter">
             <summary>更新下个行动的角色,取currentTime最小的角色中Interval最大的角色中的随机一个</summary>
         </member>
         <member name="F:JLQ_MBE_BattleSimulation.Game.CanReachPoint">
@@ -409,8 +416,22 @@
         <member name="F:JLQ_MBE_BattleSimulation.MainWindow.game">
             <summary>game对象</summary>
         </member>
+        <member name="F:JLQ_MBE_BattleSimulation.MainWindow.ID">
+            <summary>加人模式的当前ID</summary>
+        </member>
+        <member name="F:JLQ_MBE_BattleSimulation.MainWindow.characterLastAdd">
+            <summary>加人模式上一个添加的角色</summary>
+        </member>
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.#ctor">
             <summary>构造函数</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.MainWindow.GridPadMouseDown(System.Int32,System.Int32,System.Windows.Input.MouseButtonState,System.Windows.Input.MouseButtonState,System.Windows.Input.MouseButtonState)">
+            <summary>网格单击事件</summary>
+            <param name="column">单击位置的列向坐标</param>
+            <param name="row">单击位置的横向坐标</param>
+            <param name="leftButton">鼠标左键状态</param>
+            <param name="middleButton">鼠标中键状态</param>
+            <param name="rightButton">鼠标右键状态</param>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.menuHelp_Click(System.Object,System.Windows.RoutedEventArgs)">
             <summary>帮助菜单</summary>
@@ -424,6 +445,26 @@
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.gridPad_Loaded(System.Object,System.Windows.RoutedEventArgs)">
             <summary>生成棋盘网格内的控件</summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.MainWindow.menuExit_Click(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>退出菜单</summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.MainWindow.menuClear_Click(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>清除已添加的所有单位</summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.MainWindow.menuPattern_Click(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>模式切换</summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.MainWindow.menuBackout_Click(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>撤销上一次添加的角色</summary>
             <param name="sender"></param>
             <param name="e"></param>
         </member>
@@ -446,6 +487,36 @@
             <summary>
               使用此强类型资源类，为所有资源查找
               重写当前线程的 CurrentUICulture 属性。
+            </summary>
+        </member>
+        <member name="T:XamlGeneratedNamespace.GeneratedInternalTypeHelper">
+            <summary>
+            GeneratedInternalTypeHelper
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateInstance(System.Type,System.Globalization.CultureInfo)">
+            <summary>
+            CreateInstance
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.GetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            GetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.SetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            SetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateDelegate(System.Type,System.Object,System.String)">
+            <summary>
+            CreateDelegate
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.AddEventHandler(System.Reflection.EventInfo,System.Object,System.Delegate)">
+            <summary>
+            AddEventHandler
             </summary>
         </member>
     </members>
