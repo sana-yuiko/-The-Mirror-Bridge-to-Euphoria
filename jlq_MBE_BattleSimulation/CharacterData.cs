@@ -8,18 +8,31 @@ namespace JLQ_MBE_BattleSimulation
 {
     class CharacterData
     {
-        public string name;//角色是谁
-        public string display = "";//屏幕上显示什么文字
-        public int maxHp = 120;//最大血量
-        public int attack = 100;//攻击   
-        public int defence = 80;//防御
-        public int hitRate = 80;//命中
-        public int dodgeRate = 60;//闪避
-        public float closeAmendment = 1.0f;//近战补正
-        public int interval = 30;//行动间隔
-        public int moveAbility = 3;//机动
-        public int attackRange = 3;//普攻范围
-        public string[] scName = { "", "", "", "" };//符卡名
-        public string[] scDisc = { "", "", "", "" };//符卡描述
+        /// <summary>角色名字</summary>
+        public string Name;
+        /// <summary>屏幕上显示的文字</summary>
+        public string Display = "";
+        /// <summary>最大血量</summary>
+        public int MaxHp = 120;
+        /// <summary>攻击</summary>
+        public int Attack = 100;  
+        /// <summary>防御</summary>
+        public int Defence = 80;
+        /// <summary>命中</summary>
+        public int HitRate = 80;
+        /// <summary>闪避</summary>
+        public int DodgeRate = 60;
+        /// <summary>近战补正</summary>
+        public float CloseAmendment = 1.0f;
+        /// <summary>行动间隔</summary>
+        public int Interval = 30;
+        /// <summary>机动</summary>
+        public int MoveAbility = 3;
+        /// <summary>普攻范围</summary>
+        public int AttackRange = 3;
+        /// <summary>符卡名</summary>
+        public string[] ScName = { "", "", "", "" };
+        /// <summary>符卡描述</summary>
+        public string[] ScDisc = { "", "", "", "" };
     }
 }

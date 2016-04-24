@@ -22,19 +22,27 @@ namespace JLQ_MBE_BattleSimulation
     /// </summary>
     public partial class MainWindow : Window
     {
-        //棋盘列数与行数
-        public const int Column = 9;//列数
-        public const int Row = 9;//行数
+        /// <summary>棋盘列数</summary>
+        public const int Column = 9;
+        /// <summary>棋盘行数</summary>
+        public const int Row = 9;
 
-        private DispatcherTimer timer = new DispatcherTimer { Interval = new TimeSpan(0 /*TODO Set Interval*/) };//Timer对象
-        private Border[,] borders = new Border[Column, Row];//棋盘网格线
-        private Button[,] buttons = new Button[Column, Row];//感知单击
+        //private DispatcherTimer timer = new DispatcherTimer { Interval = new TimeSpan(0 /*TODO Set Interval*/) };//Timer对象
+        /// <summary>棋盘网格线</summary>
+        private Border[,] borders = new Border[Column, Row];
+        /// <summary>用于感知单击的按钮二维数组</summary>
+        private Button[,] buttons = new Button[Column, Row];
+        /// <summary>随机数对象</summary>
+        private Random random = new Random();
+        /// <summary>game对象</summary>
+        private Game game;
 
-        //构造函数
+        /// <summary>构造函数</summary>
         public MainWindow()
         {
             InitializeComponent();
 
+            //读取角色各数据
             XmlDocument data = new XmlDocument();
             XmlReader reader = XmlReader.Create("data.xml", new XmlReaderSettings {IgnoreComments = true /*忽略注释*/});
             data.Load(reader);
@@ -42,35 +50,39 @@ namespace JLQ_MBE_BattleSimulation
             XmlNodeList xnscl = data.SelectSingleNode("/data/sc").ChildNodes;
             for (int i = 0, count = xnl.Count; i < count; i++)
             {
+                //读取角色数据
                 CharacterData cd = new CharacterData();
                 XmlElement xe = (XmlElement)xnl.Item(i);
                 XmlElement xesc = (XmlElement)xnscl.Item(i);
-                cd.name = xe.GetAttribute("id");
+                cd.Name = xe.GetAttribute("id");
                 XmlNodeList xnll = xe.ChildNodes;
                 XmlNodeList xnscll = xesc.ChildNodes;
-                cd.display = xnll.Item(0).InnerText;
-                cd.maxHp = Convert.ToInt32(xnll.Item(1).InnerText);
-                cd.attack = Convert.ToInt32(xnll.Item(2).InnerText);
-                cd.defence = Convert.ToInt32(xnll.Item(3).InnerText);
-                cd.hitRate = Convert.ToInt32(xnll.Item(4).InnerText);
-                cd.dodgeRate = Convert.ToInt32(xnll.Item(5).InnerText);
-                cd.closeAmendment = Convert.ToSingle(xnll.Item(6).InnerText);
-                cd.interval = Convert.ToInt32(xnll.Item(7).InnerText);
-                cd.moveAbility = Convert.ToInt32(xnll.Item(8).InnerText);
-                cd.attackRange = Convert.ToInt32(xnll.Item(9).InnerText);
+                cd.Display = xnll.Item(0).InnerText;
+                cd.MaxHp = Convert.ToInt32(xnll.Item(1).InnerText);
+                cd.Attack = Convert.ToInt32(xnll.Item(2).InnerText);
+                cd.Defence = Convert.ToInt32(xnll.Item(3).InnerText);
+                cd.HitRate = Convert.ToInt32(xnll.Item(4).InnerText);
+                cd.DodgeRate = Convert.ToInt32(xnll.Item(5).InnerText);
+                cd.CloseAmendment = Convert.ToSingle(xnll.Item(6).InnerText);
+                cd.Interval = Convert.ToInt32(xnll.Item(7).InnerText);
+                cd.MoveAbility = Convert.ToInt32(xnll.Item(8).InnerText);
+                cd.AttackRange = Convert.ToInt32(xnll.Item(9).InnerText);
                 //读取符卡描述
-                cd.scName[0] = xnscll.Item(0).InnerText;
-                cd.scName[1] = xnscll.Item(1).InnerText;
-                cd.scName[2] = xnscll.Item(2).InnerText;
-                cd.scName[3] = xnscll.Item(3).InnerText;
-                cd.scDisc[0] = xnscll.Item(4).InnerText;
-                cd.scDisc[1] = xnscll.Item(5).InnerText;
-                cd.scDisc[2] = xnscll.Item(6).InnerText;
-                cd.scDisc[3] = xnscll.Item(7).InnerText;
+                cd.ScName[0] = xnscll.Item(0).InnerText;
+                cd.ScName[1] = xnscll.Item(1).InnerText;
+                cd.ScName[2] = xnscll.Item(2).InnerText;
+                cd.ScName[3] = xnscll.Item(3).InnerText;
+                cd.ScDisc[0] = xnscll.Item(4).InnerText;
+                cd.ScDisc[1] = xnscll.Item(5).InnerText;
+                cd.ScDisc[2] = xnscll.Item(6).InnerText;
+                cd.ScDisc[3] = xnscll.Item(7).InnerText;
+
                 Calculate.characterDataList.Add(cd);
-                comboBoxDisplay.Items.Add(cd.display);
+                comboBoxDisplay.Items.Add(cd.Display);
             }
             reader.Close();
+            //初始化game对象
+            game = new Game(random);
         }
 
         private void GridPadMouseDown(int column, int row)
@@ -78,7 +90,9 @@ namespace JLQ_MBE_BattleSimulation
             //TODO Pad Mouse Down
         }
         
-        //帮助菜单
+        /// <summary>帮助菜单</summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void menuHelp_Click(object sender, RoutedEventArgs e)
         {
             //TODO Pause
@@ -87,7 +101,9 @@ namespace JLQ_MBE_BattleSimulation
             //TODO Continue
         }
 
-        //询问是否关闭窗口
+        /// <summary>关闭时询问是否关闭窗口</summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show("是否退出？", "退出", MessageBoxButton.YesNo, MessageBoxImage.Warning);
@@ -97,13 +113,16 @@ namespace JLQ_MBE_BattleSimulation
             }
         }
 
-        //生成棋盘网格线
+        /// <summary>生成棋盘网格内的控件</summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void gridPad_Loaded(object sender, RoutedEventArgs e)
         {
             for (var i = 0; i < Column; i++)
             {
                 for (var j = 0; j < Row; j++)
                 {
+                    //生成网格线
                     borders[i, j] = new Border
                     {
                         BorderBrush = new SolidColorBrush(Colors.Blue),
@@ -118,7 +137,7 @@ namespace JLQ_MBE_BattleSimulation
                     borders[i, j].SetValue(Grid.RowSpanProperty, 1);
                     borders[i, j].SetValue(Panel.ZIndexProperty, 1);
                     gridPad.Children.Add(borders[i, j]);
-
+                    //生成网格内用来响应事件的按钮
                     buttons[i, j] = new Button
                     {
                         Margin = new Thickness(1),
@@ -134,12 +153,25 @@ namespace JLQ_MBE_BattleSimulation
                     gridPad.Children.Add(buttons[i, j]);
                 }
             }
+            //生成按钮事件
             foreach (var button in buttons)
             {
+                int column = (int) button.GetValue(Grid.ColumnProperty);
+                int row = (int) button.GetValue(Grid.RowProperty);
                 button.Click +=
                     (s, ev) =>
-                        GridPadMouseDown((int) button.GetValue(Grid.ColumnProperty),
-                            (int) button.GetValue(Grid.RowProperty));
+                        GridPadMouseDown(column, row);
+                button.MouseMove += (s, ev) =>
+                {
+                    if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                    {
+                        button.ToolTip = game.TipShow(new Point(column, row));
+                    }
+                    else
+                    {
+                        button.ToolTip = game.StringShow(new Point(column, row));
+                    }
+                };
             }
         }
     }

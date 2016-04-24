@@ -5,18 +5,24 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Runtime.InteropServices;
+using System.Windows.Media.TextFormatting;
 
 namespace JLQ_MBE_BattleSimulation
 {
+    /// <summary>游戏类</summary>
     class Game
     {
-        private Random random;//随机数对象
+        /// <summary>随机数对象</summary>
+        private Random random;
 
+        /// <summary>当前行动者</summary>
+        private Character currentCharacter = null;
 
-        public List<Character> Characters { get; private set; }//所有角色 
-        private Character currentCharacter = null;//当前行动者
+        /// <summary>游戏中所有角色列表</summary>
+        public List<Character> Characters { get; private set; } 
 
-        //构造函数
+        /// <summary>Game类的构造函数</summary>
+        /// <param name="random">随机数对象</param>
         public Game(Random random)
         {
             this.random = random;
@@ -24,60 +30,95 @@ namespace JLQ_MBE_BattleSimulation
         }
 
         //当前行动者属性
-        //当前行动者是否移动/攻击
+
+        /// <summary>当前行动者是否已移动</summary>
         public bool IsMoved => currentCharacter.IsMoved;
+        /// <summary>当前行动者是否已攻击</summary>
         public bool IsAttacked => currentCharacter.IsAttacked;
-        //当前行动者的位置
+        /// <summary>当前行动者的位置</summary>
         public Point CurrentPosotion => currentCharacter.Posotion;
-        //当前行动者的scName与scDisc
-        public string[] ScName => currentCharacter.data.scName;
-        public string[] ScDisc => currentCharacter.data.scDisc;
+        /// <summary>当前行动者的scName</summary>
+        public string[] ScName => currentCharacter.Data.ScName;
+        /// <summary>当前行动者的scDisc</summary>
+        public string[] ScDisc => currentCharacter.Data.ScDisc;
 
+        /// <summary>友军列表</summary>
+        public IEnumerable<Character> FriendCharacters => Characters.Where(c => c.Group == Group.Friend);
+        /// <summary>中立列表</summary>
+        public IEnumerable<Character> MiddleCharacters => Characters.Where(c => c.Group == Group.Middle);
+        /// <summary>敌军列表</summary>
+        public IEnumerable<Character> EnemyCharacters => Characters.Where(c => c.Group == Group.Enemy);
 
-        //分别为友军，中立，敌军
-        public IEnumerable<Character> FriendCharacters => Characters.Where(c => c.group == Group.Friend);
-        public IEnumerable<Character> MiddleCharacters => Characters.Where(c => c.group == Group.Middle);
-        public IEnumerable<Character> EnemyCharacters => Characters.Where(c => c.group == Group.Enemy);
-
-        //攻击范围内的可攻击角色
+        /// <summary>攻击范围内的可攻击角色</summary>
         public IEnumerable<Character> EnemyCanAttack
             =>
                 Characters.Where(
                     c =>
-                        c.group != currentCharacter.group &&
+                        c.Group != currentCharacter.Group &&
                         Calculate.Distance(currentCharacter.Posotion, c.Posotion) <= currentCharacter.AttackRange);
 
-        //可行动的角色列表
-        public IEnumerable<Character> CharactersCanMove
-            => Characters.Where(c => c.CurrentTime == 0 && (!c.IsRounded)).OrderByDescending(c => c.Interval);
-
-        //对当前行动者的敌人列表
+        /// <summary>对当前行动者的敌人列表</summary>
         public IEnumerable<Character> EnemyAsCurrent
             =>
                 Characters.Where(
                     c => /*非IgnoreEnemy*/
                         (!(currentCharacter is CharacterMovingIgnoreEnemy)) && /*判断逻辑*/
                         ( /*当前行动者中立且c非中立*/
-                            (currentCharacter.group == Group.Middle && c.group != Group.Middle) ||
-                            /*当前行动者非中立且c与之敌对*/(currentCharacter.group != Group.Middle &&
-                             c.group == (Group)(-(int)currentCharacter.group))));
+                            (currentCharacter.Group == Group.Middle && c.Group != Group.Middle) ||
+                            /*当前行动者非中立且c与之敌对*/(currentCharacter.Group != Group.Middle &&
+                             c.Group == (Group)(-(int)currentCharacter.Group))));
 
-        //每个格子能否被到达
+        /// <summary>更新下个行动的角色,取currentTime最小的角色中Interval最大的角色中的随机一个</summary>
+        public void NextRoundCharacter()
+        {
+            var stack = new Stack<Character>();
+            stack.Push(Characters.ElementAt(0));
+            foreach (var character in Characters)
+            {
+                var temp = stack.Peek();
+                if (character.CurrentTime < temp.CurrentTime)
+                {
+                    stack.Clear();
+                    stack.Push(character);
+                }
+                else if (character.CurrentTime == temp.CurrentTime)
+                {
+                    if (character.Interval > temp.Interval)
+                    {
+                        stack.Clear();
+                        stack.Push(character);
+                    }
+                    else if (character.Interval == temp.Interval)
+                    {
+                        stack.Push(character);
+                    }
+                }
+            }
+            var i = random.Next(stack.Count);
+            currentCharacter = stack.ElementAt(i);
+        }
+
+
+        /// <summary>每个格子能否被到达</summary>
         public bool[,] CanReachPoint = new bool[MainWindow.Column, MainWindow.Row];
 
-        //格子的文字显示
+        /// <summary>格子的文字显示</summary>
+        /// <param name="position">格子</param>
+        /// <returns>文字显示</returns>
         public string StringShow(Point position)
         {
             return Characters.FirstOrDefault(c => c.Posotion == position)?.ToString() ?? String.Empty;
         }
 
-        //格子的提示
+        /// <summary>格子的信息提示</summary>
+        /// <param name="position">格子</param>
+        /// <returns>信息提示</returns>
         public string TipShow(Point position)
         {
             return Characters.FirstOrDefault(c => c.Posotion == position)?.Tip(currentCharacter) ?? String.Empty;
         }
 
-        //生成bool二维数组
+        /// <summary>生成bool二维数组</summary>
         public void Generate_CanReachPoint()
         {
             for (var i = 0; i < MainWindow.Column; i++)
@@ -95,7 +136,9 @@ namespace JLQ_MBE_BattleSimulation
             }
         }
 
-        //将所有可以到达的点在bool二维数组中置为true
+        /// <summary>将所有可以到达的点在bool二维数组中置为true</summary>
+        /// <param name="origin">起点</param>
+        /// <param name="step">步数</param>
         public void AssignPointCanReach(Point origin, int step)
         {
             CanReachPoint[(int)origin.X, (int)origin.Y] = true;
@@ -126,5 +169,6 @@ namespace JLQ_MBE_BattleSimulation
         //播放声音
         [DllImport("user32.dll")]
         public static extern bool MessageBeep(uint uType);
+
     }
 }
