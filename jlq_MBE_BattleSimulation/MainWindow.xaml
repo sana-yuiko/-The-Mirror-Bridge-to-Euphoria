@@ -1,0 +1,90 @@
+﻿<Window x:Name="window" x:Class="JLQ_MBE_BattleSimulation.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:JLQ_MBE_BattleSimulation"
+        xmlns:system1="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Title="The Mirror Bridge to Euphoria" Height="602" Width="906" Closing="window_Closing" MinHeight="250" MinWidth="250">
+    <Window.Resources>
+        <local:ConverterContentToColor x:Key="converterContentToColor"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4*"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Border BorderBrush="Blue" BorderThickness="1" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" Grid.Row="1" VerticalAlignment="Stretch">
+            <Grid x:Name="gridPad" Loaded="gridPad_Loaded">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+            </Grid>
+        </Border>
+        <Grid HorizontalAlignment="Stretch" Margin="0" Grid.Row="1" VerticalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="6*"/>
+            </Grid.RowDefinitions>
+            <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch"/>
+            <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Grid.Row="2"/>
+            <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Grid.Row="4"/>
+        </Grid>
+        <StackPanel HorizontalAlignment="Stretch" Height="28" Margin="0" VerticalAlignment="Top" Grid.ColumnSpan="3">
+            <Menu x:Name="menu" Height="22">
+                <MenuItem Header="游戏">
+                    <MenuItem Header="转为战斗模式" Name="menuPattern" Click="menuPattern_Click"/>
+                    <MenuItem Header="撤销上一次加人" Name="menuBackout" IsEnabled="False" Click="menuBackout_Click"/>
+                    <MenuItem Header="清除所有单位" Name="menuClear" Click="menuClear_Click"/>
+                    <Separator/>
+                    <MenuItem Header="退出" Name="menuExit" Click="menuExit_Click"/>
+                </MenuItem>
+                <MenuItem Header="帮助" Name="menuHelp" Click="menuHelp_Click"></MenuItem>
+            </Menu>
+        </StackPanel>
+        <ComboBox x:Name="comboBoxDisplay" HorizontalAlignment="Left" Margin="22,44,0,0" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="buttonSave" Content="Save" HorizontalAlignment="Left" Margin="162,44,0,0" VerticalAlignment="Top" Width="75" Height="21"/>
+        <Button x:Name="buttonLoad" Content="Load" HorizontalAlignment="Left" Margin="274,44,0,0" VerticalAlignment="Top" Width="75" Height="21"/>
+        <Label x:Name="label" Content="当前模式：" Grid.Column="1" HorizontalAlignment="Left" Margin="61,33,0,0" VerticalAlignment="Top" Width="117" Height="37" FontSize="16"/>
+        <Label x:Name="labelShow" Content="加人模式" Grid.Column="1" HorizontalAlignment="Left" Margin="158,33,0,0" VerticalAlignment="Top" Height="37" Width="132" FontWeight="SemiBold" FontSize="16" Foreground="Red"/>
+        <Label x:Name="label1" Content="当前阶段：" HorizontalAlignment="Left" Margin="104,47,0,0" Grid.Row="2" VerticalAlignment="Top" Width="73"/>
+        <Label x:Name="labelSection" Content="游戏还未开始" HorizontalAlignment="Left" Margin="197,47,0,0" Grid.Row="2" VerticalAlignment="Top" Width="116" FontWeight="SemiBold" Foreground="{Binding ElementName=labelSection, Path=Content, Converter={StaticResource converterContentToColor}}"/>
+        <Label x:Name="label2" Content="当前添加ID：" Grid.Column="1" HorizontalAlignment="Left" Margin="61,75,0,0" VerticalAlignment="Top" Width="117" Height="34" FontSize="16"/>
+        <Label x:Name="labelID" Content="1" Grid.Column="1" HorizontalAlignment="Left" Margin="183,75,0,0" VerticalAlignment="Top" Height="34" Width="132" FontSize="16" FontWeight="SemiBold"/>
+    </Grid>
+</Window>
