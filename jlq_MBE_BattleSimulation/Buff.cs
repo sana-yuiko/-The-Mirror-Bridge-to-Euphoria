@@ -17,24 +17,23 @@ namespace JLQ_MBE_BattleSimulation
     {
         /// <summary>buff剩余轮数</summary>
         public int RoundNum { get; protected set; }
+        /// <summary>buff执行的阶段</summary>
+        public readonly Section ExecuteSection;
 
         /// <summary>buff效果的委托</summary>
         /// <param name="buffee">buff承受者</param>
         /// <param name="buffer">buff发出者</param>
         public delegate void BuffAffect(Character buffee, Character buffer);
-
         /// <summary>取消buff的委托</summary>
         public delegate void BuffCancel();
 
         /// <summary>buff效果的委托对象</summary>
         public BuffAffect buffAffect;
-
         /// <summary>取消buff的委托对象</summary>
         public BuffCancel buffCancels;
 
         /// <summary>buff发出者</summary>
         public Character buffer;
-
         /// <summary>buff承受者</summary>
         public Character buffee;
 
@@ -42,12 +41,14 @@ namespace JLQ_MBE_BattleSimulation
         /// <param name="buffee">buff承受者</param>
         /// <param name="buffer">buff发出者</param>
         /// <param name="roundNum">buff持续回合数</param>
+        /// <param name="executeSection">buff执行的阶段</param>
         /// <param name="affect">buff效果委托</param>
-        public Buff(Character buffee, Character buffer, int roundNum, BuffAffect affect)
+        public Buff(Character buffee, Character buffer, int roundNum, Section executeSection, BuffAffect affect)
         {
             this.buffer = buffer;
             this.buffee = buffee;
             this.RoundNum = roundNum;
+            this.ExecuteSection = executeSection;
             this.buffAffect = affect;
         }
 
@@ -58,7 +59,7 @@ namespace JLQ_MBE_BattleSimulation
         }
 
         /// <summary>轮数减少</summary>
-        /// <returns></returns>
+        /// <returns>减少后剩余轮数是否为0</returns>
         public bool Round() => (--RoundNum) == 0;
 
         /// <summary>buff结束</summary>

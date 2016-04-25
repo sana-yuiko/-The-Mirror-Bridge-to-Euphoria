@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,8 +34,6 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>用于感知单击的按钮二维数组</summary>
         private Button[,] buttons = new Button[Column, Row];
 
-        /// <summary>随机数对象</summary>
-        private readonly Random random = new Random();
         /// <summary>game对象</summary>
         private readonly Game game;
 
@@ -87,8 +86,9 @@ namespace JLQ_MBE_BattleSimulation
                 comboBoxDisplay.Items.Add(cd.Display);
             }
             reader.Close();
+
             //初始化game对象
-            game = new Game(random);
+            game = new Game();
         }
 
         /// <summary>网格单击事件</summary>
@@ -101,32 +101,163 @@ namespace JLQ_MBE_BattleSimulation
             MouseButtonState rightButton)
         {
             //TODO Pad Mouse Down
+            //加人模式
             if (!game.IsBattle)
             {
-                if (!String.IsNullOrEmpty(comboBoxDisplay.Text))
+                //如果没选角色Display则操作非法
+                if (String.IsNullOrEmpty(comboBoxDisplay.Text))
                 {
-                    if (game.Characters.Count(c => c.Position == new Point(column, row)) != 0) return;
-                    var characterData = Calculate.CharacterDataList.First(cd => cd.Display == comboBoxDisplay.Text);
-                    Type[] constructorTypes =
+                    MessageBox.Show("请选择角色！", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                //如果这个位置已添加则操作非法
+                if (game.Characters.Any(c => c.Position == new Point(column, row)))
+                {
+                    MessageBox.Show("此位置已有角色！", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                //以下你肯定凌乱了不过就是调用对应的构造函数创建角色对象而已
+                var characterData = Calculate.CharacterDataList.First(cd => cd.Display == comboBoxDisplay.Text);
+                Type[] constructorTypes =
+                {
+                    typeof (int), typeof (Point), typeof (Group), typeof (Random), typeof (Game)
+                };
+                var group = (leftButton == MouseButtonState.Pressed)
+                    ? Group.Friend
+                    : ((middleButton == MouseButtonState.Pressed) ? Group.Middle : Group.Enemy);
+                object[] parameters = {ID, new Point(column, row), group, new Random(), game};
+                characterLastAdd =
+                    (Character)
+                        Type.GetType("JLQ_MBE_BattleSimulation." + characterData.Name).GetConstructors()[0].Invoke(
+                            parameters);
+                //各种加入列表
+                gridPad.Children.Add(characterLastAdd.LabelDisplay);
+                game.Characters.Add(characterLastAdd);
+                labelID.Content = (++ID).ToString();
+                menuBackout.IsEnabled = true;
+            }
+            //战斗模式
+            else
+            {
+                //如果不是行动阶段则操作非法
+                if (game.Section != Section.Round) return;
+                //如果单击的位置是合法移动点
+                if (game.CanReachPoint[column, row])
+                {
+                    //如果已经移动过则操作非法
+                    if (game.HasMoved)
                     {
-                        typeof (int), typeof (Point), typeof (Group), typeof (Random), typeof (Game)
-                    };
-                    var group = (leftButton == MouseButtonState.Pressed)
-                        ? Group.Friend
-                        : ((middleButton == MouseButtonState.Pressed) ? Group.Middle : Group.Enemy);
-                    object[] parameters = { ID, new Point(column, row), group, random, game };
-                    characterLastAdd =
-                        (Character)
-                            Type.GetType("JLQ_MBE_BattleSimulation." + characterData.Name).GetConstructors()[0].Invoke(
-                                parameters);
-                    gridPad.Children.Add(characterLastAdd.LabelDisplay);
-                    game.Characters.Add(characterLastAdd);
-                    labelID.Content = (++ID).ToString();
-                    menuBackout.IsEnabled = true;
+                        MessageBox.Show("已移动过", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+                    //移动
+                    game.currentCharacter.Move(new Point(column, row));
+                    game.currentCharacter.HasMoved = true;
+                    foreach (var b in buttons)
+                    {
+                        b.Opacity = 0;
+                    }
+                    labelMove.Content = "已移动";
+                    labelMove.Foreground = Brushes.Gray;
+                    game.UpdateLabelBorder();
+                    //如果同时已经攻击过则进入结束阶段
+                    if (!game.HasAttacked && game.EnemyCanAttack.Any()) return;
+                    Thread.Sleep(500);
+                    EndSection();
+                }
+                //如果单击的位置是合法攻击点
+                else if (game.EnemyCanAttack.Select(c => c.Position).Contains(new Point(column, row)))
+                {
+                    //获取目标
+                    var target = game.EnemyCanAttack.First(c => c.Position == new Point(column, row));
+                    //如果已经攻击过则操作非法
+                    if (game.HasAttacked)
+                    {
+                        MessageBox.Show("已攻击过", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+                    //攻击
+                    game.currentCharacter.DoAttack(target);
+                    game.currentCharacter.HasAttacked = false;
+                    foreach (var c in game.EnemyCanAttack)
+                    {
+                        c.LabelDisplay.Background = Brushes.White;
+                    }
+
+                    //死人提示
+                    if (target.IsDead)
+                    {
+                        gridPad.Children.Remove(target.LabelDisplay);
+                        MessageBox.Show(String.Format("{0}号{1}已死亡", ID, target.Data.Name), "死亡",
+                            MessageBoxButton.OK, MessageBoxImage.Hand);
+                        game.Characters.Remove(target);
+                    }
+
+                    labelAttack.Content = "已攻击";
+                    labelAttack.Foreground = Brushes.Gray;
+                    //如果同时已经移动过则进入结束阶段
+                    if (!game.HasMoved) return;
+                    Thread.Sleep(500);
+                    EndSection();
+                }
+                //单击位置非法，操作非法
+                else
+                {
+                    MessageBox.Show("位置非法", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
-        
+
+        /// <summary>更新label的文字提示</summary>
+        private void UpdateSection()
+        {
+            labelSection.Content = Calculate.Convert(game.Section);
+        }
+
+        //游戏流程
+        /// <summary>准备阶段</summary>
+        public void PreparingSection()
+        {
+            //重置提示
+            labelMove.Content = "还未移动";
+            labelMove.Foreground = Brushes.Red;
+            labelAttack.Content = "还未攻击";
+            labelAttack.Foreground = Brushes.Red;
+            //获取下个行动的角色
+            game.GetNextRoundCharacter();
+            for(var i = 0; i < Column; i++)
+            {
+                for (var j = 0; j < Row; j++)
+                {
+                    if (!game.CanReachPoint[i, j]) continue;
+                    if (new Point(i, j) != game.CurrentPosotion)
+                    {
+                        buttons[i, j].Opacity = 1;
+                    }
+                }
+            }
+
+            //跳转阶段
+            game.Section = Section.Preparing;
+            UpdateSection();
+            game.BuffSettle(JLQ_MBE_BattleSimulation.Section.Preparing);
+            Thread.Sleep(500);
+            game.Section = Section.Round;
+            UpdateSection();
+        }
+        /// <summary>结束阶段</summary>
+        public void EndSection()
+        {
+            game.currentCharacter.CurrentTime = game.currentCharacter.Interval;
+            game.Section = Section.End;
+            UpdateSection();
+            game.BuffSettle(Section.End);
+            Thread.Sleep(1000);
+
+            PreparingSection();
+        }
+
+
         /// <summary>帮助菜单</summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -166,13 +297,12 @@ namespace JLQ_MBE_BattleSimulation
                         BorderThickness = new Thickness(1),
                         Margin = new Thickness(0),
                         HorizontalAlignment = HorizontalAlignment.Stretch,
-                        VerticalAlignment = VerticalAlignment.Stretch
+                        VerticalAlignment = VerticalAlignment.Stretch,
                     };
                     borders[i, j].SetValue(Grid.ColumnProperty, i);
                     borders[i, j].SetValue(Grid.RowProperty, j);
                     borders[i, j].SetValue(Grid.ColumnSpanProperty, 1);
                     borders[i, j].SetValue(Grid.RowSpanProperty, 1);
-                    borders[i, j].SetValue(Panel.ZIndexProperty, 1);
                     borders[i, j].SetValue(Panel.ZIndexProperty, 0);
                     gridPad.Children.Add(borders[i, j]);
                     //生成网格内用来响应事件的按钮
@@ -181,6 +311,7 @@ namespace JLQ_MBE_BattleSimulation
                         Margin = new Thickness(1),
                         HorizontalAlignment = HorizontalAlignment.Stretch,
                         VerticalAlignment = VerticalAlignment.Stretch,
+                        Background = Brushes.LightYellow,
                         Opacity = 0
                     };
                     buttons[i, j].SetValue(Grid.ColumnProperty, i);
@@ -260,11 +391,14 @@ namespace JLQ_MBE_BattleSimulation
             menuBackout.IsEnabled = false;
             menuClear.IsEnabled = false;
             labelShow.Content = "战斗模式";
-            game.IsBattle = true;
-            game.GetNextRoundCharacter();
             label2.Visibility = Visibility.Hidden;
             labelID.Visibility = Visibility.Hidden;
+            comboBoxDisplay.Text = "";
+            comboBoxDisplay.IsEnabled = false;
             labelShow.Foreground = Brushes.Black;
+            game.TurnToBattle();
+            PreparingSection();
+
         }
 
         /// <summary>撤销上一次添加的角色</summary>

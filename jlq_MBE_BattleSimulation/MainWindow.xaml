@@ -83,8 +83,10 @@
         <Label x:Name="label" Content="当前模式：" Grid.Column="1" HorizontalAlignment="Left" Margin="61,33,0,0" VerticalAlignment="Top" Width="117" Height="37" FontSize="16"/>
         <Label x:Name="labelShow" Content="加人模式" Grid.Column="1" HorizontalAlignment="Left" Margin="158,33,0,0" VerticalAlignment="Top" Height="37" Width="132" FontWeight="SemiBold" FontSize="16" Foreground="Red"/>
         <Label x:Name="label1" Content="当前阶段：" HorizontalAlignment="Left" Margin="104,47,0,0" Grid.Row="2" VerticalAlignment="Top" Width="73"/>
-        <Label x:Name="labelSection" Content="游戏还未开始" HorizontalAlignment="Left" Margin="197,47,0,0" Grid.Row="2" VerticalAlignment="Top" Width="116" FontWeight="SemiBold" Foreground="{Binding ElementName=labelSection, Path=Content, Converter={StaticResource converterContentToColor}}"/>
+        <Label x:Name="labelSection" Content="游戏还未开始" HorizontalAlignment="Left" Margin="197,47,0,0" Grid.Row="2" VerticalAlignment="Top" Width="116" FontWeight="SemiBold" Foreground="{Binding ElementName=labelSection, Path=Content, Converter={StaticResource converterContentToColor}}" Height="25"/>
         <Label x:Name="label2" Content="当前添加ID：" Grid.Column="1" HorizontalAlignment="Left" Margin="61,75,0,0" VerticalAlignment="Top" Width="117" Height="34" FontSize="16"/>
         <Label x:Name="labelID" Content="1" Grid.Column="1" HorizontalAlignment="Left" Margin="183,75,0,0" VerticalAlignment="Top" Height="34" Width="132" FontSize="16" FontWeight="SemiBold"/>
+        <Label x:Name="labelMove" Content="还未移动" Grid.Column="1" HorizontalAlignment="Left" Margin="70,30,0,0" Grid.Row="2" VerticalAlignment="Top" Width="108" FontWeight="SemiBold" Foreground="Red"/>
+        <Label x:Name="labelAttack" Content="还未攻击" Grid.Column="1" HorizontalAlignment="Left" Margin="232,30,0,0" Grid.Row="2" VerticalAlignment="Top" Width="115" FontWeight="SemiBold" Foreground="Red"/>
     </Grid>
 </Window>

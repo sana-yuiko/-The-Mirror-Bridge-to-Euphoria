@@ -4,15 +4,23 @@
 winexe
 C#
 .cs
+<<<<<<< HEAD
+D:\A.学习【Learning】\A2.Mathematics\github\-The-Mirror-Bridge-to-Euphoria\JLQ_MBE_BattleSimulation\obj\Debug\
+=======
 D:\Program\C#程序\-The-Mirror-Bridge-to-Euphoria\JLQ_MBE_BattleSimulation\obj\Debug\
+>>>>>>> origin/Lead
 JLQ_MBE_BattleSimulation
 none
 false
 DEBUG;TRACE
+<<<<<<< HEAD
+D:\A.学习【Learning】\A2.Mathematics\github\-The-Mirror-Bridge-to-Euphoria\JLQ_MBE_BattleSimulation\App.xaml
+=======
 D:\Program\C#程序\-The-Mirror-Bridge-to-Euphoria\JLQ_MBE_BattleSimulation\App.xaml
+>>>>>>> origin/Lead
 11151548125
 
-46-465143930
+47918424109
 13738642453
 MainWindow.xaml;
 

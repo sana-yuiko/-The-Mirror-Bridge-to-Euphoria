@@ -8,6 +8,7 @@ using System.Windows;
 
 namespace JLQ_MBE_BattleSimulation
 {
+    /// <summary>移动无视敌方角色的碰撞箱的角色</summary>
     abstract class CharacterMovingIgnoreEnemy:Character
     {
         /// <summary>

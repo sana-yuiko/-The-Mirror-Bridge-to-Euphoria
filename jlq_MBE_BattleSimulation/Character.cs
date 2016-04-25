@@ -7,19 +7,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace JLQ_MBE_BattleSimulation
 {
-    /// <summary>阵营</summary>
-    enum Group { Middle,Friend,Enemy=-1 }
     /// <summary>角色类</summary>
     abstract class Character
     {
         //以下为字段
         //只读字段
         /// <summary>ID</summary>
-        private readonly int _id;
+        public readonly int ID;
         /// <summary>角色数据</summary>
         public readonly CharacterData Data;
         /// <summary>最大灵力</summary>
@@ -58,18 +57,17 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>灵力</summary>
         public int Mp { get; protected set; }
         /// <summary>当前剩余冷却时间</summary>
-        public int CurrentTime { get; protected set; }
+        public int CurrentTime { get; set; }
         /// <summary>位置，X为Grid.Column，Y为Grid.Row</summary>
         public Point Position { get; protected set; }
         /// <summary>是否已移动</summary>
-        public bool IsMoved { get; private set; }
+        public bool HasMoved { get; set; }
         /// <summary>是否已攻击</summary>
-        public bool IsAttacked { get; private set; }
+        public bool HasAttacked { get; set; }
         /// <summary>显示Display的Label</summary>
         public Label LabelDisplay { get; set; }
         /// <summary>buff列表</summary>
         public List<Buff> BuffList { get; protected set; } 
-        /// <summary>用于显示Display的Label</summary>
 
         //只读属性
         /// <summary>攻击</summary>
@@ -95,7 +93,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>伤害浮动</summary>
         private float DamageFloat => 0.1f;
         /// <summary>是否死亡</summary>
-        private bool IsDead => Hp <= 0;
+        public bool IsDead => Hp <= 0;
 
         /// <summary>Character类的构造函数</summary>
         /// <param name="id">角色ID</param>
@@ -105,11 +103,11 @@ namespace JLQ_MBE_BattleSimulation
         /// <param name="game">游戏对象</param>
         public Character(int id, Point position, Group group, Random random, Game game)
         {
-            this._id = id;
+            this.ID = id;
             this.Position = position;
             this.Group = group;
-            IsMoved = false;
-            IsAttacked = false;
+            HasMoved = false;
+            HasAttacked = false;
             this.Data =
                 Calculate.CharacterDataList.Where(cd => cd.Name == this.GetType().ToString().Substring(25)).ElementAt(0);
             this.Hp = this.Data.MaxHp;
@@ -119,7 +117,7 @@ namespace JLQ_MBE_BattleSimulation
 
             this.LabelDisplay = new Label
             {
-                Margin = new Thickness(0),
+                Margin = new Thickness(2),
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 HorizontalContentAlignment = HorizontalAlignment.Center,
@@ -140,6 +138,7 @@ namespace JLQ_MBE_BattleSimulation
             }
             SetLabel();
 
+            BuffList = new List<Buff>();
             this.random = random;
             this.game = game;
         }
@@ -186,21 +185,6 @@ namespace JLQ_MBE_BattleSimulation
             return isCriticalHit;
         }
 
-        public void SetTime()
-        {
-            //TODO SetTime
-            //if (CurrentTime == 0)
-            //{
-            //    CurrentTime = this.Interval - 1;
-            //}
-            //else
-            //{
-            //    CurrentTime--;
-            //}
-            IsMoved = false;
-            IsAttacked = false;
-        }
-
         /// <summary>将各数据转化为字符串显示</summary>
         /// <returns>各数据字符串化的结果</returns>
         public override string ToString()
@@ -225,7 +209,8 @@ namespace JLQ_MBE_BattleSimulation
         public void Reset()
         {
             CurrentTime = Interval;
-            Hp = Data.MaxHp;
+            HasMoved = false;
+            HasAttacked = false;
         }
 
         /// <summary>移动至指定坐标</summary>
@@ -278,16 +263,10 @@ namespace JLQ_MBE_BattleSimulation
             {
                 return 0;
             }
-            else if (coordinate > max)
-            {
-                return max;
-            }
-            else
-            {
-                return coordinate;
-            }
+            return coordinate > max ? max : coordinate;
         }
 
+        /// <summary>更新显示display的位置</summary>
         private void SetLabel()
         {
             LabelDisplay.SetValue(Grid.ColumnProperty, (int) Position.X);
