@@ -16,3 +16,5 @@ D:\A.学习【Learning】\A2.Mathematics\github\-The-Mirror-Bridge-to-Euphoria\j
 D:\A.学习【Learning】\A2.Mathematics\github\-The-Mirror-Bridge-to-Euphoria\jlq_MBE_BattleSimulation\obj\Debug\jlq_MBE_BattleSimulation.Form1.resources
 D:\A.学习【Learning】\A2.Mathematics\github\-The-Mirror-Bridge-to-Euphoria\jlq_MBE_BattleSimulation\obj\Debug\jlq_MBE_BattleSimulation.Properties.Resources.resources
 D:\A.学习【Learning】\A2.Mathematics\github\-The-Mirror-Bridge-to-Euphoria\jlq_MBE_BattleSimulation\obj\Debug\jlq_MBE_BattleSimulation.csproj.GenerateResource.Cache
+D:\A.学习【Learning】\A2.Mathematics\github\-The-Mirror-Bridge-to-Euphoria\jlq_MBE_BattleSimulation\bin\Debug\jlq_MBE_BattleSimulation.exe.CodeAnalysisLog.xml
+D:\A.学习【Learning】\A2.Mathematics\github\-The-Mirror-Bridge-to-Euphoria\jlq_MBE_BattleSimulation\bin\Debug\jlq_MBE_BattleSimulation.exe.lastcodeanalysissucceeded
