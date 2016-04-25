@@ -5,11 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Media.TextFormatting;
+using System.Windows.Media;
 
 namespace JLQ_MBE_BattleSimulation
 {
-    enum Section { Preparing,Round,End}
     /// <summary>游戏类</summary>
     class Game
     {
@@ -17,28 +18,29 @@ namespace JLQ_MBE_BattleSimulation
         private Random random;
 
         /// <summary>当前行动者</summary>
-        private Character currentCharacter = null;
+        public Character currentCharacter = null;
 
         /// <summary>是否为战斗模式</summary>
-        public bool IsBattle = false;
+        public bool IsBattle { get; private set; }
 
         /// <summary>当前回合所在的阶段</summary>
         public Section? Section { get; set; }
         /// <summary>当前行动者是否已移动</summary>
-        public bool IsMoved => currentCharacter.IsMoved;
+        public bool HasMoved => currentCharacter.HasMoved;
         /// <summary>当前行动者是否已攻击</summary>
-        public bool IsAttacked => currentCharacter.IsAttacked;
+        public bool HasAttacked => currentCharacter.HasAttacked;
 
 
         /// <summary>游戏中所有角色列表</summary>
         public List<Character> Characters { get; } 
 
         /// <summary>Game类的构造函数</summary>
-        public Game(Random random)
+        public Game()
         {
             Characters = new List<Character>();
             this.Section = null;
-            this.random = random;
+            this.random = new Random();
+            this.IsBattle = false;
         }
 
         //当前行动者属性
@@ -60,7 +62,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>攻击范围内的可攻击角色</summary>
         public IEnumerable<Character> EnemyCanAttack
             =>
-                Characters.Where(
+                EnemyAsCurrent.Where(
                     c =>
                         c.Group != currentCharacter.Group &&
                         Calculate.Distance(currentCharacter.Position, c.Position) <= currentCharacter.AttackRange);
@@ -79,6 +81,11 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>更新下个行动的角色,取currentTime最小的角色中Interval最大的角色中的随机一个</summary>
         public void GetNextRoundCharacter()
         {
+            foreach(var c in Characters)
+            {
+                c.LabelDisplay.BorderThickness = new Thickness(0);
+            }
+            currentCharacter?.Reset();
             var stack = new Stack<Character>();
             stack.Push(Characters.ElementAt(0));
             foreach (var character in Characters)
@@ -104,8 +111,32 @@ namespace JLQ_MBE_BattleSimulation
             }
             var i = random.Next(stack.Count);
             currentCharacter = stack.ElementAt(i);
+            UpdateLabelBorder();
+
+            var ct = currentCharacter.CurrentTime;
+            foreach (var character in Characters)
+            {
+                character.CurrentTime -= ct;
+            }
+
+
+            Generate_CanReachPoint();
         }
 
+        /// <summary>更新角色显示的边框颜色</summary>
+        public void UpdateLabelBorder()
+        {
+            foreach (var c in Characters)
+            {
+                c.LabelDisplay.Background = Brushes.White;
+            }
+            currentCharacter.LabelDisplay.Background = Brushes.LightPink;
+            foreach (var c in EnemyCanAttack)
+            {
+                c.LabelDisplay.Background = Brushes.LightBlue;
+            }
+
+        }
 
         /// <summary>每个格子能否被到达</summary>
         public bool[,] CanReachPoint = new bool[MainWindow.Column, MainWindow.Row];
@@ -168,6 +199,32 @@ namespace JLQ_MBE_BattleSimulation
             {
                 AssignPointCanReach(new Point(origin.X - 1, origin.Y), step - 1);
             }
+        }
+
+        /// <summary>结算buff</summary>
+        /// <param name="section">当前结算的阶段</param>
+        public void BuffSettle(Section section)
+        {
+            var buffLists = Characters.Select(c => c.BuffList);
+            IEnumerable<Buff> buffs = new List<Buff>();
+            buffs = buffLists.Select(
+                buffList => buffList.Where(b => b.buffer == currentCharacter && b.ExecuteSection == section))
+                    .Aggregate(buffs, (current, buffsToOne) => current.Concat(buffsToOne));
+            foreach (var buff in buffs)
+            {
+                buff.buffAffect(buff.buffee, buff.buffer);
+                if (buff.Round())
+                {
+                    buff.buffCancels();
+                }
+                Thread.Sleep(200);
+            }
+        }
+
+        /// <summary>改为战斗模式</summary>
+        public void TurnToBattle()
+        {
+            IsBattle = true;
         }
 
         //TODO SC

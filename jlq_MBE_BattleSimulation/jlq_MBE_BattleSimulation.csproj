@@ -61,6 +61,7 @@
     <Compile Include="Cirno.cs" />
     <Compile Include="Daiyousei.cs" />
     <Compile Include="Eirin.cs" />
+    <Compile Include="Enums.cs" />
     <Compile Include="Flandre.cs" />
     <Compile Include="Gedama.cs" />
     <Compile Include="Kaguya.cs" />
@@ -102,7 +103,7 @@
     <Compile Include="Calculate.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="CharacterData.cs" />
-    <Compile Include="CharacterMovingIgnoreEnemy.cs" />
+    <Compile Include="CharacterChildren.cs" />
     <Compile Include="Converter.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="MainWindow.xaml.cs">

@@ -4,6 +4,12 @@
         <name>JLQ_MBE_BattleSimulation</name>
     </assembly>
     <members>
+        <member name="T:JLQ_MBE_BattleSimulation.Group">
+            <summary>阵营</summary>
+        </member>
+        <member name="T:JLQ_MBE_BattleSimulation.Section">
+            <summary>游戏阶段</summary>
+        </member>
         <member name="T:JLQ_MBE_BattleSimulation.App">
             <summary>
             App.xaml 的交互逻辑
@@ -34,6 +40,9 @@
         <member name="P:JLQ_MBE_BattleSimulation.Buff.RoundNum">
             <summary>buff剩余轮数</summary>
         </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Buff.ExecuteSection">
+            <summary>buff执行的阶段</summary>
+        </member>
         <member name="T:JLQ_MBE_BattleSimulation.Buff.BuffAffect">
             <summary>buff效果的委托</summary>
             <param name="buffee">buff承受者</param>
@@ -54,11 +63,12 @@
         <member name="F:JLQ_MBE_BattleSimulation.Buff.buffee">
             <summary>buff承受者</summary>
         </member>
-        <member name="M:JLQ_MBE_BattleSimulation.Buff.#ctor(JLQ_MBE_BattleSimulation.Character,JLQ_MBE_BattleSimulation.Character,System.Int32,JLQ_MBE_BattleSimulation.Buff.BuffAffect)">
+        <member name="M:JLQ_MBE_BattleSimulation.Buff.#ctor(JLQ_MBE_BattleSimulation.Character,JLQ_MBE_BattleSimulation.Character,System.Int32,JLQ_MBE_BattleSimulation.Section,JLQ_MBE_BattleSimulation.Buff.BuffAffect)">
             <summary>Buff类的构造函数</summary>
             <param name="buffee">buff承受者</param>
             <param name="buffer">buff发出者</param>
             <param name="roundNum">buff持续回合数</param>
+            <param name="executeSection">buff执行的阶段</param>
             <param name="affect">buff效果委托</param>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Buff.BuffTrigger">
@@ -66,7 +76,7 @@
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Buff.Round">
             <summary>轮数减少</summary>
-            <returns></returns>
+            <returns>减少后剩余轮数是否为0</returns>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Buff.BuffEnd">
             <summary>buff结束</summary>
@@ -100,13 +110,15 @@
             <param name="point2">点2</param>
             <returns>距离值</returns>
         </member>
-        <member name="T:JLQ_MBE_BattleSimulation.Group">
-            <summary>阵营</summary>
+        <member name="M:JLQ_MBE_BattleSimulation.Calculate.Convert(System.Nullable{JLQ_MBE_BattleSimulation.Section})">
+            <summary>将Section转化为label的文字提示</summary>
+            <param name="value">当前游戏阶段</param>
+            <returns>label的文字提示</returns>
         </member>
         <member name="T:JLQ_MBE_BattleSimulation.Character">
             <summary>角色类</summary>
         </member>
-        <member name="F:JLQ_MBE_BattleSimulation.Character._id">
+        <member name="F:JLQ_MBE_BattleSimulation.Character.ID">
             <summary>ID</summary>
         </member>
         <member name="F:JLQ_MBE_BattleSimulation.Character.Data">
@@ -160,10 +172,10 @@
         <member name="P:JLQ_MBE_BattleSimulation.Character.Position">
             <summary>位置，X为Grid.Column，Y为Grid.Row</summary>
         </member>
-        <member name="P:JLQ_MBE_BattleSimulation.Character.IsMoved">
+        <member name="P:JLQ_MBE_BattleSimulation.Character.HasMoved">
             <summary>是否已移动</summary>
         </member>
-        <member name="P:JLQ_MBE_BattleSimulation.Character.IsAttacked">
+        <member name="P:JLQ_MBE_BattleSimulation.Character.HasAttacked">
             <summary>是否已攻击</summary>
         </member>
         <member name="P:JLQ_MBE_BattleSimulation.Character.LabelDisplay">
@@ -266,6 +278,9 @@
             <param name="max">最大值</param>
             <returns></returns>
         </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.SetLabel">
+            <summary>更新显示display的位置</summary>
+        </member>
         <member name="F:JLQ_MBE_BattleSimulation.CharacterData.Name">
             <summary>角色名字</summary>
         </member>
@@ -305,6 +320,9 @@
         <member name="F:JLQ_MBE_BattleSimulation.CharacterData.ScDisc">
             <summary>符卡描述</summary>
         </member>
+        <member name="T:JLQ_MBE_BattleSimulation.CharacterMovingIgnoreEnemy">
+            <summary>移动无视敌方角色的碰撞箱的角色</summary>
+        </member>
         <member name="M:JLQ_MBE_BattleSimulation.CharacterMovingIgnoreEnemy.#ctor(System.Int32,System.Windows.Point,JLQ_MBE_BattleSimulation.Group,System.Random,JLQ_MBE_BattleSimulation.Game)">
             <summary>
             CharacterMovingIgnoreEnemy类的构造函数
@@ -324,22 +342,22 @@
         <member name="F:JLQ_MBE_BattleSimulation.Game.currentCharacter">
             <summary>当前行动者</summary>
         </member>
-        <member name="F:JLQ_MBE_BattleSimulation.Game.IsBattle">
+        <member name="P:JLQ_MBE_BattleSimulation.Game.IsBattle">
             <summary>是否为战斗模式</summary>
         </member>
         <member name="P:JLQ_MBE_BattleSimulation.Game.Section">
             <summary>当前回合所在的阶段</summary>
         </member>
-        <member name="P:JLQ_MBE_BattleSimulation.Game.IsMoved">
+        <member name="P:JLQ_MBE_BattleSimulation.Game.HasMoved">
             <summary>当前行动者是否已移动</summary>
         </member>
-        <member name="P:JLQ_MBE_BattleSimulation.Game.IsAttacked">
+        <member name="P:JLQ_MBE_BattleSimulation.Game.HasAttacked">
             <summary>当前行动者是否已攻击</summary>
         </member>
         <member name="P:JLQ_MBE_BattleSimulation.Game.Characters">
             <summary>游戏中所有角色列表</summary>
         </member>
-        <member name="M:JLQ_MBE_BattleSimulation.Game.#ctor(System.Random)">
+        <member name="M:JLQ_MBE_BattleSimulation.Game.#ctor">
             <summary>Game类的构造函数</summary>
         </member>
         <member name="P:JLQ_MBE_BattleSimulation.Game.CurrentPosotion">
@@ -369,6 +387,9 @@
         <member name="M:JLQ_MBE_BattleSimulation.Game.GetNextRoundCharacter">
             <summary>更新下个行动的角色,取currentTime最小的角色中Interval最大的角色中的随机一个</summary>
         </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Game.UpdateLabelBorder">
+            <summary>更新角色显示的边框颜色</summary>
+        </member>
         <member name="F:JLQ_MBE_BattleSimulation.Game.CanReachPoint">
             <summary>每个格子能否被到达</summary>
         </member>
@@ -390,6 +411,13 @@
             <param name="origin">起点</param>
             <param name="step">步数</param>
         </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Game.BuffSettle(JLQ_MBE_BattleSimulation.Section)">
+            <summary>结算buff</summary>
+            <param name="section">当前结算的阶段</param>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Game.TurnToBattle">
+            <summary>改为战斗模式</summary>
+        </member>
         <member name="T:JLQ_MBE_BattleSimulation.MainWindow">
             <summary>
             MainWindow.xaml 的交互逻辑
@@ -410,9 +438,6 @@
         <member name="F:JLQ_MBE_BattleSimulation.MainWindow.buttons">
             <summary>用于感知单击的按钮二维数组</summary>
         </member>
-        <member name="F:JLQ_MBE_BattleSimulation.MainWindow.random">
-            <summary>随机数对象</summary>
-        </member>
         <member name="F:JLQ_MBE_BattleSimulation.MainWindow.game">
             <summary>game对象</summary>
         </member>
@@ -432,6 +457,15 @@
             <param name="leftButton">鼠标左键状态</param>
             <param name="middleButton">鼠标中键状态</param>
             <param name="rightButton">鼠标右键状态</param>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.MainWindow.UpdateSection">
+            <summary>更新label的文字提示</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.MainWindow.PreparingSection">
+            <summary>准备阶段</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.MainWindow.EndSection">
+            <summary>结束阶段</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.menuHelp_Click(System.Object,System.Windows.RoutedEventArgs)">
             <summary>帮助菜单</summary>
