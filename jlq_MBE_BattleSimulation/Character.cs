@@ -64,10 +64,16 @@ namespace JLQ_MBE_BattleSimulation
         public bool HasMoved { get; set; }
         /// <summary>是否已攻击</summary>
         public bool HasAttacked { get; set; }
+        /// <summary>buff列表</summary>
+        public List<Buff> BuffList { get; protected set; }
+
+        //显示
         /// <summary>显示Display的Label</summary>
         public Label LabelDisplay { get; set; }
-        /// <summary>buff列表</summary>
-        public List<Buff> BuffList { get; protected set; } 
+        public ProgressBar BarHp { get; set; }
+        public ProgressBar BarMp { get; set; }
+        public ProgressBar BarTime { get; set; }
+
 
         //只读属性
         /// <summary>攻击</summary>
@@ -114,15 +120,17 @@ namespace JLQ_MBE_BattleSimulation
             this._maxMp = 1000;
             this.Mp = _maxMp;
             this.CurrentTime = this.Data.Interval;
-
+            //初始化显示
             this.LabelDisplay = new Label
             {
-                Margin = new Thickness(2),
+                Margin = new Thickness(2, 2, 2, 11),
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 HorizontalContentAlignment = HorizontalAlignment.Center,
-                VerticalContentAlignment = VerticalAlignment.Center,
+                VerticalContentAlignment = VerticalAlignment.Top,
                 Content = this.Data.Display,
+                Padding = new Thickness(0),
+                FontSize = 23
             };
             switch (this.Group)
             {
@@ -136,7 +144,38 @@ namespace JLQ_MBE_BattleSimulation
                     LabelDisplay.Foreground = Brushes.Green;
                     break;
             }
-            SetLabel();
+
+            this.BarHp = new ProgressBar
+            {
+                Margin = new Thickness(2, 0, 2, 8),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Height = 2,
+                Foreground = Brushes.Red,
+                Maximum = this.Data.MaxHp,
+                Value = this.Hp
+            };
+            this.BarTime = new ProgressBar
+            {
+                Margin = new Thickness(2, 0, 2, 5),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Height = 2,
+                Foreground = Brushes.Green,
+                Maximum = this.Interval,
+                Value = this.CurrentTime
+            };
+            this.BarMp = new ProgressBar
+            {
+                Margin = new Thickness(2, 0, 2, 2),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Height = 2,
+                Foreground = Brushes.Blue,
+                Maximum = this._maxMp,
+                Value = this.Mp
+            };
+            Set();
 
             BuffList = new List<Buff>();
             this.random = random;
@@ -156,32 +195,30 @@ namespace JLQ_MBE_BattleSimulation
         /// <returns>是否暴击</returns>
         public bool DoAttack(Character target)
         {
-            bool isCriticalHit = false;
-            int distance = Calculate.Distance(this.Position, target.Position);
+            var isCriticalHit = false;
+            var distance = Calculate.Distance(this.Position, target.Position);
             //判断是否命中
-            if (random.NextDouble() <= Calculate.HitRate(this, target))
+            if (random.NextDouble() > Calculate.HitRate(this, target)) return isCriticalHit;
+            float closeGain;
+            //判断是否近战
+            if (distance == 1)
             {
-                float CloseGain;
-                //判断是否近战
-                if (distance == 1)
-                {
-                    CloseGain = this.CloseAmendment;
-                }
-                else
-                {
-                    CloseGain = 1.0f;
-                }
-                double damage;
-                //判断是否暴击
-                isCriticalHit = random.NextDouble() <= this.CriticalHitRate;
-                damage =/*基础伤害*/Calculate.Damage(this.Attack, target.Defence)*
-                        /*近战补正*/CloseGain*/*伤害浮动*/((2*random.NextDouble() - 1)*this.DamageFloat + 1);
-                if (isCriticalHit)
-                {
-                    damage *= this.CriticalHitGain;
-                }
-                target.BeAttacked((int) damage, this);
+                closeGain = this.CloseAmendment;
             }
+            else
+            {
+                closeGain = 1.0f;
+            }
+            double damage;
+            //判断是否暴击
+            isCriticalHit = random.NextDouble() <= this.CriticalHitRate;
+            damage =/*基础伤害*/Calculate.Damage(this.Attack, target.Defence)*
+                            /*近战补正*/closeGain*/*伤害浮动*/((2*random.NextDouble() - 1)*this.DamageFloat + 1);
+            if (isCriticalHit)
+            {
+                damage *= this.CriticalHitGain;
+            }
+            target.BeAttacked((int) damage, this);
             return isCriticalHit;
         }
 
@@ -218,7 +255,7 @@ namespace JLQ_MBE_BattleSimulation
         public void Move(Point end)
         {
             this.Position = end;
-            SetLabel();
+            Set();
         }
 
         /// <summary>在各方向移动指定的值，若超限则取边界</summary>
@@ -228,7 +265,7 @@ namespace JLQ_MBE_BattleSimulation
         {
             this.Position = new Point(GetValidPosition((int)this.Position.X + relativeX, MainWindow.Column),
                 GetValidPosition((int)this.Position.Y + relativeY, MainWindow.Row));
-            SetLabel();
+            Set();
 
         }
 
@@ -250,6 +287,7 @@ namespace JLQ_MBE_BattleSimulation
         private void Damage(int damage)
         {
             Hp -= damage;
+            UpdateBarHp();
             //TODO whether dead
         }
 
@@ -257,7 +295,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <param name="coordinate">待转化值</param>
         /// <param name="max">最大值</param>
         /// <returns></returns>
-        private int GetValidPosition(int coordinate,int max)
+        private static int GetValidPosition(int coordinate,int max)
         {
             if (coordinate < 0)
             {
@@ -266,11 +304,35 @@ namespace JLQ_MBE_BattleSimulation
             return coordinate > max ? max : coordinate;
         }
 
+        //显示更新
         /// <summary>更新显示display的位置</summary>
-        private void SetLabel()
+        private void Set()
         {
             LabelDisplay.SetValue(Grid.ColumnProperty, (int) Position.X);
             LabelDisplay.SetValue(Grid.RowProperty, (int) Position.Y);
+            BarHp.SetValue(Grid.ColumnProperty, (int)Position.X);
+            BarHp.SetValue(Grid.RowProperty, (int)Position.Y);
+            BarTime.SetValue(Grid.ColumnProperty, (int)Position.X);
+            BarTime.SetValue(Grid.RowProperty, (int)Position.Y);
+            BarMp.SetValue(Grid.ColumnProperty, (int)Position.X);
+            BarMp.SetValue(Grid.RowProperty, (int)Position.Y);
+
         }
+        /// <summary>更新血条</summary>
+        private void UpdateBarHp()
+        {
+            BarHp.Value = this.Hp;
+        }
+        /// <summary>更新时间条</summary>
+        public void UpdateBarTime()
+        {
+            BarTime.Value = this.CurrentTime;
+        }
+        /// <summary>更新灵力条</summary>
+        private void UpdateBarMp()
+        {
+            BarMp.Value = this.Mp;
+        }
+
     }
 }

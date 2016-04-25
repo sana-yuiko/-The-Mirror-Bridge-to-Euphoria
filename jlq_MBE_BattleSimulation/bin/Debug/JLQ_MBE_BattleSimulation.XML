@@ -178,11 +178,11 @@
         <member name="P:JLQ_MBE_BattleSimulation.Character.HasAttacked">
             <summary>是否已攻击</summary>
         </member>
-        <member name="P:JLQ_MBE_BattleSimulation.Character.LabelDisplay">
-            <summary>显示Display的Label</summary>
-        </member>
         <member name="P:JLQ_MBE_BattleSimulation.Character.BuffList">
             <summary>buff列表</summary>
+        </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Character.LabelDisplay">
+            <summary>显示Display的Label</summary>
         </member>
         <member name="P:JLQ_MBE_BattleSimulation.Character.Attack">
             <summary>攻击</summary>
@@ -278,8 +278,17 @@
             <param name="max">最大值</param>
             <returns></returns>
         </member>
-        <member name="M:JLQ_MBE_BattleSimulation.Character.SetLabel">
+        <member name="M:JLQ_MBE_BattleSimulation.Character.Set">
             <summary>更新显示display的位置</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.UpdateBarHp">
+            <summary>更新血条</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.UpdateBarTime">
+            <summary>更新时间条</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.UpdateBarMp">
+            <summary>更新灵力条</summary>
         </member>
         <member name="F:JLQ_MBE_BattleSimulation.CharacterData.Name">
             <summary>角色名字</summary>
@@ -381,13 +390,18 @@
         <member name="P:JLQ_MBE_BattleSimulation.Game.EnemyCanAttack">
             <summary>攻击范围内的可攻击角色</summary>
         </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Game.EnemyBlock">
+            <summary>对当前行动者的阻挡列表</summary>
+        </member>
         <member name="P:JLQ_MBE_BattleSimulation.Game.EnemyAsCurrent">
-            <summary>对当前行动者的敌人列表</summary>
+            <summary>
+            对当前行动者的移动列表
+            </summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Game.GetNextRoundCharacter">
             <summary>更新下个行动的角色,取currentTime最小的角色中Interval最大的角色中的随机一个</summary>
         </member>
-        <member name="M:JLQ_MBE_BattleSimulation.Game.UpdateLabelBorder">
+        <member name="M:JLQ_MBE_BattleSimulation.Game.UpdateLabelBackground">
             <summary>更新角色显示的边框颜色</summary>
         </member>
         <member name="F:JLQ_MBE_BattleSimulation.Game.CanReachPoint">
@@ -447,6 +461,9 @@
         <member name="F:JLQ_MBE_BattleSimulation.MainWindow.characterLastAdd">
             <summary>加人模式上一个添加的角色</summary>
         </member>
+        <member name="F:JLQ_MBE_BattleSimulation.MainWindow.mousePoint">
+            <summary>鼠标的网格位置</summary>
+        </member>
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.#ctor">
             <summary>构造函数</summary>
         </member>
@@ -466,6 +483,16 @@
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.EndSection">
             <summary>结束阶段</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.MainWindow.Paint">
+            <summary>生成正确的网格颜色</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.MainWindow.SetBackground(System.Windows.Point,System.Int32)">
+            <summary>
+            将与起始点距离小于等于范围的点设为淡黄色
+            </summary>
+            <param name="origin">起始点</param>
+            <param name="range">范围</param>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.menuHelp_Click(System.Object,System.Windows.RoutedEventArgs)">
             <summary>帮助菜单</summary>

@@ -41,6 +41,8 @@ namespace JLQ_MBE_BattleSimulation
         private int ID = 1;
         /// <summary>加人模式上一个添加的角色</summary>
         private Character characterLastAdd = null;
+        /// <summary>鼠标的网格位置</summary>
+        private Point mousePoint = new Point(-1, -1);
 
         /// <summary>构造函数</summary>
         public MainWindow()
@@ -132,6 +134,9 @@ namespace JLQ_MBE_BattleSimulation
                             parameters);
                 //各种加入列表
                 gridPad.Children.Add(characterLastAdd.LabelDisplay);
+                gridPad.Children.Add(characterLastAdd.BarHp);
+                gridPad.Children.Add(characterLastAdd.BarTime);
+                gridPad.Children.Add(characterLastAdd.BarMp);
                 game.Characters.Add(characterLastAdd);
                 labelID.Content = (++ID).ToString();
                 menuBackout.IsEnabled = true;
@@ -159,7 +164,7 @@ namespace JLQ_MBE_BattleSimulation
                     }
                     labelMove.Content = "已移动";
                     labelMove.Foreground = Brushes.Gray;
-                    game.UpdateLabelBorder();
+                    game.UpdateLabelBackground();
                     //如果同时已经攻击过则进入结束阶段
                     if (!game.HasAttacked && game.EnemyCanAttack.Any()) return;
                     Thread.Sleep(500);
@@ -178,7 +183,7 @@ namespace JLQ_MBE_BattleSimulation
                     }
                     //攻击
                     game.currentCharacter.DoAttack(target);
-                    game.currentCharacter.HasAttacked = false;
+                    game.currentCharacter.HasAttacked = true;
                     foreach (var c in game.EnemyCanAttack)
                     {
                         c.LabelDisplay.Background = Brushes.White;
@@ -216,7 +221,7 @@ namespace JLQ_MBE_BattleSimulation
 
         //游戏流程
         /// <summary>准备阶段</summary>
-        public void PreparingSection()
+        private void PreparingSection()
         {
             //重置提示
             labelMove.Content = "还未移动";
@@ -225,17 +230,7 @@ namespace JLQ_MBE_BattleSimulation
             labelAttack.Foreground = Brushes.Red;
             //获取下个行动的角色
             game.GetNextRoundCharacter();
-            for(var i = 0; i < Column; i++)
-            {
-                for (var j = 0; j < Row; j++)
-                {
-                    if (!game.CanReachPoint[i, j]) continue;
-                    if (new Point(i, j) != game.CurrentPosotion)
-                    {
-                        buttons[i, j].Opacity = 1;
-                    }
-                }
-            }
+            Paint();
 
             //跳转阶段
             game.Section = Section.Preparing;
@@ -246,7 +241,7 @@ namespace JLQ_MBE_BattleSimulation
             UpdateSection();
         }
         /// <summary>结束阶段</summary>
-        public void EndSection()
+        private void EndSection()
         {
             game.currentCharacter.CurrentTime = game.currentCharacter.Interval;
             game.Section = Section.End;
@@ -255,6 +250,44 @@ namespace JLQ_MBE_BattleSimulation
             Thread.Sleep(1000);
 
             PreparingSection();
+        }
+
+        /// <summary>生成正确的网格颜色</summary>
+        private void Paint()
+        {
+            for (var i = 0; i < Column; i++)
+            {
+                for (var j = 0; j < Row; j++)
+                {
+                    if (!game.CanReachPoint[i, j]) continue;
+                    if (new Point(i, j) != game.CurrentPosotion)
+                    {
+                        buttons[i, j].Opacity = 1;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 将与起始点距离小于等于范围的点设为淡黄色
+        /// </summary>
+        /// <param name="origin">起始点</param>
+        /// <param name="range">范围</param>
+        private void SetBackground(Point origin, int range)
+        {
+            for (var i = 0; i < Column; i++)
+            {
+                for (var j = 0; j < Row; j++)
+                {
+                    var point1 = new Point(i, j);
+                    if (point1 != origin && Calculate.Distance(point1, origin) <= range &&
+                        point1 != game.currentCharacter.Position)
+                    {
+                        buttons[i, j].Opacity = 1;
+                    }
+                }
+            }
+
         }
 
 
@@ -325,8 +358,8 @@ namespace JLQ_MBE_BattleSimulation
             //生成按钮事件
             foreach (var button in buttons)
             {
-                int column = (int) button.GetValue(Grid.ColumnProperty);
-                int row = (int) button.GetValue(Grid.RowProperty);
+                var column = (int) button.GetValue(Grid.ColumnProperty);
+                var row = (int) button.GetValue(Grid.RowProperty);
                 button.MouseDown += (s, ev) =>
                 {
                     if (ev.LeftButton == MouseButtonState.Released)
@@ -342,12 +375,84 @@ namespace JLQ_MBE_BattleSimulation
                 {
                     if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
                     {
-                        button.ToolTip = game.TipShow(new Point(column, row));
+                        button.ToolTip = game.StringShow(new Point(column, row));
                     }
                     else
                     {
-                        button.ToolTip = game.StringShow(new Point(column, row));
+                        button.ToolTip = game.TipShow(new Point(column, row));
                     }
+                };
+                button.MouseEnter += (s, ev) =>
+                {
+                    mousePoint = new Point(column, row);
+                };
+                button.MouseLeave += (s, ev) =>
+                {
+                    mousePoint = new Point(-1, -1);
+                };
+                button.KeyDown += (s, ev) =>
+                {
+                    //如果shift和ctrl都没被按下或不在行动阶段或不在棋盘内或该点无角色或该点角色为当前角色则无效
+                    if ((!(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift) ||
+                           Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))) ||
+                        game.Section != Section.Round || mousePoint == new Point(-1, -1) ||
+                        game.Characters.All(c => c.Position != mousePoint) ||
+                        mousePoint == game.currentCharacter.Position) return;
+                    //如果shift被按下
+                    if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                    {
+                        var character = game.Characters.FirstOrDefault(c => c.Position != mousePoint);
+                        if (character != null)
+                        {
+                            //清屏
+                            foreach (var b in buttons)
+                            {
+                                b.Opacity = 0;
+                            }
+                            foreach (var c in game.Characters)
+                            {
+                                c.LabelDisplay.Background = Brushes.White;
+                            }
+                            SetBackground(mousePoint, character.AttackRange);
+                            game.currentCharacter.LabelDisplay.Background = Brushes.LightPink;
+                            character.LabelDisplay.Background = Brushes.LightBlue;
+                        }
+                    }
+                    //如果ctrl被按下
+                    if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+                    {
+                        var character = game.Characters.FirstOrDefault(c => c.Position != mousePoint);
+                        if (character != null)
+                        {
+                            //清屏
+                            foreach (var b in buttons)
+                            {
+                                b.Opacity = 0;
+                            }
+                            foreach (var c in game.Characters)
+                            {
+                                c.LabelDisplay.Background = Brushes.White;
+                            }
+                            SetBackground(mousePoint, character.MoveAbility);
+                            game.currentCharacter.LabelDisplay.Background = Brushes.LightPink;
+                            character.LabelDisplay.Background = Brushes.LightBlue;
+                        }
+                    }
+
+                };
+                button.KeyUp += (s, ev) =>
+                {
+                    //如果不在行动阶段或仍有shift或ctrl在棋盘内则无效
+                    if (game.Section != Section.Round) return;
+                    if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift) ||
+                        Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) return;
+                    //恢复原本显示
+                    foreach (var b in buttons)
+                    {
+                        b.Opacity = 0;
+                    }
+                    Paint();
+                    game.UpdateLabelBackground();
                 };
             }
         }
@@ -369,6 +474,13 @@ namespace JLQ_MBE_BattleSimulation
             foreach (var l in labels)
             {
                 gridPad.Children.Remove(l);
+            }
+            var progressBars = game.Characters.Select(c => c.BarHp);
+            progressBars = progressBars.Concat(game.Characters.Select(c => c.BarTime));
+            progressBars = progressBars.Concat(game.Characters.Select(c => c.BarMp));
+            foreach (var p in progressBars)
+            {
+                gridPad.Children.Remove(p);
             }
             game.Characters.Clear();
             characterLastAdd = null;
@@ -408,6 +520,9 @@ namespace JLQ_MBE_BattleSimulation
         {
             if (characterLastAdd == null) return;
             gridPad.Children.Remove(characterLastAdd.LabelDisplay);
+            gridPad.Children.Remove(characterLastAdd.BarHp);
+            gridPad.Children.Remove(characterLastAdd.BarTime);
+            gridPad.Children.Remove(characterLastAdd.BarMp);
             game.Characters.Remove(characterLastAdd);
             labelID.Content = (--ID).ToString();
             if (game.Characters.Count == 0)

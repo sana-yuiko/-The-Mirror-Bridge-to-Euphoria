@@ -67,16 +67,19 @@ namespace JLQ_MBE_BattleSimulation
                         c.Group != currentCharacter.Group &&
                         Calculate.Distance(currentCharacter.Position, c.Position) <= currentCharacter.AttackRange);
 
-        /// <summary>对当前行动者的敌人列表</summary>
-        public IEnumerable<Character> EnemyAsCurrent
-            =>
-                Characters.Where(
-                    c => /*非IgnoreEnemy*/
-                        (!(currentCharacter is CharacterMovingIgnoreEnemy)) && /*判断逻辑*/
-                        ( /*当前行动者中立且c非中立*/
-                            (currentCharacter.Group == Group.Middle && c.Group != Group.Middle) ||
-                            /*当前行动者非中立且c与之敌对*/(currentCharacter.Group != Group.Middle &&
-                             c.Group == (Group)(-(int)currentCharacter.Group))));
+        /// <summary>对当前行动者的阻挡列表</summary>
+        public IEnumerable<Character> EnemyBlock
+            => (currentCharacter is CharacterMovingIgnoreEnemy) ? new List<Character>() : EnemyAsCurrent;
+
+        /// <summary>
+        /// 对当前行动者的移动列表
+        /// </summary>
+        public IEnumerable<Character> EnemyAsCurrent =>
+            Characters.Where(c => /*当前行动者中立且c非中立*/
+                (currentCharacter.Group == Group.Middle && c.Group != Group.Middle) ||
+                    /*当前行动者非中立且c与之敌对*/ (currentCharacter.Group != Group.Middle &&
+                        c.Group == (Group) (-(int) currentCharacter.Group)));
+
 
         /// <summary>更新下个行动的角色,取currentTime最小的角色中Interval最大的角色中的随机一个</summary>
         public void GetNextRoundCharacter()
@@ -111,12 +114,13 @@ namespace JLQ_MBE_BattleSimulation
             }
             var i = random.Next(stack.Count);
             currentCharacter = stack.ElementAt(i);
-            UpdateLabelBorder();
+            UpdateLabelBackground();
 
             var ct = currentCharacter.CurrentTime;
             foreach (var character in Characters)
             {
                 character.CurrentTime -= ct;
+                character.UpdateBarTime();
             }
 
 
@@ -124,7 +128,7 @@ namespace JLQ_MBE_BattleSimulation
         }
 
         /// <summary>更新角色显示的边框颜色</summary>
-        public void UpdateLabelBorder()
+        public void UpdateLabelBackground()
         {
             foreach (var c in Characters)
             {
@@ -154,6 +158,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <returns>信息提示</returns>
         public string TipShow(Point position)
         {
+            if (currentCharacter == null) return null;
             return Characters.FirstOrDefault(c => c.Position == position)?.Tip(currentCharacter) ?? null;
         }
 
@@ -182,7 +187,7 @@ namespace JLQ_MBE_BattleSimulation
         {
             CanReachPoint[(int)origin.X, (int)origin.Y] = true;
             if (step == 0) return;
-            var enm = this.EnemyAsCurrent.Select(c => c.Position);
+            var enm = this.EnemyBlock.Select(c => c.Position);
             if (origin.Y < MainWindow.Row - 1 && !enm.Contains(new Point(origin.X, origin.Y + 1)))
             {
                 AssignPointCanReach(new Point(origin.X, origin.Y + 1), step - 1);
