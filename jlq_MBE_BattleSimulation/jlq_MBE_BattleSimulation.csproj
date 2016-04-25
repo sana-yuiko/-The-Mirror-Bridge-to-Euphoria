@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\JLQ_MBE_BattleSimulation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -55,6 +56,40 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Alice.cs" />
+    <Compile Include="Chen.cs" />
+    <Compile Include="Cirno.cs" />
+    <Compile Include="Daiyousei.cs" />
+    <Compile Include="Eirin.cs" />
+    <Compile Include="Flandre.cs" />
+    <Compile Include="Gedama.cs" />
+    <Compile Include="Kaguya.cs" />
+    <Compile Include="Keine.cs" />
+    <Compile Include="Koakuma.cs" />
+    <Compile Include="Leira.cs" />
+    <Compile Include="Letty.cs" />
+    <Compile Include="LilyWhite.cs" />
+    <Compile Include="Lunasa.cs" />
+    <Compile Include="Lyrica.cs" />
+    <Compile Include="Marisa.cs" />
+    <Compile Include="Meirin.cs" />
+    <Compile Include="Merlin.cs" />
+    <Compile Include="Mokou.cs" />
+    <Compile Include="Mystia.cs" />
+    <Compile Include="Patchouli.cs" />
+    <Compile Include="Ran.cs" />
+    <Compile Include="Reimiria.cs" />
+    <Compile Include="Reimu.cs" />
+    <Compile Include="Reisen.cs" />
+    <Compile Include="Rin.cs" />
+    <Compile Include="Rumia.cs" />
+    <Compile Include="Sakuya.cs" />
+    <Compile Include="Suika.cs" />
+    <Compile Include="Tewi.cs" />
+    <Compile Include="Wriggle.cs" />
+    <Compile Include="Youmu.cs" />
+    <Compile Include="Yukari.cs" />
+    <Compile Include="Yuyuko.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -63,7 +98,13 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Buff.cs" />
+    <Compile Include="Calculate.cs" />
+    <Compile Include="Character.cs" />
+    <Compile Include="CharacterData.cs" />
+    <Compile Include="CharacterMovingIgnoreEnemy.cs" />
     <Compile Include="Converter.cs" />
+    <Compile Include="Game.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
