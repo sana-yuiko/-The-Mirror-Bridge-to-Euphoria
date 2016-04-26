@@ -9,6 +9,8 @@
         Title="The Mirror Bridge to Euphoria" Height="602" Width="906" Closing="window_Closing" MinHeight="250" MinWidth="250">
     <Window.Resources>
         <local:ConverterContentToColor x:Key="converterContentToColor"/>
+        <local:ConverterHasMovedToColor x:Key="converterMove"/>
+        <local:ConverterHasAttackedToColor x:Key="converterAttack"/>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -90,8 +92,8 @@
         <Label x:Name="labelID" Content="1" Grid.Column="1" HorizontalAlignment="Left" Margin="183,75,0,0" VerticalAlignment="Top" Height="34" Width="132" FontSize="16" FontWeight="SemiBold"/>
         <Border BorderBrush="Red" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="2" VerticalAlignment="Stretch" Padding="1">
             <Grid>
-                <Label x:Name="labelAttack" Content="还未攻击" HorizontalAlignment="Left" Margin="259,2,0,0" VerticalAlignment="Top" Width="115" FontWeight="SemiBold" Foreground="Red"/>
-                <Label x:Name="labelMove" Content="还未移动" HorizontalAlignment="Left" Margin="82,2,0,0" VerticalAlignment="Top" Width="108" FontWeight="SemiBold" Foreground="Red"/>
+                <Label x:Name="labelAttack" Content="还未攻击" HorizontalAlignment="Left" Margin="259,2,0,0" VerticalAlignment="Top" Width="115" FontWeight="SemiBold" Foreground="{Binding ElementName=labelAttack, Path=Content, Converter={StaticResource converterAttack}}"/>
+                <Label x:Name="labelMove" Content="还未移动" HorizontalAlignment="Left" Margin="82,2,0,0" VerticalAlignment="Top" Width="108" FontWeight="SemiBold" Foreground="{Binding ElementName=labelMove, Path=Content, Converter={StaticResource converterMove}}"/>
             </Grid>
         </Border>
     </Grid>

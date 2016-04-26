@@ -43,4 +43,32 @@ namespace JLQ_MBE_BattleSimulation
             }
         }
     }
+
+    [ValueConversion(typeof(Brush), typeof(string))]
+    class ConverterHasMovedToColor : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (string)value == "还未移动" ? Brushes.Red : Brushes.Gray;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (string)value == "还未移动" ? Brushes.Red : Brushes.Gray;
+        }
+    }
+
+    [ValueConversion(typeof(Brush), typeof(string))]
+    class ConverterHasAttackedToColor : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (string)value == "还未攻击" ? Brushes.Red : Brushes.Gray;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (string)value == "还未攻击" ? Brushes.Red : Brushes.Gray;
+        }
+    }
 }

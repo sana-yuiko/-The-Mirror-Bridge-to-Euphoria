@@ -163,15 +163,14 @@ namespace JLQ_MBE_BattleSimulation
                         b.Opacity = 0;
                     }
                     labelMove.Content = "已移动";
-                    labelMove.Foreground = Brushes.Gray;
                     game.UpdateLabelBackground();
                     //如果同时已经攻击过则进入结束阶段
                     if (!game.HasAttacked && game.EnemyCanAttack.Any()) return;
-                    Thread.Sleep(500);
+                    //Thread.Sleep(500);
                     EndSection();
                 }
                 //如果单击的位置是合法攻击点
-                else if (game.EnemyCanAttack.Select(c => c.Position).Contains(new Point(column, row)))
+                else if (game.EnemyCanAttack.Any(c => c.Position == new Point(column, row)))
                 {
                     //获取目标
                     var target = game.EnemyCanAttack.First(c => c.Position == new Point(column, row));
@@ -199,10 +198,9 @@ namespace JLQ_MBE_BattleSimulation
                     }
 
                     labelAttack.Content = "已攻击";
-                    labelAttack.Foreground = Brushes.Gray;
                     //如果同时已经移动过则进入结束阶段
                     if (!game.HasMoved) return;
-                    Thread.Sleep(500);
+                    //Thread.Sleep(500);
                     EndSection();
                 }
                 //单击位置非法，操作非法
@@ -225,9 +223,7 @@ namespace JLQ_MBE_BattleSimulation
         {
             //重置提示
             labelMove.Content = "还未移动";
-            labelMove.Foreground = Brushes.Red;
             labelAttack.Content = "还未攻击";
-            labelAttack.Foreground = Brushes.Red;
             //获取下个行动的角色
             game.GetNextRoundCharacter();
             Paint();
@@ -236,7 +232,7 @@ namespace JLQ_MBE_BattleSimulation
             game.Section = Section.Preparing;
             UpdateSection();
             game.BuffSettle(JLQ_MBE_BattleSimulation.Section.Preparing);
-            Thread.Sleep(500);
+            //Thread.Sleep(500);
             game.Section = Section.Round;
             UpdateSection();
         }
@@ -247,7 +243,7 @@ namespace JLQ_MBE_BattleSimulation
             game.Section = Section.End;
             UpdateSection();
             game.BuffSettle(Section.End);
-            Thread.Sleep(1000);
+            //Thread.Sleep(1000);
 
             PreparingSection();
         }
