@@ -53,5 +53,24 @@ namespace JLQ_MBE_BattleSimulation
         {
             return (int) (Math.Abs(point1.X - point2.X) + Math.Abs(point1.Y - point2.Y));
         }
+
+        /// <summary>将Section转化为label的文字提示</summary>
+        /// <param name="value">当前游戏阶段</param>
+        /// <returns>label的文字提示</returns>
+        public static string Convert(Section? value)
+        {
+            switch (value)
+            {
+                case Section.Preparing:
+                    return "准备阶段";
+                case Section.Round:
+                    return "行动阶段";
+                case Section.End:
+                    return "结束阶段";
+                default:
+                    return "游戏还未开始";
+            }
+        }
+
     }
 }
