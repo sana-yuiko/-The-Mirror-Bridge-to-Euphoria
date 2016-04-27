@@ -420,5 +420,10 @@ namespace JLQ_MBE_BattleSimulation
                 characterLastAdd = game.Characters.Last();
             }
         }
+
+        private void SC01_Click(object sender, RoutedEventArgs e)
+        {
+            game.SC01();
+        }
     }
 }

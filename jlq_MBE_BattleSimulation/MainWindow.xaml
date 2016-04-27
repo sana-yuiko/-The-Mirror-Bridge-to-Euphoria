@@ -61,9 +61,15 @@
                 <RowDefinition Height="3*"/>
                 <RowDefinition Height="6*"/>
             </Grid.RowDefinitions>
-            <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch"/>
-            <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Grid.Row="2"/>
-            <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Grid.Row="4"/>
+            <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch">
+                <Button x:Name="SC01" Content="SC01" Click="SC01_Click"/>
+            </Border>
+            <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Grid.Row="2">
+                <Button x:Name="SC02" Content="SC02"/>
+            </Border>
+            <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Grid.Row="4">
+                <Button x:Name="SC03" Content="SC03"/>
+            </Border>
         </Grid>
         <StackPanel HorizontalAlignment="Stretch" Height="28" Margin="0" VerticalAlignment="Top" Grid.ColumnSpan="3">
             <Menu x:Name="menu" Height="22">

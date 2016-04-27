@@ -13,7 +13,6 @@ D:\Program\C#程序\C# GUI程序\JLQ_MBE_BattleSimulation\JLQ_MBE_BattleSimulati
 D:\Program\C#程序\C# GUI程序\JLQ_MBE_BattleSimulation\JLQ_MBE_BattleSimulation\obj\Debug\JLQ_MBE_BattleSimulation.csproj.GenerateResource.Cache
 D:\Program\C#程序\C# GUI程序\JLQ_MBE_BattleSimulation\JLQ_MBE_BattleSimulation\obj\Debug\JLQ_MBE_BattleSimulation.exe
 D:\Program\C#程序\C# GUI程序\JLQ_MBE_BattleSimulation\JLQ_MBE_BattleSimulation\obj\Debug\JLQ_MBE_BattleSimulation.pdb
-<<<<<<< HEAD
 D:\A.学习【Learning】\A2.Mathematics\github\-The-Mirror-Bridge-to-Euphoria\JLQ_MBE_BattleSimulation\bin\Debug\JLQ_MBE_BattleSimulation.exe.config
 D:\A.学习【Learning】\A2.Mathematics\github\-The-Mirror-Bridge-to-Euphoria\JLQ_MBE_BattleSimulation\obj\Debug\JLQ_MBE_BattleSimulation.exe
 D:\A.学习【Learning】\A2.Mathematics\github\-The-Mirror-Bridge-to-Euphoria\JLQ_MBE_BattleSimulation\obj\Debug\JLQ_MBE_BattleSimulation.pdb
@@ -47,3 +46,4 @@ D:\Program\C#程序\-The-Mirror-Bridge-to-Euphoria\JLQ_MBE_BattleSimulation\bin\
 D:\Program\C#程序\-The-Mirror-Bridge-to-Euphoria\JLQ_MBE_BattleSimulation\obj\Debug\GeneratedInternalTypeHelper.g.cs
 >>>>>>> origin/Lead
 D:\A.学习【Learning】\A2.Mathematics\github\-The-Mirror-Bridge-to-Euphoria\JLQ_MBE_BattleSimulation\bin\Debug\JLQ_MBE_BattleSimulation.XML
+D:\A.学习【Learning】\A2.Mathematics\github\-The-Mirror-Bridge-to-Euphoria\JLQ_MBE_BattleSimulation\obj\Debug\GeneratedInternalTypeHelper.g.cs

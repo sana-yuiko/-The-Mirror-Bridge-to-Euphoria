@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -49,6 +50,8 @@ namespace JLQ_MBE_BattleSimulation
         protected Random random;
         /// <summary>游戏对象</summary>
         protected Game game;
+
+        
 
         //属性
         //自动属性
@@ -185,6 +188,38 @@ namespace JLQ_MBE_BattleSimulation
             return isCriticalHit;
         }
 
+        public bool DoAttack(Character target, float times, bool isDanmaku)
+        {
+            bool isCriticalHit = false;
+            int distance = Calculate.Distance(this.Position, target.Position);
+            //判断是否命中
+            if (random.NextDouble() <= Calculate.HitRate(this, target))
+            {
+                float CloseGain;
+                //判断是否近战
+                if (isDanmaku)
+                {
+                    CloseGain = 1.0f;
+                }
+                else
+                {
+                    CloseGain = this.CloseAmendment;
+                }
+                double damage;
+                //判断是否暴击
+                isCriticalHit = random.NextDouble() <= this.CriticalHitRate;
+                damage =/*基础伤害*/Calculate.Damage(this.Attack, target.Defence) *
+                        /*近战补正*/CloseGain */*伤害浮动*/((2 * random.NextDouble() - 1) * this.DamageFloat + 1)
+                        * times;
+                if (isCriticalHit)
+                {
+                    damage *= this.CriticalHitGain;
+                }
+                target.BeAttacked((int)damage, this);
+            }
+            return isCriticalHit;
+        }
+
         /// <summary>将各数据转化为字符串显示</summary>
         /// <returns>各数据字符串化的结果</returns>
         public override string ToString()
@@ -232,6 +267,39 @@ namespace JLQ_MBE_BattleSimulation
 
         }
 
+        /// <summary>检测灵力是否足够</summary>
+        /// <param name="mp">消耗的灵力量</param>
+        /// <returns>灵力是否足够</returns>
+        public bool mpTest(int mp)
+        {
+            return Mp >= mp;
+        }
+
+        /// <summary>灵力消耗</summary>
+        /// <param name="mp">消耗的灵力量</param>
+        /// <returns>灵力是否足够</returns>
+        public bool mpUse(int mp)
+        {
+            if (Mp < mp)
+            {
+                return false;
+            }
+            else
+            {
+                Mp -= mp;
+                return true;
+            }
+        }
+
+        /// <summary>灵力获取</summary>
+        /// <param name="mp">获得的灵力量</param>
+        public void mpGain(int mp)
+        {
+            Mp += mp;
+            //超出最大灵力修正
+            Mp = Mp > _maxMp ? _maxMp : Mp;
+        }
+
 
         //以下为符卡
 
@@ -257,7 +325,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <param name="coordinate">待转化值</param>
         /// <param name="max">最大值</param>
         /// <returns></returns>
-        private int GetValidPosition(int coordinate,int max)
+        private int GetValidPosition(int coordinate, int max)
         {
             if (coordinate < 0)
             {

@@ -59,6 +59,20 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>敌军列表</summary>
         public IEnumerable<Character> EnemyCharacters => Characters.Where(c => c.Group == Group.Enemy);
 
+        /// <summary>声明如何选择目标的委托</summary>
+        /// <param name="SCer">使用符卡者</param>
+        /// <param name="SCee">被使用符卡者</param>
+        /// <returns>是否选择此目标</returns>
+        public delegate bool choose(Character SCer, Character SCee);
+        /// <summary>传递参数，如何获取目标以及所需参数列表</summary>
+        public choose HowToChoose;
+        /// <summary>声明如何处理目标的委托</summary>
+        /// <param name="SCer">使用符卡者</param>
+        /// <param name="SCee">被使用符卡者</param>
+        public delegate void handle(Character SCer, Character SCee);
+        /// <summary>传递参数，如何处理目标</summary>
+        public handle HowToHandle;
+ 
         /// <summary>攻击范围内的可攻击角色</summary>
         public IEnumerable<Character> EnemyCanAttack
             =>
@@ -86,7 +100,7 @@ namespace JLQ_MBE_BattleSimulation
                 c.LabelDisplay.BorderThickness = new Thickness(0);
             }
             currentCharacter?.Reset();
-            var stack = new Stack<Character>();
+            /*var stack = new Stack<Character>();
             stack.Push(Characters.ElementAt(0));
             foreach (var character in Characters)
             {
@@ -110,7 +124,17 @@ namespace JLQ_MBE_BattleSimulation
                 }
             }
             var i = random.Next(stack.Count);
-            currentCharacter = stack.ElementAt(i);
+            currentCharacter = stack.ElementAt(i);*/
+            var ch1 = from ch in Characters
+                      let minCT = Characters.Min(cha => cha.CurrentTime)
+                      where ch.CurrentTime == minCT
+                      select ch;
+            var ch2 = from ch in ch1
+                      let maxInt = Characters.Max(cha => cha.Interval)
+                      where ch.Interval == maxInt
+                      select ch;
+            currentCharacter = ch2.ElementAt(random.Next(ch2.Count()));
+
             UpdateLabelBorder();
 
             var ct = currentCharacter.CurrentTime;
@@ -228,6 +252,11 @@ namespace JLQ_MBE_BattleSimulation
         }
 
         //TODO SC
+        public void SC01()
+        {
+            Thread t = new Thread(new ThreadStart(currentCharacter.SC01));
+            t.Start();
+        }
 
         //TODO save&load
 
