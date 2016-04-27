@@ -65,13 +65,13 @@
                 <RowDefinition Height="3*"/>
                 <RowDefinition Height="6*"/>
             </Grid.RowDefinitions>
-            <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch">
+            <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" CornerRadius="5">
                 <Button x:Name="buttonSC01" Content="SC01"/>
             </Border>
-            <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Grid.Row="2">
+            <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Grid.Row="2" CornerRadius="5">
                 <Button x:Name="buttonSC02" Content="SC02"/>
             </Border>
-            <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Grid.Row="4">
+            <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Grid.Row="4" CornerRadius="5">
                 <Button x:Name="buttonSC03" Content="SC03"/>
             </Border>
         </Grid>
@@ -84,7 +84,12 @@
                     <Separator/>
                     <MenuItem Header="退出" Name="menuExit" Click="menuExit_Click"/>
                 </MenuItem>
-                <MenuItem Header="帮助" Name="menuHelp" Click="menuHelp_Click"></MenuItem>
+                <MenuItem Header="帮助">
+                    <MenuItem Header="操作" Name="menuHelp" Click="menuHelp_Click"/>
+                    <MenuItem Header="显示" Name="menuShow" Click="menuShow_Click"/>
+                    <Separator/>
+                    <MenuItem Header="关于" Name="menuAbout"/>
+                </MenuItem>
             </Menu>
         </StackPanel>
         <ComboBox x:Name="comboBoxDisplay" HorizontalAlignment="Left" Margin="22,44,0,0" VerticalAlignment="Top" Width="120"/>

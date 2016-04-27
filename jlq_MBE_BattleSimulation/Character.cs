@@ -197,7 +197,7 @@ namespace JLQ_MBE_BattleSimulation
             };
             this.BarTime = new ProgressBar
             {
-                Margin = new Thickness(2, 0, 2, 5),
+                Margin = new Thickness(2, 0, 2, 2),
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Bottom,
                 Height = 2,
@@ -207,7 +207,7 @@ namespace JLQ_MBE_BattleSimulation
             };
             this.BarMp = new ProgressBar
             {
-                Margin = new Thickness(2, 0, 2, 2),
+                Margin = new Thickness(2, 0, 2, 5),
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Bottom,
                 Height = 2,
@@ -240,68 +240,30 @@ namespace JLQ_MBE_BattleSimulation
         /// <returns>是否暴击</returns>
         public bool DoAttack(Character target)
         {
-            var isCriticalHit = false;
-            var distance = Calculate.Distance(this.Position, target.Position);
-            //判断是否命中
-            if (random.NextDouble() > Calculate.HitRate(this, target)) return isCriticalHit;
-            float closeGain;
-            //判断是否近战
-            if (distance == 1)
-            {
-                closeGain = this.CloseAmendment;
-            }
-            else
-            {
-                closeGain = 1.0f;
-            }
-            double damage;
-            //判断是否暴击
-            isCriticalHit = random.NextDouble() <= this.CriticalHitRate;
-            damage =/*基础伤害*/Calculate.Damage(this.Attack, target.Defence)*
-                            /*近战补正*/closeGain*/*伤害浮动*/((2*random.NextDouble() - 1)*this.DamageFloat + 1);
-            if (isCriticalHit)
-            {
-                damage *= this.CriticalHitGain;
-            }
-            target.BeAttacked((int) damage, this);
-            return isCriticalHit;
+            return DoAttack(target, 1.0f);
         }
         /// <summary>
         /// 攻击
         /// </summary>
         /// <param name="target">攻击目标</param>
         /// <param name="times">伤害值增益</param>
-        /// <param name="isDanmaku">是否为远程攻击</param>
         /// <returns></returns>
-        public bool DoAttack(Character target, float times, bool isDanmaku)
+        public bool DoAttack(Character target, float times)
         {
-            bool isCriticalHit = false;
-            int distance = Calculate.Distance(this.Position, target.Position);
             //判断是否命中
-            if (random.NextDouble() <= Calculate.HitRate(this, target))
+            if (IsHit(target)) return false;
+            //判断是否近战
+            var closeGain = CloseGain(target);
+            //计算基础伤害
+            var damage = /*基础伤害*/ Calculate.Damage(this.Attack, target.Defence)*
+                                     /*近战补正*/closeGain* /*伤害浮动*/((2*random.NextDouble() - 1)*this.DamageFloat + 1)*times;
+            //判断是否暴击
+            var isCriticalHit = IsCriticalHit(target);
+            if (isCriticalHit)
             {
-                float CloseGain;
-                //判断是否近战
-                if (isDanmaku)
-                {
-                    CloseGain = 1.0f;
-                }
-                else
-                {
-                    CloseGain = this.CloseAmendment;
-                }
-                double damage;
-                //判断是否暴击
-                isCriticalHit = random.NextDouble() <= this.CriticalHitRate;
-                damage =/*基础伤害*/Calculate.Damage(this.Attack, target.Defence) *
-                        /*近战补正*/CloseGain */*伤害浮动*/((2 * random.NextDouble() - 1) * this.DamageFloat + 1)
-                        * times;
-                if (isCriticalHit)
-                {
-                    damage *= this.CriticalHitGain;
-                }
-                target.BeAttacked((int)damage, this);
+                damage *= this.CriticalHitGain;
             }
+            target.BeAttacked((int)damage, this);
             return isCriticalHit;
         }
 
@@ -309,9 +271,9 @@ namespace JLQ_MBE_BattleSimulation
         /// <returns>各数据字符串化的结果</returns>
         public override string ToString()
             =>
-                String.Format("HP: {0} / {1}\nAttack: {2}\nDefence: {3}\n" +
-                              "Hit Rate: {4}\nDodge Rate: {5}\nClose Gain: {6}{7}\n" +
-                              "Interval: {8}\nMove Ability: {9}\nAttack Range: {10}\nCurrent Time: {11}", Hp, Data.MaxHp,
+                String.Format("HP: {0} / {1}\nMP: {2} / {3}\n攻击: {4}\n防御: {5}\n" +
+                              "命中率: {6}\n闪避率: {7}\n近战补正: {8}{9}\n" +
+                              "行动间隔: {10}\n机动: {11}\n攻击范围: {12}\n剩余冷却时间: {13}", Hp, Data.MaxHp, Mp, _maxMp,
                     Attack, Defence, HitRate, DodgeRate, CloseAmendment, (CloseAmendment%1 == 0) ? ".0" : "", Interval,
                     MoveAbility, AttackRange, CurrentTime);
 
@@ -320,7 +282,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <returns></returns>
         public string Tip(Character target)
         {
-            return String.Format("Rate: {0}%\nDamage: {1}",
+            return String.Format("命中几率: {0}%\n平均伤害值: {1}",
                 Math.Floor(Calculate.HitRate(this, target)*100),
                 Calculate.Damage(this.Attack, target.Defence));
         }
@@ -420,5 +382,36 @@ namespace JLQ_MBE_BattleSimulation
 
         }
 
+        /// <summary>是否命中</summary>
+        /// <param name="target">攻击目标</param>
+        /// <returns>是否命中</returns>
+        protected virtual bool IsHit(Character target)
+        {
+            return random.NextDouble() > Calculate.HitRate(this, target);
+        }
+        /// <summary>近战增益</summary>
+        /// <param name="target">攻击目标</param>
+        /// <returns>近战增益</returns>
+        protected virtual float CloseGain(Character target)
+        {
+            float closeGain;
+            var distance = Calculate.Distance(this.Position, target.Position);
+            if (distance == 1)
+            {
+                closeGain = this.CloseAmendment;
+            }
+            else
+            {
+                closeGain = 1.0f;
+            }
+            return closeGain;
+        }
+        /// <summary>是否暴击</summary>
+        /// <param name="target">攻击目标</param>
+        /// <returns>是否暴击</returns>
+        protected virtual bool IsCriticalHit(Character target)
+        {
+            return random.NextDouble() <= this.CriticalHitRate;
+        }
     }
 }

@@ -178,6 +178,9 @@ namespace JLQ_MBE_BattleSimulation
             this.Section = null;
         }
 
+        /// <summary>确定在某位置的角色，若没有则返回null</summary>
+        /// <param name="position">需要搜索角色的位置</param>
+        /// <returns>在该位置的角色</returns>
         public Character this[Point position] => Characters.FirstOrDefault(c => c.Position == position);
 
         //当前行动者属性

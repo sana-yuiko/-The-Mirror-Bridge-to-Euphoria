@@ -35,12 +35,24 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>game对象</summary>
         private readonly Game game;
 
+        private int _id = 1;
+
         /// <summary>加人模式的当前ID</summary>
-        private int ID = 1;
+        private int ID
+        {
+            get { return _id; }
+            set
+            {
+                _id = value;
+                labelID.Content = value.ToString();
+            }
+        }
         /// <summary>加人模式上一个添加的角色</summary>
         private Character characterLastAdd = null;
         /// <summary>鼠标的网格位置</summary>
         private Point mousePoint = new Point(-1, -1);
+        /// <summary>符卡按钮</summary>
+        private Button[] scButtons = new Button[3];
 
         /// <summary>构造函数</summary>
         public MainWindow()
@@ -86,9 +98,20 @@ namespace JLQ_MBE_BattleSimulation
                 comboBoxDisplay.Items.Add(cd.Display);
             }
             reader.Close();
-
+            scButtons[0] = buttonSC01;
+            scButtons[1] = buttonSC02;
+            scButtons[2] = buttonSC03;
             //初始化game对象
             game = new Game();
+        }
+
+        /// <summary>当前行动角色</summary>
+        private Character currentCharacter => game.CurrentCharacter;
+        /// <summary>当前游戏阶段</summary>
+        private Section? section
+        {
+            get { return game.Section; }
+            set { game.Section = value; }
         }
 
         /// <summary>网格单击事件</summary>
@@ -136,14 +159,14 @@ namespace JLQ_MBE_BattleSimulation
                 gridPad.Children.Add(characterLastAdd.BarTime);
                 gridPad.Children.Add(characterLastAdd.BarMp);
                 game.Characters.Add(characterLastAdd);
-                labelID.Content = (++ID).ToString();
+                ID++;
                 menuBackout.IsEnabled = true;
             }
             //战斗模式
             else
             {
                 //如果不是行动阶段则操作非法
-                if (game.Section != Section.Round) return;
+                if (section != Section.Round) return;
                 //如果单击的位置是合法移动点
                 if (game.CanReachPoint[column, row])
                 {
@@ -154,7 +177,7 @@ namespace JLQ_MBE_BattleSimulation
                         return;
                     }
                     //移动
-                    game.CurrentCharacter.Move(new Point(column, row));
+                    currentCharacter.Move(new Point(column, row));
                     game.HasMoved = true;
                     foreach (var b in game.Buttons)
                     {
@@ -170,7 +193,7 @@ namespace JLQ_MBE_BattleSimulation
                 else if (game.EnemyCanAttack.Any(c => c.Position == new Point(column, row)))
                 {
                     //获取目标
-                    var target = game.EnemyCanAttack.First(c => c.Position == new Point(column, row));
+                    var target = game[new Point(column, row)];
                     //如果已经攻击过则操作非法
                     if (game.HasAttacked)
                     {
@@ -178,7 +201,7 @@ namespace JLQ_MBE_BattleSimulation
                         return;
                     }
                     //攻击
-                    game.CurrentCharacter.DoAttack(target);
+                    currentCharacter.DoAttack(target);
                     game.HasAttacked = true;
                     foreach (var c in game.EnemyCanAttack)
                     {
@@ -186,13 +209,7 @@ namespace JLQ_MBE_BattleSimulation
                     }
 
                     //死人提示
-                    if (target.IsDead)
-                    {
-                        gridPad.Children.Remove(target.LabelDisplay);
-                        MessageBox.Show(String.Format("{0}号{1}已死亡", ID, target.Data.Name), "死亡",
-                            MessageBoxButton.OK, MessageBoxImage.Hand);
-                        game.Characters.Remove(target);
-                    }
+                    IsDead(target);
 
                     //如果同时已经移动过则进入结束阶段
                     if (!game.HasMoved) return;
@@ -214,20 +231,36 @@ namespace JLQ_MBE_BattleSimulation
             //重置提示
             //获取下个行动的角色
             game.GetNextRoundCharacter();
+            for (var i = 0; i < 3; i++)
+            {
+                scButtons[i].Content = currentCharacter.Data.ScName[i + 1];
+                scButtons[i].ToolTip = currentCharacter.Data.ScDisc[i + 1];
+            }
             Paint();
 
             //跳转阶段
-            game.Section = Section.Preparing;
-            game.BuffSettle(JLQ_MBE_BattleSimulation.Section.Preparing);
+            section = Section.Preparing;
+            game.BuffSettle(Section.Preparing);
             //Thread.Sleep(500);
-            game.Section = Section.Round;
+            section = Section.Round;
         }
         /// <summary>结束阶段</summary>
         private void EndSection()
         {
-            game.Section = Section.End;
+            section = Section.End;
             game.BuffSettle(Section.End);
             //Thread.Sleep(1000);
+            //游戏是否结束
+            if (!game.FriendCharacters.Any())
+            {
+                MessageBox.Show("敌方获胜！", "游戏结束", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
+            if (!game.EnemyCharacters.Any())
+            {
+                MessageBox.Show("己方获胜！", "游戏结束", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
 
             PreparingSection();
         }
@@ -279,18 +312,33 @@ namespace JLQ_MBE_BattleSimulation
                     }
                 }
             }
+        }
 
+        /// <summary>死亡结算</summary>
+        /// <param name="target"></param>
+        private void IsDead(Character target)
+        {
+            if (!target.IsDead) return;
+            gridPad.Children.Remove(target.LabelDisplay);
+            gridPad.Children.Remove(target.BarHp);
+            gridPad.Children.Remove(target.BarTime);
+            gridPad.Children.Remove(target.BarMp);
+            MessageBox.Show(
+                String.Format("{0}号{1}被{2}号{3}杀死", target.ID, target.Data.Name, currentCharacter.ID,
+                    currentCharacter.Data.Name), "死亡", MessageBoxButton.OK, MessageBoxImage.Hand);
+            game.Characters.Remove(target);
         }
 
 
-        /// <summary>帮助菜单</summary>
+        /// <summary>帮助-操作菜单</summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void menuHelp_Click(object sender, RoutedEventArgs e)
         {
             //TODO Pause
-            MessageBox.Show("鼠标中键可以添加中立单位\n按住shift微移鼠标显示单位信息\n若已移动完毕，点击自身可跳过攻击阶段\n若暴击则会beep", "帮助", MessageBoxButton.OK,
-                MessageBoxImage.Question);
+            MessageBox.Show(
+                "加人模式左键添加己方单位，中键添加中立单位，右键单击敌方单位；\n鼠标悬停在单位上方显示数据，按住shift微移鼠标显示单位详细信息；\n点击自身可跳过行动阶段；\n若暴击则会beep。", "操作",
+                MessageBoxButton.OK, MessageBoxImage.Question);
             //TODO Continue
         }
 
@@ -374,7 +422,7 @@ namespace JLQ_MBE_BattleSimulation
                     //如果shift和ctrl都没被按下或不在行动阶段或不在棋盘内或该点无角色或该点角色为当前角色则无效
                     if ((!(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift) ||
                            Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))) ||
-                        game.Section != Section.Round || mousePoint == new Point(-1, -1) ||
+                        section != Section.Round || mousePoint == new Point(-1, -1) ||
                         game.Characters.All(c => c.Position != mousePoint) ||
                         mousePoint == game.CurrentPosition) return;
                     //如果shift被按下
@@ -387,7 +435,7 @@ namespace JLQ_MBE_BattleSimulation
                             DefaultButtonBackground();
 
                             SetBackground(mousePoint, character.AttackRange);
-                            game.CurrentCharacter.LabelDisplay.Background = Brushes.LightPink;
+                            currentCharacter.LabelDisplay.Background = Brushes.LightPink;
                             character.LabelDisplay.Background = Brushes.LightBlue;
                         }
                     }
@@ -401,7 +449,7 @@ namespace JLQ_MBE_BattleSimulation
                             DefaultButtonBackground();
 
                             SetBackground(mousePoint, character.MoveAbility);
-                            game.CurrentCharacter.LabelDisplay.Background = Brushes.LightPink;
+                            currentCharacter.LabelDisplay.Background = Brushes.LightPink;
                             character.LabelDisplay.Background = Brushes.LightBlue;
                         }
                     }
@@ -410,7 +458,7 @@ namespace JLQ_MBE_BattleSimulation
                 button.KeyUp += (s, ev) =>
                 {
                     //如果不在行动阶段或仍有shift或ctrl在棋盘内则无效
-                    if (game.Section != Section.Round) return;
+                    if (section != Section.Round) return;
                     if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift) ||
                         Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) return;
                     //恢复原本显示
@@ -495,7 +543,7 @@ namespace JLQ_MBE_BattleSimulation
             gridPad.Children.Remove(characterLastAdd.BarTime);
             gridPad.Children.Remove(characterLastAdd.BarMp);
             game.Characters.Remove(characterLastAdd);
-            labelID.Content = (--ID).ToString();
+            ID--;
             if (game.Characters.Count == 0)
             {
                 characterLastAdd = null;
@@ -505,6 +553,14 @@ namespace JLQ_MBE_BattleSimulation
             {
                 characterLastAdd = game.Characters.Last();
             }
+        }
+
+        private void menuShow_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show(
+                "红色字体为己方单位，黑色字体为中立单位，绿色字体为敌方单位；\n" + "战斗模式下：淡粉色为当前行动单位；\n淡蓝色为当前行动单位可攻击的单位；\n淡黄色为可以移动至的位置\n" +
+                "鼠标悬停在单位上方：\n按下Shift显示该角色的攻击范围；\n按下ctrl显示该角色的移动范围。", "显示", MessageBoxButton.OK,
+                MessageBoxImage.Information);
         }
     }
 }

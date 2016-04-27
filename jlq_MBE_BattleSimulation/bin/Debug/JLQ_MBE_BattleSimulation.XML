@@ -10,6 +10,10 @@
         <member name="T:JLQ_MBE_BattleSimulation.Section">
             <summary>游戏阶段</summary>
         </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Reimu.MpGain(System.Int32)">
+            <summary>1.2倍灵力获取</summary>
+            <param name="mp">获得的灵力量</param>
+        </member>
         <member name="M:JLQ_MBE_BattleSimulation.Reimu.SC01">
             <summary>符卡01：梦想封印，对所有4格内的敌人造成1.0倍率的弹幕攻击</summary>
         </member>
@@ -241,13 +245,12 @@
             <param name="target">攻击目标</param>
             <returns>是否暴击</returns>
         </member>
-        <member name="M:JLQ_MBE_BattleSimulation.Character.DoAttack(JLQ_MBE_BattleSimulation.Character,System.Single,System.Boolean)">
+        <member name="M:JLQ_MBE_BattleSimulation.Character.DoAttack(JLQ_MBE_BattleSimulation.Character,System.Single)">
             <summary>
             攻击
             </summary>
             <param name="target">攻击目标</param>
             <param name="times">伤害值增益</param>
-            <param name="isDanmaku">是否为远程攻击</param>
             <returns></returns>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Character.ToString">
@@ -303,6 +306,21 @@
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Character.Set">
             <summary>更新显示display的位置</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.IsHit(JLQ_MBE_BattleSimulation.Character)">
+            <summary>是否命中</summary>
+            <param name="target">攻击目标</param>
+            <returns>是否命中</returns>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.CloseGain(JLQ_MBE_BattleSimulation.Character)">
+            <summary>近战增益</summary>
+            <param name="target">攻击目标</param>
+            <returns>近战增益</returns>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.IsCriticalHit(JLQ_MBE_BattleSimulation.Character)">
+            <summary>是否暴击</summary>
+            <param name="target">攻击目标</param>
+            <returns>是否暴击</returns>
         </member>
         <member name="F:JLQ_MBE_BattleSimulation.CharacterData.Name">
             <summary>角色名字</summary>
@@ -412,6 +430,11 @@
         <member name="M:JLQ_MBE_BattleSimulation.Game.#ctor">
             <summary>Game类的构造函数</summary>
         </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Game.Item(System.Windows.Point)">
+            <summary>确定在某位置的角色，若没有则返回null</summary>
+            <param name="position">需要搜索角色的位置</param>
+            <returns>在该位置的角色</returns>
+        </member>
         <member name="P:JLQ_MBE_BattleSimulation.Game.CurrentPosition">
             <summary>当前行动者的位置</summary>
         </member>
@@ -504,7 +527,7 @@
         <member name="F:JLQ_MBE_BattleSimulation.MainWindow.game">
             <summary>game对象</summary>
         </member>
-        <member name="F:JLQ_MBE_BattleSimulation.MainWindow.ID">
+        <member name="P:JLQ_MBE_BattleSimulation.MainWindow.ID">
             <summary>加人模式的当前ID</summary>
         </member>
         <member name="F:JLQ_MBE_BattleSimulation.MainWindow.characterLastAdd">
@@ -513,8 +536,17 @@
         <member name="F:JLQ_MBE_BattleSimulation.MainWindow.mousePoint">
             <summary>鼠标的网格位置</summary>
         </member>
+        <member name="F:JLQ_MBE_BattleSimulation.MainWindow.scButtons">
+            <summary>符卡按钮</summary>
+        </member>
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.#ctor">
             <summary>构造函数</summary>
+        </member>
+        <member name="P:JLQ_MBE_BattleSimulation.MainWindow.currentCharacter">
+            <summary>当前行动角色</summary>
+        </member>
+        <member name="P:JLQ_MBE_BattleSimulation.MainWindow.section">
+            <summary>当前游戏阶段</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.GridPadMouseDown(System.Int32,System.Int32,System.Windows.Input.MouseButtonState,System.Windows.Input.MouseButtonState,System.Windows.Input.MouseButtonState)">
             <summary>网格单击事件</summary>
@@ -540,8 +572,12 @@
             <param name="origin">起始点</param>
             <param name="range">范围</param>
         </member>
+        <member name="M:JLQ_MBE_BattleSimulation.MainWindow.IsDead(JLQ_MBE_BattleSimulation.Character)">
+            <summary>死亡结算</summary>
+            <param name="target"></param>
+        </member>
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.menuHelp_Click(System.Object,System.Windows.RoutedEventArgs)">
-            <summary>帮助菜单</summary>
+            <summary>帮助-操作菜单</summary>
             <param name="sender"></param>
             <param name="e"></param>
         </member>

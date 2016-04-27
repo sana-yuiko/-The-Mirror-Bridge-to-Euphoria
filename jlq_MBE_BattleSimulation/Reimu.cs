@@ -15,6 +15,8 @@ namespace JLQ_MBE_BattleSimulation
             
         }
 
+        /// <summary>1.2倍灵力获取</summary>
+        /// <param name="mp">获得的灵力量</param>
         public override void MpGain(int mp)
         {
             base.MpGain((int) Math.Floor(1.2*mp));
