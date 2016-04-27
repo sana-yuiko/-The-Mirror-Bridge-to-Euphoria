@@ -10,6 +10,9 @@
         <member name="T:JLQ_MBE_BattleSimulation.Section">
             <summary>游戏阶段</summary>
         </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Reimu.SC01">
+            <summary>符卡01：梦想封印，对所有4格内的敌人造成1.0倍率的弹幕攻击</summary>
+        </member>
         <member name="T:JLQ_MBE_BattleSimulation.App">
             <summary>
             App.xaml 的交互逻辑
@@ -145,7 +148,7 @@
         <member name="F:JLQ_MBE_BattleSimulation.Character._closeAmendmentX">
             <summary>近战补正增益</summary>
         </member>
-        <member name="F:JLQ_MBE_BattleSimulation.Character._intervalX">
+        <member name="P:JLQ_MBE_BattleSimulation.Character._intervalX">
             <summary>行动间隔增益</summary>
         </member>
         <member name="F:JLQ_MBE_BattleSimulation.Character._moveAbilityX">
@@ -238,6 +241,15 @@
             <param name="target">攻击目标</param>
             <returns>是否暴击</returns>
         </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.DoAttack(JLQ_MBE_BattleSimulation.Character,System.Single,System.Boolean)">
+            <summary>
+            攻击
+            </summary>
+            <param name="target">攻击目标</param>
+            <param name="times">伤害值增益</param>
+            <param name="isDanmaku">是否为远程攻击</param>
+            <returns></returns>
+        </member>
         <member name="M:JLQ_MBE_BattleSimulation.Character.ToString">
             <summary>将各数据转化为字符串显示</summary>
             <returns>各数据字符串化的结果</returns>
@@ -247,9 +259,6 @@
             <param name="target">攻击接受者</param>
             <returns></returns>
         </member>
-        <member name="M:JLQ_MBE_BattleSimulation.Character.Reset">
-            <summary>重置属性</summary>
-        </member>
         <member name="M:JLQ_MBE_BattleSimulation.Character.Move(System.Windows.Point)">
             <summary>移动至指定坐标</summary>
             <param name="end">移动的目标坐标</param>
@@ -258,6 +267,20 @@
             <summary>在各方向移动指定的值，若超限则取边界</summary>
             <param name="relativeX">移动的列向相对坐标</param>
             <param name="relativeY">移动的行向相对坐标</param>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.IsMpEnough(System.Int32)">
+            <summary>检测灵力是否足够</summary>
+            <param name="mp">消耗的灵力量</param>
+            <returns>灵力是否足够</returns>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.MpUse(System.Int32)">
+            <summary>灵力消耗</summary>
+            <param name="mp">消耗的灵力量</param>
+            <returns>灵力是否足够</returns>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.MpGain(System.Int32)">
+            <summary>灵力获取</summary>
+            <param name="mp">获得的灵力量</param>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Character.SC01">
             <summary>符卡01</summary>
@@ -280,15 +303,6 @@
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Character.Set">
             <summary>更新显示display的位置</summary>
-        </member>
-        <member name="M:JLQ_MBE_BattleSimulation.Character.UpdateBarHp">
-            <summary>更新血条</summary>
-        </member>
-        <member name="M:JLQ_MBE_BattleSimulation.Character.UpdateBarTime">
-            <summary>更新时间条</summary>
-        </member>
-        <member name="M:JLQ_MBE_BattleSimulation.Character.UpdateBarMp">
-            <summary>更新灵力条</summary>
         </member>
         <member name="F:JLQ_MBE_BattleSimulation.CharacterData.Name">
             <summary>角色名字</summary>
@@ -348,7 +362,7 @@
         <member name="F:JLQ_MBE_BattleSimulation.Game.random">
             <summary>随机数对象</summary>
         </member>
-        <member name="F:JLQ_MBE_BattleSimulation.Game.currentCharacter">
+        <member name="F:JLQ_MBE_BattleSimulation.Game.CurrentCharacter">
             <summary>当前行动者</summary>
         </member>
         <member name="P:JLQ_MBE_BattleSimulation.Game.IsBattle">
@@ -366,10 +380,39 @@
         <member name="P:JLQ_MBE_BattleSimulation.Game.Characters">
             <summary>游戏中所有角色列表</summary>
         </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Game.LabelSection">
+            <summary>当前阶段</summary>
+        </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Game.LabelAttack">
+            <summary>是否已攻击</summary>
+        </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Game.LabelMove">
+            <summary>是否已移动</summary>
+        </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Game.Buttons">
+            <summary>用以响应鼠标事件的按钮</summary>
+        </member>
+        <member name="T:JLQ_MBE_BattleSimulation.Game.DelegateGetTarget">
+            <summary>声明如何选择目标的委托</summary>
+            <param name="SCer">使用符卡者</param>
+            <param name="SCee">被使用符卡者</param>
+            <returns>是否选择此目标</returns>
+        </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Game.GetTarget">
+            <summary>传递参数，如何获取目标以及所需参数列表</summary>
+        </member>
+        <member name="T:JLQ_MBE_BattleSimulation.Game.DelegateHandleTarget">
+            <summary>声明如何处理目标的委托</summary>
+            <param name="SCer">使用符卡者</param>
+            <param name="SCee">被使用符卡者</param>
+        </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Game.HandleTarget">
+            <summary>传递参数，如何处理目标</summary>
+        </member>
         <member name="M:JLQ_MBE_BattleSimulation.Game.#ctor">
             <summary>Game类的构造函数</summary>
         </member>
-        <member name="P:JLQ_MBE_BattleSimulation.Game.CurrentPosotion">
+        <member name="P:JLQ_MBE_BattleSimulation.Game.CurrentPosition">
             <summary>当前行动者的位置</summary>
         </member>
         <member name="P:JLQ_MBE_BattleSimulation.Game.ScName">
@@ -432,6 +475,15 @@
         <member name="M:JLQ_MBE_BattleSimulation.Game.TurnToBattle">
             <summary>改为战斗模式</summary>
         </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Game.SC01">
+            <summary>SC01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Game.SC02">
+            <summary>SC02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Game.SC03">
+            <summary>SC03</summary>
+        </member>
         <member name="T:JLQ_MBE_BattleSimulation.MainWindow">
             <summary>
             MainWindow.xaml 的交互逻辑
@@ -448,9 +500,6 @@
         </member>
         <member name="F:JLQ_MBE_BattleSimulation.MainWindow.borders">
             <summary>棋盘网格线</summary>
-        </member>
-        <member name="F:JLQ_MBE_BattleSimulation.MainWindow.buttons">
-            <summary>用于感知单击的按钮二维数组</summary>
         </member>
         <member name="F:JLQ_MBE_BattleSimulation.MainWindow.game">
             <summary>game对象</summary>
@@ -474,9 +523,6 @@
             <param name="leftButton">鼠标左键状态</param>
             <param name="middleButton">鼠标中键状态</param>
             <param name="rightButton">鼠标右键状态</param>
-        </member>
-        <member name="M:JLQ_MBE_BattleSimulation.MainWindow.UpdateSection">
-            <summary>更新label的文字提示</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.PreparingSection">
             <summary>准备阶段</summary>

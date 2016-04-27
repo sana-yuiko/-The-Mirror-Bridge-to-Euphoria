@@ -12,7 +12,7 @@
         <local:ConverterHasMovedToColor x:Key="converterMove"/>
         <local:ConverterHasAttackedToColor x:Key="converterAttack"/>
     </Window.Resources>
-    <Grid>
+    <Grid x:Name="gridWindow">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="4*"/>
             <ColumnDefinition Width="5*"/>
@@ -23,7 +23,7 @@
             <RowDefinition Height="3*"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Border BorderBrush="Blue" BorderThickness="1" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" Grid.Row="1" VerticalAlignment="Stretch">
+        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" Grid.Row="1" VerticalAlignment="Stretch">
             <Grid x:Name="gridPad" Loaded="gridPad_Loaded">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -65,9 +65,15 @@
                 <RowDefinition Height="3*"/>
                 <RowDefinition Height="6*"/>
             </Grid.RowDefinitions>
-            <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch"/>
-            <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Grid.Row="2"/>
-            <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Grid.Row="4"/>
+            <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch">
+                <Button x:Name="buttonSC01" Content="SC01"/>
+            </Border>
+            <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Grid.Row="2">
+                <Button x:Name="buttonSC02" Content="SC02"/>
+            </Border>
+            <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Grid.Row="4">
+                <Button x:Name="buttonSC03" Content="SC03"/>
+            </Border>
         </Grid>
         <StackPanel HorizontalAlignment="Stretch" Height="28" Margin="0" VerticalAlignment="Top" Grid.ColumnSpan="3">
             <Menu x:Name="menu" Height="22">
@@ -87,14 +93,10 @@
         <Label x:Name="label" Content="当前模式：" Grid.Column="1" HorizontalAlignment="Left" Margin="61,33,0,0" VerticalAlignment="Top" Width="117" Height="37" FontSize="16"/>
         <Label x:Name="labelShow" Content="加人模式" Grid.Column="1" HorizontalAlignment="Left" Margin="158,33,0,0" VerticalAlignment="Top" Height="37" Width="132" FontWeight="SemiBold" FontSize="16" Foreground="Red"/>
         <Label x:Name="label1" Content="当前阶段：" HorizontalAlignment="Left" Margin="104,47,0,0" Grid.Row="2" VerticalAlignment="Top" Width="73"/>
-        <Label x:Name="labelSection" Content="游戏还未开始" HorizontalAlignment="Left" Margin="197,47,0,0" Grid.Row="2" VerticalAlignment="Top" Width="116" FontWeight="SemiBold" Foreground="{Binding ElementName=labelSection, Path=Content, Converter={StaticResource converterContentToColor}}" Height="25"/>
         <Label x:Name="label2" Content="当前添加ID：" Grid.Column="1" HorizontalAlignment="Left" Margin="61,75,0,0" VerticalAlignment="Top" Width="117" Height="34" FontSize="16"/>
         <Label x:Name="labelID" Content="1" Grid.Column="1" HorizontalAlignment="Left" Margin="183,75,0,0" VerticalAlignment="Top" Height="34" Width="132" FontSize="16" FontWeight="SemiBold"/>
-        <Border BorderBrush="Red" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="2" VerticalAlignment="Stretch" Padding="1">
-            <Grid>
-                <Label x:Name="labelAttack" Content="还未攻击" HorizontalAlignment="Left" Margin="259,2,0,0" VerticalAlignment="Top" Width="115" FontWeight="SemiBold" Foreground="{Binding ElementName=labelAttack, Path=Content, Converter={StaticResource converterAttack}}"/>
-                <Label x:Name="labelMove" Content="还未移动" HorizontalAlignment="Left" Margin="82,2,0,0" VerticalAlignment="Top" Width="108" FontWeight="SemiBold" Foreground="{Binding ElementName=labelMove, Path=Content, Converter={StaticResource converterMove}}"/>
-            </Grid>
+        <Border BorderBrush="Red" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="2" VerticalAlignment="Stretch" Padding="1" CornerRadius="5" Margin="2,5,2,2">
+            <Grid x:Name="gridGame" />
         </Border>
     </Grid>
 </Window>

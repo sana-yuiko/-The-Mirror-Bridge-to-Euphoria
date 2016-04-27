@@ -38,8 +38,20 @@ namespace JLQ_MBE_BattleSimulation
         private float _dodgeRateX = 1.0f;
         /// <summary>近战补正增益</summary>
         private float _closeAmendmentX = 1.0f;
+
+        private float __intervalX;
+
         /// <summary>行动间隔增益</summary>
-        private float _intervalX = 1.0f;
+        private float _intervalX
+        {
+            get { return __intervalX; }
+            set
+            {
+                __intervalX = value;
+                CurrentTime = Math.Min(CurrentTime, Interval);
+                BarTime.Maximum = Interval;
+            }
+        }
         /// <summary>机动增量</summary>
         private int _moveAbilityX = 0;
         /// <summary>攻击范围增量</summary>
@@ -51,13 +63,44 @@ namespace JLQ_MBE_BattleSimulation
         protected Game game;
 
         //属性
-        //自动属性
+        private int _hp;
+
         /// <summary>血量</summary>
-        public int Hp { get; protected set; }
+        public int Hp
+        {
+            get { return _hp; }
+            set
+            {
+                _hp = value;
+                BarHp.Value = value;
+            }
+        }
+
+        private int _mp;
+
         /// <summary>灵力</summary>
-        public int Mp { get; protected set; }
+        public int Mp
+        {
+            get { return _mp; }
+            set
+            {
+                _mp = value;
+                BarMp.Value = value;
+            }
+        }
+
+        private int _currentTime;
+
         /// <summary>当前剩余冷却时间</summary>
-        public int CurrentTime { get; set; }
+        public int CurrentTime
+        {
+            get { return _currentTime; }
+            set
+            {
+                _currentTime = value;
+                BarTime.Value = value;
+            }
+        }
         /// <summary>位置，X为Grid.Column，Y为Grid.Row</summary>
         public Point Position { get; protected set; }
         /// <summary>是否已移动</summary>
@@ -116,10 +159,7 @@ namespace JLQ_MBE_BattleSimulation
             HasAttacked = false;
             this.Data =
                 Calculate.CharacterDataList.Where(cd => cd.Name == this.GetType().ToString().Substring(25)).ElementAt(0);
-            this.Hp = this.Data.MaxHp;
             this._maxMp = 1000;
-            this.Mp = _maxMp;
-            this.CurrentTime = this.Data.Interval;
             //初始化显示
             this.LabelDisplay = new Label
             {
@@ -177,6 +217,11 @@ namespace JLQ_MBE_BattleSimulation
             };
             Set();
 
+            this.Hp = this.Data.MaxHp;
+            this.Mp = _maxMp;
+            _intervalX = 1.0f;
+            this.CurrentTime = this.Data.Interval;
+
             BuffList = new List<Buff>();
             this.random = random;
             this.game = game;
@@ -221,6 +266,44 @@ namespace JLQ_MBE_BattleSimulation
             target.BeAttacked((int) damage, this);
             return isCriticalHit;
         }
+        /// <summary>
+        /// 攻击
+        /// </summary>
+        /// <param name="target">攻击目标</param>
+        /// <param name="times">伤害值增益</param>
+        /// <param name="isDanmaku">是否为远程攻击</param>
+        /// <returns></returns>
+        public bool DoAttack(Character target, float times, bool isDanmaku)
+        {
+            bool isCriticalHit = false;
+            int distance = Calculate.Distance(this.Position, target.Position);
+            //判断是否命中
+            if (random.NextDouble() <= Calculate.HitRate(this, target))
+            {
+                float CloseGain;
+                //判断是否近战
+                if (isDanmaku)
+                {
+                    CloseGain = 1.0f;
+                }
+                else
+                {
+                    CloseGain = this.CloseAmendment;
+                }
+                double damage;
+                //判断是否暴击
+                isCriticalHit = random.NextDouble() <= this.CriticalHitRate;
+                damage =/*基础伤害*/Calculate.Damage(this.Attack, target.Defence) *
+                        /*近战补正*/CloseGain */*伤害浮动*/((2 * random.NextDouble() - 1) * this.DamageFloat + 1)
+                        * times;
+                if (isCriticalHit)
+                {
+                    damage *= this.CriticalHitGain;
+                }
+                target.BeAttacked((int)damage, this);
+            }
+            return isCriticalHit;
+        }
 
         /// <summary>将各数据转化为字符串显示</summary>
         /// <returns>各数据字符串化的结果</returns>
@@ -242,14 +325,6 @@ namespace JLQ_MBE_BattleSimulation
                 Calculate.Damage(this.Attack, target.Defence));
         }
 
-        /// <summary>重置属性</summary>
-        public void Reset()
-        {
-            CurrentTime = Interval;
-            HasMoved = false;
-            HasAttacked = false;
-        }
-
         /// <summary>移动至指定坐标</summary>
         /// <param name="end">移动的目标坐标</param>
         public void Move(Point end)
@@ -269,15 +344,43 @@ namespace JLQ_MBE_BattleSimulation
 
         }
 
+        /// <summary>检测灵力是否足够</summary>
+        /// <param name="mp">消耗的灵力量</param>
+        /// <returns>灵力是否足够</returns>
+        public bool IsMpEnough(int mp)
+        {
+            return Mp >= mp;
+        }
+
+        /// <summary>灵力消耗</summary>
+        /// <param name="mp">消耗的灵力量</param>
+        /// <returns>灵力是否足够</returns>
+        public bool MpUse(int mp)
+        {
+            if (Mp < mp)
+            {
+                return false;
+            }
+            Mp -= mp;
+            return true;
+        }
+
+        /// <summary>灵力获取</summary>
+        /// <param name="mp">获得的灵力量</param>
+        public virtual void MpGain(int mp)
+        {
+            Mp = Math.Min(_maxMp, Mp + mp);
+        }
+
 
         //以下为符卡
 
         /// <summary>符卡01</summary>
-        public virtual void SC01() {}
+        public abstract void SC01();
         /// <summary>符卡02</summary>
-        public virtual void SC02() {}
+        public abstract void SC02();
         /// <summary>符卡03</summary>
-        public virtual void SC03() {}
+        public abstract void SC03();
 
 
         //以下为私有函数
@@ -287,15 +390,13 @@ namespace JLQ_MBE_BattleSimulation
         private void Damage(int damage)
         {
             Hp -= damage;
-            UpdateBarHp();
-            //TODO whether dead
         }
 
         /// <summary>将不合法的Position坐标项转化为合法值</summary>
         /// <param name="coordinate">待转化值</param>
         /// <param name="max">最大值</param>
         /// <returns></returns>
-        private static int GetValidPosition(int coordinate,int max)
+        private static int GetValidPosition(int coordinate, int max)
         {
             if (coordinate < 0)
             {
@@ -317,21 +418,6 @@ namespace JLQ_MBE_BattleSimulation
             BarMp.SetValue(Grid.ColumnProperty, (int)Position.X);
             BarMp.SetValue(Grid.RowProperty, (int)Position.Y);
 
-        }
-        /// <summary>更新血条</summary>
-        private void UpdateBarHp()
-        {
-            BarHp.Value = this.Hp;
-        }
-        /// <summary>更新时间条</summary>
-        public void UpdateBarTime()
-        {
-            BarTime.Value = this.CurrentTime;
-        }
-        /// <summary>更新灵力条</summary>
-        private void UpdateBarMp()
-        {
-            BarMp.Value = this.Mp;
         }
 
     }

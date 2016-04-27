@@ -31,8 +31,6 @@ namespace JLQ_MBE_BattleSimulation
         //private DispatcherTimer timer = new DispatcherTimer { Interval = new TimeSpan(0 /*TODO Set Interval*/) };//Timer对象
         /// <summary>棋盘网格线</summary>
         private Border[,] borders = new Border[Column, Row];
-        /// <summary>用于感知单击的按钮二维数组</summary>
-        private Button[,] buttons = new Button[Column, Row];
 
         /// <summary>game对象</summary>
         private readonly Game game;
@@ -156,13 +154,12 @@ namespace JLQ_MBE_BattleSimulation
                         return;
                     }
                     //移动
-                    game.currentCharacter.Move(new Point(column, row));
-                    game.currentCharacter.HasMoved = true;
-                    foreach (var b in buttons)
+                    game.CurrentCharacter.Move(new Point(column, row));
+                    game.HasMoved = true;
+                    foreach (var b in game.Buttons)
                     {
                         b.Opacity = 0;
                     }
-                    labelMove.Content = "已移动";
                     game.UpdateLabelBackground();
                     //如果同时已经攻击过则进入结束阶段
                     if (!game.HasAttacked && game.EnemyCanAttack.Any()) return;
@@ -181,8 +178,8 @@ namespace JLQ_MBE_BattleSimulation
                         return;
                     }
                     //攻击
-                    game.currentCharacter.DoAttack(target);
-                    game.currentCharacter.HasAttacked = true;
+                    game.CurrentCharacter.DoAttack(target);
+                    game.HasAttacked = true;
                     foreach (var c in game.EnemyCanAttack)
                     {
                         c.LabelDisplay.Background = Brushes.White;
@@ -197,7 +194,6 @@ namespace JLQ_MBE_BattleSimulation
                         game.Characters.Remove(target);
                     }
 
-                    labelAttack.Content = "已攻击";
                     //如果同时已经移动过则进入结束阶段
                     if (!game.HasMoved) return;
                     //Thread.Sleep(500);
@@ -211,37 +207,25 @@ namespace JLQ_MBE_BattleSimulation
             }
         }
 
-        /// <summary>更新label的文字提示</summary>
-        private void UpdateSection()
-        {
-            labelSection.Content = Calculate.Convert(game.Section);
-        }
-
         //游戏流程
         /// <summary>准备阶段</summary>
         private void PreparingSection()
         {
             //重置提示
-            labelMove.Content = "还未移动";
-            labelAttack.Content = "还未攻击";
             //获取下个行动的角色
             game.GetNextRoundCharacter();
             Paint();
 
             //跳转阶段
             game.Section = Section.Preparing;
-            UpdateSection();
             game.BuffSettle(JLQ_MBE_BattleSimulation.Section.Preparing);
             //Thread.Sleep(500);
             game.Section = Section.Round;
-            UpdateSection();
         }
         /// <summary>结束阶段</summary>
         private void EndSection()
         {
-            game.currentCharacter.CurrentTime = game.currentCharacter.Interval;
             game.Section = Section.End;
-            UpdateSection();
             game.BuffSettle(Section.End);
             //Thread.Sleep(1000);
 
@@ -256,11 +240,23 @@ namespace JLQ_MBE_BattleSimulation
                 for (var j = 0; j < Row; j++)
                 {
                     if (!game.CanReachPoint[i, j]) continue;
-                    if (new Point(i, j) != game.CurrentPosotion)
+                    if (new Point(i, j) != game.CurrentPosition)
                     {
-                        buttons[i, j].Opacity = 1;
+                        game.Buttons[i, j].Opacity = 1;
                     }
                 }
+            }
+        }
+
+        private void DefaultButtonBackground()
+        {
+            foreach (var b in game.Buttons)
+            {
+                b.Opacity = 0;
+            }
+            foreach (var c in game.Characters)
+            {
+                c.LabelDisplay.Background = Brushes.White;
             }
         }
 
@@ -277,9 +273,9 @@ namespace JLQ_MBE_BattleSimulation
                 {
                     var point1 = new Point(i, j);
                     if (point1 != origin && Calculate.Distance(point1, origin) <= range &&
-                        point1 != game.currentCharacter.Position)
+                        point1 != game.CurrentPosition)
                     {
-                        buttons[i, j].Opacity = 1;
+                        game.Buttons[i, j].Opacity = 1;
                     }
                 }
             }
@@ -322,7 +318,7 @@ namespace JLQ_MBE_BattleSimulation
                     //生成网格线
                     borders[i, j] = new Border
                     {
-                        BorderBrush = new SolidColorBrush(Colors.Blue),
+                        BorderBrush = new SolidColorBrush(Colors.Black),
                         BorderThickness = new Thickness(1),
                         Margin = new Thickness(0),
                         HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -334,25 +330,12 @@ namespace JLQ_MBE_BattleSimulation
                     borders[i, j].SetValue(Grid.RowSpanProperty, 1);
                     borders[i, j].SetValue(Panel.ZIndexProperty, 0);
                     gridPad.Children.Add(borders[i, j]);
-                    //生成网格内用来响应事件的按钮
-                    buttons[i, j] = new Button
-                    {
-                        Margin = new Thickness(1),
-                        HorizontalAlignment = HorizontalAlignment.Stretch,
-                        VerticalAlignment = VerticalAlignment.Stretch,
-                        Background = Brushes.LightYellow,
-                        Opacity = 0
-                    };
-                    buttons[i, j].SetValue(Grid.ColumnProperty, i);
-                    buttons[i, j].SetValue(Grid.RowProperty, j);
-                    buttons[i, j].SetValue(Grid.ColumnSpanProperty, 1);
-                    buttons[i, j].SetValue(Grid.RowSpanProperty, 1);
-                    buttons[i, j].SetValue(Panel.ZIndexProperty, 1);
-                    gridPad.Children.Add(buttons[i, j]);
+                    
+                    gridPad.Children.Add(game.Buttons[i, j]);
                 }
             }
             //生成按钮事件
-            foreach (var button in buttons)
+            foreach (var button in game.Buttons)
             {
                 var column = (int) button.GetValue(Grid.ColumnProperty);
                 var row = (int) button.GetValue(Grid.RowProperty);
@@ -393,44 +376,32 @@ namespace JLQ_MBE_BattleSimulation
                            Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))) ||
                         game.Section != Section.Round || mousePoint == new Point(-1, -1) ||
                         game.Characters.All(c => c.Position != mousePoint) ||
-                        mousePoint == game.currentCharacter.Position) return;
+                        mousePoint == game.CurrentPosition) return;
                     //如果shift被按下
                     if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
                     {
-                        var character = game.Characters.FirstOrDefault(c => c.Position != mousePoint);
+                        var character = game[mousePoint];
                         if (character != null)
                         {
                             //清屏
-                            foreach (var b in buttons)
-                            {
-                                b.Opacity = 0;
-                            }
-                            foreach (var c in game.Characters)
-                            {
-                                c.LabelDisplay.Background = Brushes.White;
-                            }
+                            DefaultButtonBackground();
+
                             SetBackground(mousePoint, character.AttackRange);
-                            game.currentCharacter.LabelDisplay.Background = Brushes.LightPink;
+                            game.CurrentCharacter.LabelDisplay.Background = Brushes.LightPink;
                             character.LabelDisplay.Background = Brushes.LightBlue;
                         }
                     }
                     //如果ctrl被按下
                     if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
                     {
-                        var character = game.Characters.FirstOrDefault(c => c.Position != mousePoint);
+                        var character = game[mousePoint];
                         if (character != null)
                         {
                             //清屏
-                            foreach (var b in buttons)
-                            {
-                                b.Opacity = 0;
-                            }
-                            foreach (var c in game.Characters)
-                            {
-                                c.LabelDisplay.Background = Brushes.White;
-                            }
+                            DefaultButtonBackground();
+
                             SetBackground(mousePoint, character.MoveAbility);
-                            game.currentCharacter.LabelDisplay.Background = Brushes.LightPink;
+                            game.CurrentCharacter.LabelDisplay.Background = Brushes.LightPink;
                             character.LabelDisplay.Background = Brushes.LightBlue;
                         }
                     }
@@ -443,7 +414,7 @@ namespace JLQ_MBE_BattleSimulation
                     if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift) ||
                         Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) return;
                     //恢复原本显示
-                    foreach (var b in buttons)
+                    foreach (var b in game.Buttons)
                     {
                         b.Opacity = 0;
                     }
@@ -451,6 +422,10 @@ namespace JLQ_MBE_BattleSimulation
                     game.UpdateLabelBackground();
                 };
             }
+
+            gridWindow.Children.Add(game.LabelSection);
+            gridGame.Children.Add(game.LabelAttack);
+            gridGame.Children.Add(game.LabelMove);
         }
 
         /// <summary>退出菜单</summary>
