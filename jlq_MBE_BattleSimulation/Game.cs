@@ -122,12 +122,14 @@ namespace JLQ_MBE_BattleSimulation
             {
                 Content = "还未移动",
                 HorizontalAlignment = HorizontalAlignment.Left,
-                Margin = new Thickness(82, 2, 0, 0),
+                Margin = new Thickness(0, 2, 0, 0),
                 VerticalAlignment = VerticalAlignment.Top,
                 Width = 115,
                 FontWeight = FontWeights.SemiBold,
                 Height = 25,
             };
+            LabelMove.SetValue(Grid.ColumnProperty, 1);
+            LabelMove.SetValue(Grid.ColumnSpanProperty, 2);
             var binding2 = new Binding
             {
                 Source = LabelMove,
@@ -140,12 +142,13 @@ namespace JLQ_MBE_BattleSimulation
             {
                 Content = "还未攻击",
                 HorizontalAlignment = HorizontalAlignment.Left,
-                Margin = new Thickness(259, 2, 0, 0),
+                Margin = new Thickness(0, 2, 0, 0),
                 VerticalAlignment = VerticalAlignment.Top,
                 Width = 115,
                 FontWeight = FontWeights.SemiBold,
                 Height = 25,
             };
+            LabelAttack.SetValue(Grid.ColumnProperty, 4);
             var binding3 = new Binding
             {
                 Source = LabelAttack,

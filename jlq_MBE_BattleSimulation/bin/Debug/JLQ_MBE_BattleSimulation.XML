@@ -547,6 +547,9 @@
         <member name="F:JLQ_MBE_BattleSimulation.MainWindow.scButtons">
             <summary>符卡按钮</summary>
         </member>
+        <member name="F:JLQ_MBE_BattleSimulation.MainWindow.labels">
+            <summary>角色数标签</summary>
+        </member>
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.#ctor">
             <summary>构造函数</summary>
         </member>

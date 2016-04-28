@@ -53,6 +53,8 @@ namespace JLQ_MBE_BattleSimulation
         private Point mousePoint = new Point(-1, -1);
         /// <summary>符卡按钮</summary>
         private Button[] scButtons = new Button[3];
+        /// <summary>角色数标签</summary>
+        private Label[] labels = new Label[3];
 
         /// <summary>构造函数</summary>
         public MainWindow()
@@ -98,9 +100,13 @@ namespace JLQ_MBE_BattleSimulation
                 comboBoxDisplay.Items.Add(cd.Display);
             }
             reader.Close();
+            //加入数组
             scButtons[0] = buttonSC01;
             scButtons[1] = buttonSC02;
             scButtons[2] = buttonSC03;
+            labels[0] = labelEnemy;
+            labels[1] = labelMiddle;
+            labels[2] = labelFriend;
             //初始化game对象
             game = new Game();
         }
@@ -139,6 +145,20 @@ namespace JLQ_MBE_BattleSimulation
             game.Characters.Add(characterLastAdd);
             ID++;
             menuBackout.IsEnabled = true;
+            var labelTemp = labels[(int) group + 1];
+            labelTemp.Content = Convert.ToInt32(labelTemp.Content) + 1;
+        }
+
+        private void RemoveCharacter(Character target)
+        {
+            var labelTemp = labels[(int) target.Group + 1];
+            labelTemp.Content = Convert.ToInt32(labelTemp.Content) - 1;
+            gridPad.Children.Remove(target.LabelDisplay);
+            gridPad.Children.Remove(target.BarHp);
+            gridPad.Children.Remove(target.BarTime);
+            gridPad.Children.Remove(target.BarMp);
+            game.Characters.Remove(target);
+
         }
 
         /// <summary>网格单击事件</summary>
@@ -336,15 +356,11 @@ namespace JLQ_MBE_BattleSimulation
         private void IsDead(Character target)
         {
             if (!target.IsDead) return;
-            gridPad.Children.Remove(target.LabelDisplay);
-            gridPad.Children.Remove(target.BarHp);
-            gridPad.Children.Remove(target.BarTime);
-            gridPad.Children.Remove(target.BarMp);
             MessageBox.Show(
                 String.Format("{0}号{1}{2}被{3}号{4}{5}杀死", target.ID, Calculate.Convert(target.Group), target.Name,
                     currentCharacter.ID, Calculate.Convert(currentCharacter.Group), currentCharacter.Name), "死亡",
                 MessageBoxButton.OK, MessageBoxImage.Hand);
-            game.Characters.Remove(target);
+            RemoveCharacter(target);
         }
 
         /// <summary>随机添加角色</summary>
@@ -373,6 +389,7 @@ namespace JLQ_MBE_BattleSimulation
                 var displayIndex = game.Random.Next(count);
                 AddCharacter(pointsCanAdd.ElementAt(index), group, Calculate.CharacterDataList.ElementAt(displayIndex).Display);
             }
+            if (!(bool) checkBox.IsChecked) return;
             MessageBox.Show("生成成功", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
 
         }
@@ -554,6 +571,10 @@ namespace JLQ_MBE_BattleSimulation
             menuBackout.IsEnabled = false;
             ID = 1;
             labelID.Content = "1";
+            foreach (var label in labels)
+            {
+                label.Content = "0";
+            }
         }
 
         /// <summary>模式切换</summary>
@@ -596,11 +617,7 @@ namespace JLQ_MBE_BattleSimulation
         private void menuBackout_Click(object sender, RoutedEventArgs e)
         {
             if (characterLastAdd == null) return;
-            gridPad.Children.Remove(characterLastAdd.LabelDisplay);
-            gridPad.Children.Remove(characterLastAdd.BarHp);
-            gridPad.Children.Remove(characterLastAdd.BarTime);
-            gridPad.Children.Remove(characterLastAdd.BarMp);
-            game.Characters.Remove(characterLastAdd);
+            RemoveCharacter(characterLastAdd);
             ID--;
             if (game.Characters.Count == 0)
             {
