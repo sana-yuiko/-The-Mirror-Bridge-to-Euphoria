@@ -54,7 +54,7 @@ namespace JLQ_MBE_BattleSimulation
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (string)value == "还未移动" ? Brushes.Red : Brushes.Gray;
+            return Convert(value, targetType, parameter, culture);
         }
     }
 
@@ -68,7 +68,7 @@ namespace JLQ_MBE_BattleSimulation
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (string)value == "还未攻击" ? Brushes.Red : Brushes.Gray;
+            return Convert(value, targetType, parameter, culture);
         }
     }
 }

@@ -122,6 +122,11 @@
             <param name="value">当前游戏阶段</param>
             <returns>label的文字提示</returns>
         </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Calculate.Convert(JLQ_MBE_BattleSimulation.Group)">
+            <summary>将阵营转化为字符串</summary>
+            <param name="group">待转化的阵营</param>
+            <returns>阵营中文名</returns>
+        </member>
         <member name="T:JLQ_MBE_BattleSimulation.Character">
             <summary>角色类</summary>
         </member>
@@ -226,6 +231,9 @@
         </member>
         <member name="P:JLQ_MBE_BattleSimulation.Character.IsDead">
             <summary>是否死亡</summary>
+        </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Character.Name">
+            <summary>名字</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Character.#ctor(System.Int32,System.Windows.Point,JLQ_MBE_BattleSimulation.Group,System.Random,JLQ_MBE_BattleSimulation.Game)">
             <summary>Character类的构造函数</summary>
@@ -377,7 +385,7 @@
         <member name="T:JLQ_MBE_BattleSimulation.Game">
             <summary>游戏类</summary>
         </member>
-        <member name="F:JLQ_MBE_BattleSimulation.Game.random">
+        <member name="F:JLQ_MBE_BattleSimulation.Game.Random">
             <summary>随机数对象</summary>
         </member>
         <member name="F:JLQ_MBE_BattleSimulation.Game.CurrentCharacter">
@@ -548,6 +556,12 @@
         <member name="P:JLQ_MBE_BattleSimulation.MainWindow.section">
             <summary>当前游戏阶段</summary>
         </member>
+        <member name="M:JLQ_MBE_BattleSimulation.MainWindow.AddCharacter(System.Windows.Point,JLQ_MBE_BattleSimulation.Group,System.String)">
+            <summary>添加角色</summary>
+            <param name="point">添加的位置</param>
+            <param name="group">角色的阵营</param>
+            <param name="display">显示的字符串</param>
+        </member>
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.GridPadMouseDown(System.Int32,System.Int32,System.Windows.Input.MouseButtonState,System.Windows.Input.MouseButtonState,System.Windows.Input.MouseButtonState)">
             <summary>网格单击事件</summary>
             <param name="column">单击位置的列向坐标</param>
@@ -575,6 +589,11 @@
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.IsDead(JLQ_MBE_BattleSimulation.Character)">
             <summary>死亡结算</summary>
             <param name="target"></param>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.MainWindow.RandomlyAddCharacters(JLQ_MBE_BattleSimulation.Group,System.Int32)">
+            <summary>随机添加角色</summary>
+            <param name="group">角色阵营</param>
+            <param name="number">添加数量</param>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.menuHelp_Click(System.Object,System.Windows.RoutedEventArgs)">
             <summary>帮助-操作菜单</summary>

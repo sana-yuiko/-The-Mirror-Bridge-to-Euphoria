@@ -72,5 +72,20 @@ namespace JLQ_MBE_BattleSimulation
             }
         }
 
+        /// <summary>将阵营转化为字符串</summary>
+        /// <param name="group">待转化的阵营</param>
+        /// <returns>阵营中文名</returns>
+        public static string Convert(Group group)
+        {
+            switch (group)
+            {
+                case Group.Friend:
+                    return "己方";
+                case Group.Enemy:
+                    return "敌方";
+                default:
+                    return "中立方";
+            }
+        }
     }
 }

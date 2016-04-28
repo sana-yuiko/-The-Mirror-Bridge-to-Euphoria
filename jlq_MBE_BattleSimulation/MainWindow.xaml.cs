@@ -114,6 +114,33 @@ namespace JLQ_MBE_BattleSimulation
             set { game.Section = value; }
         }
 
+        /// <summary>添加角色</summary>
+        /// <param name="point">添加的位置</param>
+        /// <param name="group">角色的阵营</param>
+        /// <param name="display">显示的字符串</param>
+        private void AddCharacter(Point point, Group group, string display)
+        {
+            //以下你肯定凌乱了不过就是调用对应的构造函数创建角色对象而已
+            var characterData = Calculate.CharacterDataList.First(cd => cd.Display == display);
+            Type[] constructorTypes =
+            {
+                    typeof (int), typeof (Point), typeof (Group), typeof (Random), typeof (Game)
+                };
+            object[] parameters = { ID, point, group, game.Random, game };
+            characterLastAdd =
+                (Character)
+                    Type.GetType("JLQ_MBE_BattleSimulation." + characterData.Name).GetConstructors()[0].Invoke(
+                        parameters);
+            //各种加入列表
+            gridPad.Children.Add(characterLastAdd.LabelDisplay);
+            gridPad.Children.Add(characterLastAdd.BarHp);
+            gridPad.Children.Add(characterLastAdd.BarTime);
+            gridPad.Children.Add(characterLastAdd.BarMp);
+            game.Characters.Add(characterLastAdd);
+            ID++;
+            menuBackout.IsEnabled = true;
+        }
+
         /// <summary>网格单击事件</summary>
         /// <param name="column">单击位置的列向坐标</param>
         /// <param name="row">单击位置的横向坐标</param>
@@ -139,28 +166,11 @@ namespace JLQ_MBE_BattleSimulation
                     MessageBox.Show("此位置已有角色！", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
-                //以下你肯定凌乱了不过就是调用对应的构造函数创建角色对象而已
-                var characterData = Calculate.CharacterDataList.First(cd => cd.Display == comboBoxDisplay.Text);
-                Type[] constructorTypes =
-                {
-                    typeof (int), typeof (Point), typeof (Group), typeof (Random), typeof (Game)
-                };
+                //添加角色
                 var group = (leftButton == MouseButtonState.Pressed)
                     ? Group.Friend
                     : ((middleButton == MouseButtonState.Pressed) ? Group.Middle : Group.Enemy);
-                object[] parameters = {ID, new Point(column, row), group, new Random(), game};
-                characterLastAdd =
-                    (Character)
-                        Type.GetType("JLQ_MBE_BattleSimulation." + characterData.Name).GetConstructors()[0].Invoke(
-                            parameters);
-                //各种加入列表
-                gridPad.Children.Add(characterLastAdd.LabelDisplay);
-                gridPad.Children.Add(characterLastAdd.BarHp);
-                gridPad.Children.Add(characterLastAdd.BarTime);
-                gridPad.Children.Add(characterLastAdd.BarMp);
-                game.Characters.Add(characterLastAdd);
-                ID++;
-                menuBackout.IsEnabled = true;
+                AddCharacter(new Point(column, row), group, comboBoxDisplay.Text);
             }
             //战斗模式
             else
@@ -173,7 +183,12 @@ namespace JLQ_MBE_BattleSimulation
                     //如果已经移动过则操作非法
                     if (game.HasMoved)
                     {
-                        MessageBox.Show("已移动过", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
+                        if (currentCharacter.Position != new Point(column, row))
+                        {
+                            MessageBox.Show("已移动过", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+                        EndSection();
                         return;
                     }
                     //移动
@@ -192,14 +207,14 @@ namespace JLQ_MBE_BattleSimulation
                 //如果单击的位置是合法攻击点
                 else if (game.EnemyCanAttack.Any(c => c.Position == new Point(column, row)))
                 {
-                    //获取目标
-                    var target = game[new Point(column, row)];
                     //如果已经攻击过则操作非法
                     if (game.HasAttacked)
                     {
                         MessageBox.Show("已攻击过", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
                     }
+                    //获取目标
+                    var target = game[new Point(column, row)];
                     //攻击
                     currentCharacter.DoAttack(target);
                     game.HasAttacked = true;
@@ -210,6 +225,8 @@ namespace JLQ_MBE_BattleSimulation
 
                     //死人提示
                     IsDead(target);
+                    game.Generate_CanReachPoint();
+                    Paint();
 
                     //如果同时已经移动过则进入结束阶段
                     if (!game.HasMoved) return;
@@ -324,9 +341,40 @@ namespace JLQ_MBE_BattleSimulation
             gridPad.Children.Remove(target.BarTime);
             gridPad.Children.Remove(target.BarMp);
             MessageBox.Show(
-                String.Format("{0}号{1}被{2}号{3}杀死", target.ID, target.Data.Name, currentCharacter.ID,
-                    currentCharacter.Data.Name), "死亡", MessageBoxButton.OK, MessageBoxImage.Hand);
+                String.Format("{0}号{1}{2}被{3}号{4}{5}杀死", target.ID, Calculate.Convert(target.Group), target.Name,
+                    currentCharacter.ID, Calculate.Convert(currentCharacter.Group), currentCharacter.Name), "死亡",
+                MessageBoxButton.OK, MessageBoxImage.Hand);
             game.Characters.Remove(target);
+        }
+
+        /// <summary>随机添加角色</summary>
+        /// <param name="group">角色阵营</param>
+        /// <param name="number">添加数量</param>
+        private void RandomlyAddCharacters(Group group, int number)
+        {
+            var points = new List<Point>();
+            for (var i = 0; i < Column; i++)
+            {
+                for (var j = 0; j < Row; j++)
+                {
+                    points.Add(new Point(i, j));
+                }
+            }
+            var pointsCanAdd = points.Where(p => game[p] == null);
+            if (pointsCanAdd.Count() < number)
+            {
+                MessageBox.Show("空格不足！", "添加失败", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            var count = Calculate.CharacterDataList.Count;
+            for (var i = 0; i < number; i++)
+            {
+                var index = game.Random.Next(pointsCanAdd.Count());
+                var displayIndex = game.Random.Next(count);
+                AddCharacter(pointsCanAdd.ElementAt(index), group, Calculate.CharacterDataList.ElementAt(displayIndex).Display);
+            }
+            MessageBox.Show("生成成功", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
+
         }
 
 
@@ -522,10 +570,20 @@ namespace JLQ_MBE_BattleSimulation
             menuBackout.IsEnabled = false;
             menuClear.IsEnabled = false;
             labelShow.Content = "战斗模式";
+            //控件操作
             label2.Visibility = Visibility.Hidden;
             labelID.Visibility = Visibility.Hidden;
             comboBoxDisplay.Text = "";
             comboBoxDisplay.IsEnabled = false;
+            comboBoxEnemy.IsEnabled = false;
+            comboBoxEnemy.Text = "";
+            comboBoxFriend.IsEnabled = false;
+            comboBoxFriend.Text = "";
+            comboBoxMiddle.IsEnabled = false;
+            comboBoxMiddle.Text = "";
+            buttonGenerateFriend.IsEnabled = false;
+            buttonGenerateEnemy.IsEnabled = false;
+            buttonGenerateMiddle.IsEnabled = false;
             labelShow.Foreground = Brushes.Black;
             game.TurnToBattle();
             PreparingSection();
@@ -561,6 +619,21 @@ namespace JLQ_MBE_BattleSimulation
                 "红色字体为己方单位，黑色字体为中立单位，绿色字体为敌方单位；\n" + "战斗模式下：淡粉色为当前行动单位；\n淡蓝色为当前行动单位可攻击的单位；\n淡黄色为可以移动至的位置\n" +
                 "鼠标悬停在单位上方：\n按下Shift显示该角色的攻击范围；\n按下ctrl显示该角色的移动范围。", "显示", MessageBoxButton.OK,
                 MessageBoxImage.Information);
+        }
+
+        private void buttonGenerateFriend_Click(object sender, RoutedEventArgs e)
+        {
+            RandomlyAddCharacters(Group.Friend, Int32.Parse(comboBoxFriend.Text));
+        }
+
+        private void buttonGenerateEnemy_Click(object sender, RoutedEventArgs e)
+        {
+            RandomlyAddCharacters(Group.Enemy, Int32.Parse(comboBoxEnemy.Text));
+        }
+
+        private void buttonGenerateMiddle_Click(object sender, RoutedEventArgs e)
+        {
+            RandomlyAddCharacters(Group.Middle, Int32.Parse(comboBoxMiddle.Text));
         }
     }
 }

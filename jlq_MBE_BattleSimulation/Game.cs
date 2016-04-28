@@ -17,7 +17,7 @@ namespace JLQ_MBE_BattleSimulation
     class Game
     {
         /// <summary>随机数对象</summary>
-        private Random random;
+        public Random Random;
 
         /// <summary>当前行动者</summary>
         public Character CurrentCharacter = null;
@@ -95,7 +95,7 @@ namespace JLQ_MBE_BattleSimulation
         public Game()
         {
             Characters = new List<Character>();
-            this.random = new Random();
+            this.Random = new Random();
             this.IsBattle = false;
 
             //LabelSection
@@ -254,7 +254,7 @@ namespace JLQ_MBE_BattleSimulation
                     }
                 }
             }
-            var i = random.Next(stack.Count);
+            var i = Random.Next(stack.Count);
             CurrentCharacter = stack.ElementAt(i);
             UpdateLabelBackground();
 
@@ -324,7 +324,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>将所有可以到达的点在bool二维数组中置为true</summary>
         /// <param name="origin">起点</param>
         /// <param name="step">步数</param>
-        public void AssignPointCanReach(Point origin, int step)
+        private void AssignPointCanReach(Point origin, int step)
         {
             CanReachPoint[(int)origin.X, (int)origin.Y] = true;
             if (step == 0) return;

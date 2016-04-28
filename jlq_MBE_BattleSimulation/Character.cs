@@ -143,6 +143,8 @@ namespace JLQ_MBE_BattleSimulation
         private float DamageFloat => 0.1f;
         /// <summary>是否死亡</summary>
         public bool IsDead => Hp <= 0;
+        /// <summary>名字</summary>
+        public string Name => Data.Name;
 
         /// <summary>Character类的构造函数</summary>
         /// <param name="id">角色ID</param>

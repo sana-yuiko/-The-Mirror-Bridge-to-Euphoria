@@ -74,6 +74,45 @@
             <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Grid.Row="4" CornerRadius="5">
                 <Button x:Name="buttonSC03" Content="SC03"/>
             </Border>
+            <Button x:Name="buttonGenerateFriend" Content="随机生成友军" Grid.Column="2" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="5" VerticalAlignment="Top" Width="75" Height="27" Click="buttonGenerateFriend_Click"/>
+            <Button x:Name="buttonGenerateEnemy" Content="随机生成敌军" Grid.Column="2" HorizontalAlignment="Left" Margin="10,78,0,0" Grid.Row="5" VerticalAlignment="Top" Width="75" Height="27" Click="buttonGenerateEnemy_Click"/>
+            <ComboBox x:Name="comboBoxFriend" Grid.Column="1" HorizontalAlignment="Left" Margin="60,10,0,0" Grid.Row="5" VerticalAlignment="Top" Width="120" Height="27" Text="1">
+                <ComboBoxItem>1</ComboBoxItem>
+                <ComboBoxItem>2</ComboBoxItem>
+                <ComboBoxItem>3</ComboBoxItem>
+                <ComboBoxItem>4</ComboBoxItem>
+                <ComboBoxItem>5</ComboBoxItem>
+                <ComboBoxItem>6</ComboBoxItem>
+                <ComboBoxItem>7</ComboBoxItem>
+                <ComboBoxItem>8</ComboBoxItem>
+                <ComboBoxItem>9</ComboBoxItem>
+                <ComboBoxItem>10</ComboBoxItem>
+            </ComboBox>
+            <ComboBox x:Name="comboBoxEnemy" Grid.Column="1" HorizontalAlignment="Left" Margin="60,78,0,0" Grid.Row="5" VerticalAlignment="Top" Width="120" Height="27" Text="1">
+                <ComboBoxItem>1</ComboBoxItem>
+                <ComboBoxItem>2</ComboBoxItem>
+                <ComboBoxItem>3</ComboBoxItem>
+                <ComboBoxItem>4</ComboBoxItem>
+                <ComboBoxItem>5</ComboBoxItem>
+                <ComboBoxItem>6</ComboBoxItem>
+                <ComboBoxItem>7</ComboBoxItem>
+                <ComboBoxItem>8</ComboBoxItem>
+                <ComboBoxItem>9</ComboBoxItem>
+                <ComboBoxItem>10</ComboBoxItem>
+            </ComboBox>
+            <ComboBox x:Name="comboBoxMiddle" Grid.Column="1" HorizontalAlignment="Left" Margin="60,42,0,0" Grid.Row="5" VerticalAlignment="Top" Width="120" Height="27" Text="1">
+                <ComboBoxItem>1</ComboBoxItem>
+                <ComboBoxItem>2</ComboBoxItem>
+                <ComboBoxItem>3</ComboBoxItem>
+                <ComboBoxItem>4</ComboBoxItem>
+                <ComboBoxItem>5</ComboBoxItem>
+                <ComboBoxItem>6</ComboBoxItem>
+                <ComboBoxItem>7</ComboBoxItem>
+                <ComboBoxItem>8</ComboBoxItem>
+                <ComboBoxItem>9</ComboBoxItem>
+                <ComboBoxItem>10</ComboBoxItem>
+            </ComboBox>
+            <Button x:Name="buttonGenerateMiddle" Content="随机生成中立" Grid.Column="2" HorizontalAlignment="Left" Margin="10,42,0,0" Grid.Row="5" VerticalAlignment="Top" Width="75" Height="27" Click="buttonGenerateMiddle_Click"/>
         </Grid>
         <StackPanel HorizontalAlignment="Stretch" Height="28" Margin="0" VerticalAlignment="Top" Grid.ColumnSpan="3">
             <Menu x:Name="menu" Height="22">
