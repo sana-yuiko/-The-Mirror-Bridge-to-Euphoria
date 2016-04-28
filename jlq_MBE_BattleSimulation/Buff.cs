@@ -13,24 +13,17 @@ namespace JLQ_MBE_BattleSimulation
     /// 每个角色的buff效果自己编写，会有一些静态的buff供调用；
     /// 开发者备注：静态的buff需要有一系列参数，每人使用lambda表达式代入参数的具体值；
     /// </summary>
-    class Buff
+    public class Buff
     {
         /// <summary>buff剩余轮数</summary>
         public int RoundNum { get; protected set; }
         /// <summary>buff执行的阶段</summary>
         public readonly Section ExecuteSection;
 
-        /// <summary>buff效果的委托</summary>
-        /// <param name="buffee">buff承受者</param>
-        /// <param name="buffer">buff发出者</param>
-        public delegate void BuffAffect(Character buffee, Character buffer);
-        /// <summary>取消buff的委托</summary>
-        public delegate void BuffCancel();
-
         /// <summary>buff效果的委托对象</summary>
-        public BuffAffect buffAffect;
+        public DBuffAffect buffAffect;
         /// <summary>取消buff的委托对象</summary>
-        public BuffCancel buffCancels;
+        public DBuffCancel buffCancels;
 
         /// <summary>buff发出者</summary>
         public Character buffer;
@@ -43,7 +36,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <param name="roundNum">buff持续回合数</param>
         /// <param name="executeSection">buff执行的阶段</param>
         /// <param name="affect">buff效果委托</param>
-        public Buff(Character buffee, Character buffer, int roundNum, Section executeSection, BuffAffect affect)
+        public Buff(Character buffee, Character buffer, int roundNum, Section executeSection, DBuffAffect affect)
         {
             this.buffer = buffer;
             this.buffee = buffee;

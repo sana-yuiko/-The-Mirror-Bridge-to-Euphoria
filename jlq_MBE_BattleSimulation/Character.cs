@@ -13,7 +13,7 @@ using System.Windows.Media;
 namespace JLQ_MBE_BattleSimulation
 {
     /// <summary>角色类</summary>
-    abstract class Character
+    public abstract class Character
     {
         //以下为字段
         //只读字段
@@ -113,8 +113,11 @@ namespace JLQ_MBE_BattleSimulation
         //显示
         /// <summary>显示Display的Label</summary>
         public Label LabelDisplay { get; set; }
+        /// <summary>显示Hp的ProgressBar</summary>
         public ProgressBar BarHp { get; set; }
+        /// <summary>显示Mp的ProgressBar</summary>
         public ProgressBar BarMp { get; set; }
+        /// <summary>显示剩余时间的ProgressBar</summary>
         public ProgressBar BarTime { get; set; }
 
 
@@ -145,6 +148,9 @@ namespace JLQ_MBE_BattleSimulation
         public bool IsDead => Hp <= 0;
         /// <summary>名字</summary>
         public string Name => Data.Name;
+
+        /// <summary>被攻击的委托对象</summary>
+        public DBeAttacked HandleBeAttacked;
 
         /// <summary>Character类的构造函数</summary>
         /// <param name="id">角色ID</param>
@@ -227,11 +233,13 @@ namespace JLQ_MBE_BattleSimulation
             BuffList = new List<Buff>();
             this.random = random;
             this.game = game;
+            //初始化委托
+            HandleBeAttacked = BeAttacked;
         }
 
         /// <summary>被攻击</summary>
         /// <param name="damage">伤害值</param>
-        /// <param name="attacker">攻击者</param>
+        /// <param name="attacker">伤害来源</param>
         public void BeAttacked(int damage, Character attacker)
         {
             Damage(damage);
@@ -265,7 +273,7 @@ namespace JLQ_MBE_BattleSimulation
             {
                 damage *= this.CriticalHitGain;
             }
-            target.BeAttacked((int)damage, this);
+            target.HandleBeAttacked((int)damage, this);
             return isCriticalHit;
         }
 
@@ -341,10 +349,16 @@ namespace JLQ_MBE_BattleSimulation
 
         /// <summary>符卡01</summary>
         public abstract void SC01();
+        /// <summary>结束使用符卡01</summary>
+        public abstract void EndSC01();
         /// <summary>符卡02</summary>
         public abstract void SC02();
+        /// <summary>结束使用符卡02</summary>
+        public abstract void EndSC02();
         /// <summary>符卡03</summary>
         public abstract void SC03();
+        /// <summary>结束使用符卡03</summary>
+        public abstract void EndSC03();
 
 
         //以下为私有函数

@@ -166,9 +166,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <param name="row">单击位置的横向坐标</param>
         /// <param name="leftButton">鼠标左键状态</param>
         /// <param name="middleButton">鼠标中键状态</param>
-        /// <param name="rightButton">鼠标右键状态</param>
-        private void GridPadMouseDown(int column, int row, MouseButtonState leftButton, MouseButtonState middleButton,
-            MouseButtonState rightButton)
+        private void GridPadMouseDown(int column, int row, MouseButtonState leftButton, MouseButtonState middleButton)
         {
             //TODO Pad Mouse Down
             //加人模式
@@ -197,8 +195,34 @@ namespace JLQ_MBE_BattleSimulation
             {
                 //如果不是行动阶段则操作非法
                 if (section != Section.Round) return;
+                if (game.HasAttacked)
+                {
+                    MessageBox.Show("已攻击过不能使用符卡", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                //符卡
+                if (game.ScSelect != 0)
+                {
+                    //如果单击位置不合法
+                    if (!game.IsLegalClick(mousePoint))
+                    {
+                        MessageBox.Show("位置非法", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+                    var legalCharacters = game.Characters.Where(c => game.IsTargetLegal(c, mousePoint));
+                    foreach (var c in legalCharacters)
+                    {
+                        game.HandleTarget(c);
+                    }
+                    game.EndSC();
+                    game.HasAttacked = true;
+                    //如果同时已经移动过则进入结束阶段
+                    if (!game.HasMoved) return;
+                    //Thread.Sleep(500);
+                    EndSection();
+                }
                 //如果单击的位置是合法移动点
-                if (game.CanReachPoint[column, row])
+                else if (game.CanReachPoint[column, row])
                 {
                     //如果已经移动过则操作非法
                     if (game.HasMoved)
@@ -456,13 +480,12 @@ namespace JLQ_MBE_BattleSimulation
                 {
                     if (ev.LeftButton == MouseButtonState.Released)
                     {
-                        GridPadMouseDown(column, row, MouseButtonState.Released, ev.MiddleButton, ev.RightButton);
+                        GridPadMouseDown(column, row, MouseButtonState.Released, ev.MiddleButton);
                     }
                 };
                 button.Click +=
                     (s, ev) =>
-                        GridPadMouseDown(column, row, MouseButtonState.Pressed, MouseButtonState.Released,
-                            MouseButtonState.Released);
+                        GridPadMouseDown(column, row, MouseButtonState.Pressed, MouseButtonState.Released);
                 button.MouseMove += (s, ev) =>
                 {
                     if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
@@ -651,6 +674,21 @@ namespace JLQ_MBE_BattleSimulation
         private void buttonGenerateMiddle_Click(object sender, RoutedEventArgs e)
         {
             RandomlyAddCharacters(Group.Middle, Int32.Parse(comboBoxMiddle.Text));
+        }
+
+        private void buttonSC01_Click(object sender, RoutedEventArgs e)
+        {
+            game.SC(1);
+        }
+
+        private void buttonSC02_Click(object sender, RoutedEventArgs e)
+        {
+            game.SC(2);
+        }
+
+        private void buttonSC03_Click(object sender, RoutedEventArgs e)
+        {
+            game.SC(3);
         }
     }
 }

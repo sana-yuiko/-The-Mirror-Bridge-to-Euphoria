@@ -14,7 +14,7 @@ using System.Windows.Data;
 namespace JLQ_MBE_BattleSimulation
 {
     /// <summary>游戏类</summary>
-    class Game
+    public class Game
     {
         /// <summary>随机数对象</summary>
         public Random Random;
@@ -77,19 +77,14 @@ namespace JLQ_MBE_BattleSimulation
         public Button[,] Buttons { get; set; }
 
         //符卡相关
-        /// <summary>声明如何选择目标的委托</summary>
-        /// <param name="SCer">使用符卡者</param>
-        /// <param name="SCee">被使用符卡者</param>
-        /// <returns>是否选择此目标</returns>
-        public delegate bool DelegateGetTarget(Character SCer, Character SCee);
         /// <summary>传递参数，如何获取目标以及所需参数列表</summary>
-        public DelegateGetTarget GetTarget;
-        /// <summary>声明如何处理目标的委托</summary>
-        /// <param name="SCer">使用符卡者</param>
-        /// <param name="SCee">被使用符卡者</param>
-        public delegate void DelegateHandleTarget(Character SCer, Character SCee);
+        public DIsTargetLegal IsTargetLegal;
         /// <summary>传递参数，如何处理目标</summary>
-        public DelegateHandleTarget HandleTarget;
+        public DHandleTarget HandleTarget;
+        /// <summary>传递参数，判断单击位置是否有效</summary>
+        public DIsLegalClick IsLegalClick;
+        /// <summary>是否处于符卡状态</summary>
+        public int ScSelect;
 
         /// <summary>Game类的构造函数</summary>
         public Game()
@@ -377,24 +372,49 @@ namespace JLQ_MBE_BattleSimulation
         }
 
         //SC
-        /// <summary>SC01</summary>
-        public void SC01()
+        /// <summary>SC</summary>
+        public void SC(int index)
         {
-            CurrentCharacter.SC01();
+            ScSelect = index;
+            switch (index)
+            {
+                case 1:
+                    CurrentCharacter.SC01();
+                    return;
+                case 2:
+                    CurrentCharacter.SC02();
+                    return;
+                case 3:
+                    CurrentCharacter.SC03();
+                    return;
+            }
         }
-        /// <summary>SC02</summary>
-        public void SC02()
-        {
 
-        }
-        /// <summary>SC03</summary>
-        public void SC03()
+        /// <summary>结束符卡结算</summary>
+        public void EndSC()
         {
-
+            var index = ScSelect;
+            ScSelect = 0;
+            switch (index)
+            {
+                case 1:
+                    CurrentCharacter.EndSC01();
+                    return;
+                case 2:
+                    CurrentCharacter.EndSC02();
+                    return;
+                case 3:
+                    CurrentCharacter.EndSC03();
+                    return;
+            }
         }
+
+
         //TODO save&load
 
-        //播放声音
+        /// <summary>播放声音</summary>
+        /// <param name="uType"></param>
+        /// <returns></returns>
         [DllImport("user32.dll")]
         public static extern bool MessageBeep(uint uType);
 

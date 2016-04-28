@@ -4,11 +4,471 @@
         <name>JLQ_MBE_BattleSimulation</name>
     </assembly>
     <members>
+        <member name="M:JLQ_MBE_BattleSimulation.Alice.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Alice.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Alice.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Alice.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Alice.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Alice.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Chen.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Chen.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Chen.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Chen.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Chen.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Chen.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Cirno.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Cirno.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Cirno.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Cirno.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Cirno.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Cirno.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Daiyousei.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Daiyousei.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Daiyousei.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Daiyousei.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Daiyousei.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Daiyousei.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="T:JLQ_MBE_BattleSimulation.DBeAttacked">
+            <summary>被攻击的委托</summary>
+            <param name="damage">伤害值</param>
+            <param name="attacker">伤害来源</param>
+        </member>
+        <member name="T:JLQ_MBE_BattleSimulation.DBuffAffect">
+            <summary>buff效果的委托</summary>
+            <param name="buffee">buff承受者</param>
+            <param name="buffer">buff发出者</param>
+        </member>
+        <member name="T:JLQ_MBE_BattleSimulation.DBuffCancel">
+            <summary>取消buff的委托</summary>
+        </member>
+        <member name="T:JLQ_MBE_BattleSimulation.DHandleTarget">
+            <summary>如何处理目标的委托</summary>
+            <param name="SCee">被使用符卡者</param>
+        </member>
+        <member name="T:JLQ_MBE_BattleSimulation.DIsTargetLegal">
+            <summary>如何选择目标的委托</summary>
+            <param name="SCee">符卡目标</param>
+            <param name="clickPoint">单击位置</param>
+            <returns>该目标是否是符卡的合法目标</returns>
+        </member>
+        <member name="T:JLQ_MBE_BattleSimulation.DIsLegalClick">
+            <summary>所选位置是否为合法目标的委托</summary>
+            <param name="clickPoint">单击位置</param>
+            <returns>单击位置是否合法</returns>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Eirin.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Eirin.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Eirin.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Eirin.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Eirin.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Eirin.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
         <member name="T:JLQ_MBE_BattleSimulation.Group">
             <summary>阵营</summary>
         </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Group.Middle">
+            <summary>中立</summary>
+        </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Group.Friend">
+            <summary>友军</summary>
+        </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Group.Enemy">
+            <summary>敌军</summary>
+        </member>
         <member name="T:JLQ_MBE_BattleSimulation.Section">
             <summary>游戏阶段</summary>
+        </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Section.Preparing">
+            <summary>准备阶段</summary>
+        </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Section.Round">
+            <summary>行动阶段</summary>
+        </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Section.End">
+            <summary>结束阶段</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Flandre.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Flandre.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Flandre.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Flandre.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Flandre.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Flandre.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Gedama.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Gedama.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Gedama.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Gedama.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Gedama.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Gedama.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Kaguya.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Kaguya.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Kaguya.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Kaguya.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Kaguya.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Kaguya.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Keine.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Keine.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Keine.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Keine.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Keine.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Keine.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Koakuma.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Koakuma.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Koakuma.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Koakuma.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Koakuma.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Koakuma.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Leira.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Leira.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Leira.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Leira.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Leira.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Leira.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Letty.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Letty.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Letty.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Letty.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Letty.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Letty.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.LilyWhite.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.LilyWhite.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.LilyWhite.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.LilyWhite.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.LilyWhite.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.LilyWhite.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Lunasa.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Lunasa.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Lunasa.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Lunasa.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Lunasa.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Lunasa.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Lyrica.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Lyrica.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Lyrica.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Lyrica.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Lyrica.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Lyrica.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Marisa.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Marisa.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Marisa.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Marisa.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Marisa.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Marisa.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Meirin.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Meirin.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Meirin.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Meirin.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Meirin.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Meirin.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Merlin.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Merlin.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Merlin.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Merlin.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Merlin.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Merlin.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Mokou.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Mokou.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Mokou.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Mokou.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Mokou.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Mokou.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Mystia.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Mystia.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Mystia.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Mystia.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Mystia.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Mystia.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Patchouli.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Patchouli.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Patchouli.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Patchouli.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Patchouli.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Patchouli.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Ran.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Ran.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Ran.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Ran.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Ran.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Ran.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Reimiria.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Reimiria.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Reimiria.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Reimiria.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Reimiria.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Reimiria.EndSC03">
+            <summary>结束符卡03</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Reimu.MpGain(System.Int32)">
             <summary>1.2倍灵力获取</summary>
@@ -16,6 +476,201 @@
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Reimu.SC01">
             <summary>符卡01：梦想封印，对所有4格内的敌人造成1.0倍率的弹幕攻击</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Reimu.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Reimu.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Reimu.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Reimu.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Reimu.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Reisen.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Reisen.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Reisen.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Reisen.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Reisen.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Reisen.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Rin.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Rin.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Rin.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Rin.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Rin.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Rin.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Rumia.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Rumia.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Rumia.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Rumia.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Rumia.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Rumia.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Sakuya.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Sakuya.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Sakuya.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Sakuya.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Sakuya.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Sakuya.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Suika.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Suika.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Suika.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Suika.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Suika.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Suika.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Tewi.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Tewi.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Tewi.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Tewi.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Tewi.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Tewi.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Wriggle.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Wriggle.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Wriggle.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Wriggle.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Wriggle.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Wriggle.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Youmu.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Youmu.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Youmu.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Youmu.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Youmu.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Youmu.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Yukari.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Yukari.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Yukari.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Yukari.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Yukari.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Yukari.EndSC03">
+            <summary>结束符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Yuyuko.SC01">
+            <summary>符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Yuyuko.EndSC01">
+            <summary>结束符卡01</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Yuyuko.SC02">
+            <summary>符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Yuyuko.EndSC02">
+            <summary>结束符卡02</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Yuyuko.SC03">
+            <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Yuyuko.EndSC03">
+            <summary>结束符卡03</summary>
         </member>
         <member name="T:JLQ_MBE_BattleSimulation.App">
             <summary>
@@ -50,14 +705,6 @@
         <member name="F:JLQ_MBE_BattleSimulation.Buff.ExecuteSection">
             <summary>buff执行的阶段</summary>
         </member>
-        <member name="T:JLQ_MBE_BattleSimulation.Buff.BuffAffect">
-            <summary>buff效果的委托</summary>
-            <param name="buffee">buff承受者</param>
-            <param name="buffer">buff发出者</param>
-        </member>
-        <member name="T:JLQ_MBE_BattleSimulation.Buff.BuffCancel">
-            <summary>取消buff的委托</summary>
-        </member>
         <member name="F:JLQ_MBE_BattleSimulation.Buff.buffAffect">
             <summary>buff效果的委托对象</summary>
         </member>
@@ -70,7 +717,7 @@
         <member name="F:JLQ_MBE_BattleSimulation.Buff.buffee">
             <summary>buff承受者</summary>
         </member>
-        <member name="M:JLQ_MBE_BattleSimulation.Buff.#ctor(JLQ_MBE_BattleSimulation.Character,JLQ_MBE_BattleSimulation.Character,System.Int32,JLQ_MBE_BattleSimulation.Section,JLQ_MBE_BattleSimulation.Buff.BuffAffect)">
+        <member name="M:JLQ_MBE_BattleSimulation.Buff.#ctor(JLQ_MBE_BattleSimulation.Character,JLQ_MBE_BattleSimulation.Character,System.Int32,JLQ_MBE_BattleSimulation.Section,JLQ_MBE_BattleSimulation.DBuffAffect)">
             <summary>Buff类的构造函数</summary>
             <param name="buffee">buff承受者</param>
             <param name="buffer">buff发出者</param>
@@ -196,6 +843,15 @@
         <member name="P:JLQ_MBE_BattleSimulation.Character.LabelDisplay">
             <summary>显示Display的Label</summary>
         </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Character.BarHp">
+            <summary>显示Hp的ProgressBar</summary>
+        </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Character.BarMp">
+            <summary>显示Mp的ProgressBar</summary>
+        </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Character.BarTime">
+            <summary>显示剩余时间的ProgressBar</summary>
+        </member>
         <member name="P:JLQ_MBE_BattleSimulation.Character.Attack">
             <summary>攻击</summary>
         </member>
@@ -235,6 +891,9 @@
         <member name="P:JLQ_MBE_BattleSimulation.Character.Name">
             <summary>名字</summary>
         </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Character.HandleBeAttacked">
+            <summary>被攻击的委托对象</summary>
+        </member>
         <member name="M:JLQ_MBE_BattleSimulation.Character.#ctor(System.Int32,System.Windows.Point,JLQ_MBE_BattleSimulation.Group,System.Random,JLQ_MBE_BattleSimulation.Game)">
             <summary>Character类的构造函数</summary>
             <param name="id">角色ID</param>
@@ -246,7 +905,7 @@
         <member name="M:JLQ_MBE_BattleSimulation.Character.BeAttacked(System.Int32,JLQ_MBE_BattleSimulation.Character)">
             <summary>被攻击</summary>
             <param name="damage">伤害值</param>
-            <param name="attacker">攻击者</param>
+            <param name="attacker">伤害来源</param>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Character.DoAttack(JLQ_MBE_BattleSimulation.Character)">
             <summary>攻击</summary>
@@ -296,11 +955,20 @@
         <member name="M:JLQ_MBE_BattleSimulation.Character.SC01">
             <summary>符卡01</summary>
         </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.EndSC01">
+            <summary>结束使用符卡01</summary>
+        </member>
         <member name="M:JLQ_MBE_BattleSimulation.Character.SC02">
             <summary>符卡02</summary>
         </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.EndSC02">
+            <summary>结束使用符卡02</summary>
+        </member>
         <member name="M:JLQ_MBE_BattleSimulation.Character.SC03">
             <summary>符卡03</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.EndSC03">
+            <summary>结束使用符卡03</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Character.Damage(System.Int32)">
             <summary>受伤</summary>
@@ -329,6 +997,9 @@
             <summary>是否暴击</summary>
             <param name="target">攻击目标</param>
             <returns>是否暴击</returns>
+        </member>
+        <member name="T:JLQ_MBE_BattleSimulation.CharacterData">
+            <summary>角色数据类</summary>
         </member>
         <member name="F:JLQ_MBE_BattleSimulation.CharacterData.Name">
             <summary>角色名字</summary>
@@ -418,22 +1089,17 @@
         <member name="P:JLQ_MBE_BattleSimulation.Game.Buttons">
             <summary>用以响应鼠标事件的按钮</summary>
         </member>
-        <member name="T:JLQ_MBE_BattleSimulation.Game.DelegateGetTarget">
-            <summary>声明如何选择目标的委托</summary>
-            <param name="SCer">使用符卡者</param>
-            <param name="SCee">被使用符卡者</param>
-            <returns>是否选择此目标</returns>
-        </member>
-        <member name="F:JLQ_MBE_BattleSimulation.Game.GetTarget">
+        <member name="F:JLQ_MBE_BattleSimulation.Game.IsTargetLegal">
             <summary>传递参数，如何获取目标以及所需参数列表</summary>
-        </member>
-        <member name="T:JLQ_MBE_BattleSimulation.Game.DelegateHandleTarget">
-            <summary>声明如何处理目标的委托</summary>
-            <param name="SCer">使用符卡者</param>
-            <param name="SCee">被使用符卡者</param>
         </member>
         <member name="F:JLQ_MBE_BattleSimulation.Game.HandleTarget">
             <summary>传递参数，如何处理目标</summary>
+        </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Game.IsLegalClick">
+            <summary>传递参数，判断单击位置是否有效</summary>
+        </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Game.ScSelect">
+            <summary>是否处于符卡状态</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Game.#ctor">
             <summary>Game类的构造函数</summary>
@@ -506,14 +1172,16 @@
         <member name="M:JLQ_MBE_BattleSimulation.Game.TurnToBattle">
             <summary>改为战斗模式</summary>
         </member>
-        <member name="M:JLQ_MBE_BattleSimulation.Game.SC01">
-            <summary>SC01</summary>
+        <member name="M:JLQ_MBE_BattleSimulation.Game.SC(System.Int32)">
+            <summary>SC</summary>
         </member>
-        <member name="M:JLQ_MBE_BattleSimulation.Game.SC02">
-            <summary>SC02</summary>
+        <member name="M:JLQ_MBE_BattleSimulation.Game.EndSC">
+            <summary>结束符卡结算</summary>
         </member>
-        <member name="M:JLQ_MBE_BattleSimulation.Game.SC03">
-            <summary>SC03</summary>
+        <member name="M:JLQ_MBE_BattleSimulation.Game.MessageBeep(System.UInt32)">
+            <summary>播放声音</summary>
+            <param name="uType"></param>
+            <returns></returns>
         </member>
         <member name="T:JLQ_MBE_BattleSimulation.MainWindow">
             <summary>
@@ -565,13 +1233,12 @@
             <param name="group">角色的阵营</param>
             <param name="display">显示的字符串</param>
         </member>
-        <member name="M:JLQ_MBE_BattleSimulation.MainWindow.GridPadMouseDown(System.Int32,System.Int32,System.Windows.Input.MouseButtonState,System.Windows.Input.MouseButtonState,System.Windows.Input.MouseButtonState)">
+        <member name="M:JLQ_MBE_BattleSimulation.MainWindow.GridPadMouseDown(System.Int32,System.Int32,System.Windows.Input.MouseButtonState,System.Windows.Input.MouseButtonState)">
             <summary>网格单击事件</summary>
             <param name="column">单击位置的列向坐标</param>
             <param name="row">单击位置的横向坐标</param>
             <param name="leftButton">鼠标左键状态</param>
             <param name="middleButton">鼠标中键状态</param>
-            <param name="rightButton">鼠标右键状态</param>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.PreparingSection">
             <summary>准备阶段</summary>
