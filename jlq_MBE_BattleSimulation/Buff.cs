@@ -15,22 +15,13 @@ namespace JLQ_MBE_BattleSimulation
     /// </summary>
     class Buff
     {
-        /// <summary>buff剩余轮数</summary>
-        public int RoundNum { get; protected set; }
-        /// <summary>buff执行的阶段</summary>
-        public readonly Section ExecuteSection;
+        /// <summary>buff剩余时间</summary>
+        public int TimeRemain { get; protected set; }
 
-        /// <summary>buff效果的委托</summary>
-        /// <param name="buffee">buff承受者</param>
-        /// <param name="buffer">buff发出者</param>
-        public delegate void BuffAffect(Character buffee, Character buffer);
-        /// <summary>取消buff的委托</summary>
-        public delegate void BuffCancel();
-
-        /// <summary>buff效果的委托对象</summary>
-        public BuffAffect buffAffect;
-        /// <summary>取消buff的委托对象</summary>
-        public BuffCancel buffCancels;
+        ///// <summary>buff效果的委托对象</summary>
+        //public DelegateEvent.BuffAffect buffAffect;
+        /// <summary>buff效果取消的委托对象</summary>
+        public DelegateEvent.BuffAffect buffCancel;
 
         /// <summary>buff发出者</summary>
         public Character buffer;
@@ -40,33 +31,35 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>Buff类的构造函数</summary>
         /// <param name="buffee">buff承受者</param>
         /// <param name="buffer">buff发出者</param>
-        /// <param name="roundNum">buff持续回合数</param>
-        /// <param name="executeSection">buff执行的阶段</param>
+        /// <param name="timeRemain">buff持续时间</param>
         /// <param name="affect">buff效果委托</param>
-        public Buff(Character buffee, Character buffer, int roundNum, Section executeSection, BuffAffect affect)
+        /// <param name="buffCancel">buff效果取消委托</param>
+        public Buff(Character buffer, Character buffee, int timeRemain, DelegateEvent.BuffAffect affect, DelegateEvent.BuffAffect buffCancel)
         {
             this.buffer = buffer;
             this.buffee = buffee;
-            this.RoundNum = roundNum;
-            this.ExecuteSection = executeSection;
-            this.buffAffect = affect;
+            this.TimeRemain = timeRemain;
+            affect(this.buffer, this.buffee);
+            this.buffCancel = buffCancel;
         }
 
-        /// <summary>buff引发</summary>
-        public void BuffTrigger()
+        /// <summary>buff时间流逝</summary>
+        /// <param name="time">经过时间</param>
+        /// <returns>是否结束buff</returns>
+        public bool Time(int time)
         {
-            buffAffect(this.buffer, this.buffee);
+            TimeRemain -= time;
+            if (TimeRemain <= 0)
+            {
+                EndBuff();
+                buffee.BuffList.Remove(this);
+            }
+            return TimeRemain <= 0;
         }
 
-        /// <summary>轮数减少</summary>
-        /// <returns>减少后剩余轮数是否为0</returns>
-        public bool Round() => (--RoundNum) == 0;
-
-        /// <summary>buff结束</summary>
-        public void BuffEnd()
+        public void EndBuff()
         {
-            buffCancels();
+            buffCancel(buffee, buffer);
         }
-
     }
 }

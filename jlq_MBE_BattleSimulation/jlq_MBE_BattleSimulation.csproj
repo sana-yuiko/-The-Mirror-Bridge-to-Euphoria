@@ -60,6 +60,7 @@
     <Compile Include="Chen.cs" />
     <Compile Include="Cirno.cs" />
     <Compile Include="Daiyousei.cs" />
+    <Compile Include="DelegateEvent.cs" />
     <Compile Include="Eirin.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="Flandre.cs" />

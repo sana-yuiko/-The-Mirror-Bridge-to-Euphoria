@@ -31,8 +31,6 @@ namespace JLQ_MBE_BattleSimulation
         //private DispatcherTimer timer = new DispatcherTimer { Interval = new TimeSpan(0 /*TODO Set Interval*/) };//Timer对象
         /// <summary>棋盘网格线</summary>
         private Border[,] borders = new Border[Column, Row];
-        /// <summary>用于感知单击的按钮二维数组</summary>
-        private Button[,] buttons = new Button[Column, Row];
 
         /// <summary>game对象</summary>
         private readonly Game game;
@@ -41,6 +39,8 @@ namespace JLQ_MBE_BattleSimulation
         private int ID = 1;
         /// <summary>加人模式上一个添加的角色</summary>
         private Character characterLastAdd = null;
+        /// <summary>鼠标的网格位置</summary>
+        private Point mousePoint = new Point(-1, -1);
 
         /// <summary>构造函数</summary>
         public MainWindow()
@@ -132,6 +132,9 @@ namespace JLQ_MBE_BattleSimulation
                             parameters);
                 //各种加入列表
                 gridPad.Children.Add(characterLastAdd.LabelDisplay);
+                gridPad.Children.Add(characterLastAdd.BarHp);
+                gridPad.Children.Add(characterLastAdd.BarTime);
+                gridPad.Children.Add(characterLastAdd.BarMp);
                 game.Characters.Add(characterLastAdd);
                 labelID.Content = (++ID).ToString();
                 menuBackout.IsEnabled = true;
@@ -141,120 +144,162 @@ namespace JLQ_MBE_BattleSimulation
             {
                 //如果不是行动阶段则操作非法
                 if (game.Section != Section.Round) return;
-                //如果单击的位置是合法移动点
-                if (game.CanReachPoint[column, row])
+                //如果是处于符卡选择目标状态中
+                if (game.isSCChoosingTarget)
                 {
-                    //如果已经移动过则操作非法
-                    if (game.HasMoved)
+                    //如果能选当前的方格
+                    if (game.ChoosePoint.ChoosePoint(game.CurrentCharacter, new Point(column, row)))
                     {
-                        MessageBox.Show("已移动过", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
+                        List<Character> CharactersCanAttack = new List<Character>();
+                        foreach (Character c in game.Characters)
+                        {
+                            if (game.ChoosePoint.GetTarget(game.CurrentCharacter, c, new Point(column, row))) CharactersCanAttack.Add(c);
+                        }
+                        foreach (Character c in CharactersCanAttack)
+                        {
+                            game.ChoosePoint.HandleTarget(game.CurrentCharacter, c, new Point(column, row));
+                        }
+                        game.isSCChoosingTarget = false;
                     }
-                    //移动
-                    game.currentCharacter.Move(new Point(column, row));
-                    game.currentCharacter.HasMoved = true;
-                    foreach (var b in buttons)
-                    {
-                        b.Opacity = 0;
-                    }
-                    labelMove.Content = "已移动";
-                    labelMove.Foreground = Brushes.Gray;
-                    game.UpdateLabelBorder();
-                    //如果同时已经攻击过则进入结束阶段
-                    if (!game.HasAttacked && game.EnemyCanAttack.Any()) return;
-                    Thread.Sleep(500);
-                    EndSection();
                 }
-                //如果单击的位置是合法攻击点
-                else if (game.EnemyCanAttack.Select(c => c.Position).Contains(new Point(column, row)))
-                {
-                    //获取目标
-                    var target = game.EnemyCanAttack.First(c => c.Position == new Point(column, row));
-                    //如果已经攻击过则操作非法
-                    if (game.HasAttacked)
-                    {
-                        MessageBox.Show("已攻击过", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
-                    }
-                    //攻击
-                    game.currentCharacter.DoAttack(target);
-                    game.currentCharacter.HasAttacked = false;
-                    foreach (var c in game.EnemyCanAttack)
-                    {
-                        c.LabelDisplay.Background = Brushes.White;
-                    }
-
-                    //死人提示
-                    if (target.IsDead)
-                    {
-                        gridPad.Children.Remove(target.LabelDisplay);
-                        MessageBox.Show(String.Format("{0}号{1}已死亡", ID, target.Data.Name), "死亡",
-                            MessageBoxButton.OK, MessageBoxImage.Hand);
-                        game.Characters.Remove(target);
-                    }
-
-                    labelAttack.Content = "已攻击";
-                    labelAttack.Foreground = Brushes.Gray;
-                    //如果同时已经移动过则进入结束阶段
-                    if (!game.HasMoved) return;
-                    Thread.Sleep(500);
-                    EndSection();
-                }
-                //单击位置非法，操作非法
                 else
                 {
-                    MessageBox.Show("位置非法", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
+                    //如果单击的位置是合法移动点
+                    if (game.CanReachPoint[column, row])
+                    {
+                        //如果已经移动过则操作非法
+                        if (game.HasMoved)
+                        {
+                            MessageBox.Show("已移动过", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+                        //移动
+                        game.CurrentCharacter.Move(new Point(column, row));
+                        game.HasMoved = true;
+                        foreach (var b in game.Buttons)
+                        {
+                            b.Opacity = 0;
+                        }
+                        game.UpdateLabelBackground();
+                        //如果同时已经攻击过则进入结束阶段
+                        if (!game.HasAttacked && game.EnemyCanAttack.Any()) return;
+                        //Thread.Sleep(500);
+                        EndSection();
+                    }
+                    //如果单击的位置是合法攻击点
+                    else if (game.EnemyCanAttack.Any(c => c.Position == new Point(column, row)))
+                    {
+                        //获取目标
+                        var target = game.EnemyCanAttack.First(c => c.Position == new Point(column, row));
+                        //如果已经攻击过则操作非法
+                        if (game.HasAttacked)
+                        {
+                            MessageBox.Show("已攻击过", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+                        //攻击
+                        game.CurrentCharacter.DoAttack(target);
+                        game.HasAttacked = true;
+                        foreach (var c in game.EnemyCanAttack)
+                        {
+                            c.LabelDisplay.Background = Brushes.White;
+                        }
+
+                        //死人提示
+                        if (target.IsDead)
+                        {
+                            gridPad.Children.Remove(target.LabelDisplay);
+                            MessageBox.Show(String.Format("{0}号{1}已死亡", ID, target.Data.Name), "死亡",
+                                MessageBoxButton.OK, MessageBoxImage.Hand);
+                        }
+
+                        //如果同时已经移动过则进入结束阶段
+                        if (!game.HasMoved) return;
+                        //Thread.Sleep(500);
+                        EndSection();
+                    }
+                    //单击位置非法，操作非法
+                    else
+                    {
+                        MessageBox.Show("位置非法", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
             }
-        }
-
-        /// <summary>更新label的文字提示</summary>
-        private void UpdateSection()
-        {
-            labelSection.Content = Calculate.Convert(game.Section);
         }
 
         //游戏流程
         /// <summary>准备阶段</summary>
-        public void PreparingSection()
+        private void PreparingSection()
         {
             //重置提示
-            labelMove.Content = "还未移动";
-            labelMove.Foreground = Brushes.Red;
-            labelAttack.Content = "还未攻击";
-            labelAttack.Foreground = Brushes.Red;
             //获取下个行动的角色
             game.GetNextRoundCharacter();
-            for(var i = 0; i < Column; i++)
+            Paint();
+
+            //跳转阶段
+            game.Section = Section.Preparing;
+            //game.BuffSettle(JLQ_MBE_BattleSimulation.Section.Preparing);
+            //Thread.Sleep(500);
+            game.Section = Section.Round;
+        }
+        /// <summary>结束阶段</summary>
+        private void EndSection()
+        {
+            game.Section = Section.End;
+            //game.BuffSettle(Section.End);
+            //Thread.Sleep(1000);
+
+            PreparingSection();
+        }
+
+        /// <summary>生成正确的网格颜色</summary>
+        private void Paint()
+        {
+            for (var i = 0; i < Column; i++)
             {
                 for (var j = 0; j < Row; j++)
                 {
                     if (!game.CanReachPoint[i, j]) continue;
-                    if (new Point(i, j) != game.CurrentPosotion)
+                    if (new Point(i, j) != game.CurrentPosition)
                     {
-                        buttons[i, j].Opacity = 1;
+                        game.Buttons[i, j].Opacity = 1;
+                    }
+                }
+            }
+        }
+
+        private void DefaultButtonBackground()
+        {
+            foreach (var b in game.Buttons)
+            {
+                b.Opacity = 0;
+            }
+            foreach (var c in game.Characters)
+            {
+                c.LabelDisplay.Background = Brushes.White;
+            }
+        }
+
+        /// <summary>
+        /// 将与起始点距离小于等于范围的点设为淡黄色
+        /// </summary>
+        /// <param name="origin">起始点</param>
+        /// <param name="range">范围</param>
+        private void SetBackground(Point origin, int range)
+        {
+            for (var i = 0; i < Column; i++)
+            {
+                for (var j = 0; j < Row; j++)
+                {
+                    var point1 = new Point(i, j);
+                    if (point1 != origin && Calculate.Distance(point1, origin) <= range &&
+                        point1 != game.CurrentPosition)
+                    {
+                        game.Buttons[i, j].Opacity = 1;
                     }
                 }
             }
 
-            //跳转阶段
-            game.Section = Section.Preparing;
-            UpdateSection();
-            game.BuffSettle(JLQ_MBE_BattleSimulation.Section.Preparing);
-            Thread.Sleep(500);
-            game.Section = Section.Round;
-            UpdateSection();
-        }
-        /// <summary>结束阶段</summary>
-        public void EndSection()
-        {
-            game.currentCharacter.CurrentTime = game.currentCharacter.Interval;
-            game.Section = Section.End;
-            UpdateSection();
-            game.BuffSettle(Section.End);
-            Thread.Sleep(1000);
-
-            PreparingSection();
         }
 
 
@@ -293,7 +338,7 @@ namespace JLQ_MBE_BattleSimulation
                     //生成网格线
                     borders[i, j] = new Border
                     {
-                        BorderBrush = new SolidColorBrush(Colors.Blue),
+                        BorderBrush = new SolidColorBrush(Colors.Black),
                         BorderThickness = new Thickness(1),
                         Margin = new Thickness(0),
                         HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -305,28 +350,15 @@ namespace JLQ_MBE_BattleSimulation
                     borders[i, j].SetValue(Grid.RowSpanProperty, 1);
                     borders[i, j].SetValue(Panel.ZIndexProperty, 0);
                     gridPad.Children.Add(borders[i, j]);
-                    //生成网格内用来响应事件的按钮
-                    buttons[i, j] = new Button
-                    {
-                        Margin = new Thickness(1),
-                        HorizontalAlignment = HorizontalAlignment.Stretch,
-                        VerticalAlignment = VerticalAlignment.Stretch,
-                        Background = Brushes.LightYellow,
-                        Opacity = 0
-                    };
-                    buttons[i, j].SetValue(Grid.ColumnProperty, i);
-                    buttons[i, j].SetValue(Grid.RowProperty, j);
-                    buttons[i, j].SetValue(Grid.ColumnSpanProperty, 1);
-                    buttons[i, j].SetValue(Grid.RowSpanProperty, 1);
-                    buttons[i, j].SetValue(Panel.ZIndexProperty, 1);
-                    gridPad.Children.Add(buttons[i, j]);
+                    
+                    gridPad.Children.Add(game.Buttons[i, j]);
                 }
             }
             //生成按钮事件
-            foreach (var button in buttons)
+            foreach (var button in game.Buttons)
             {
-                int column = (int) button.GetValue(Grid.ColumnProperty);
-                int row = (int) button.GetValue(Grid.RowProperty);
+                var column = (int) button.GetValue(Grid.ColumnProperty);
+                var row = (int) button.GetValue(Grid.RowProperty);
                 button.MouseDown += (s, ev) =>
                 {
                     if (ev.LeftButton == MouseButtonState.Released)
@@ -342,14 +374,78 @@ namespace JLQ_MBE_BattleSimulation
                 {
                     if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
                     {
-                        button.ToolTip = game.TipShow(new Point(column, row));
+                        button.ToolTip = game.StringShow(new Point(column, row));
                     }
                     else
                     {
-                        button.ToolTip = game.StringShow(new Point(column, row));
+                        button.ToolTip = game.TipShow(new Point(column, row));
                     }
                 };
+                button.MouseEnter += (s, ev) =>
+                {
+                    mousePoint = new Point(column, row);
+                };
+                button.MouseLeave += (s, ev) =>
+                {
+                    mousePoint = new Point(-1, -1);
+                };
+                button.KeyDown += (s, ev) =>
+                {
+                    //如果shift和ctrl都没被按下或不在行动阶段或不在棋盘内或该点无角色或该点角色为当前角色则无效
+                    if ((!(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift) ||
+                           Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))) ||
+                        game.Section != Section.Round || mousePoint == new Point(-1, -1) ||
+                        game.Characters.All(c => c.Position != mousePoint) ||
+                        mousePoint == game.CurrentPosition) return;
+                    //如果shift被按下
+                    if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                    {
+                        var character = game[mousePoint];
+                        if (character != null)
+                        {
+                            //清屏
+                            DefaultButtonBackground();
+
+                            SetBackground(mousePoint, character.AttackRange);
+                            game.CurrentCharacter.LabelDisplay.Background = Brushes.LightPink;
+                            character.LabelDisplay.Background = Brushes.LightBlue;
+                        }
+                    }
+                    //如果ctrl被按下
+                    if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+                    {
+                        var character = game[mousePoint];
+                        if (character != null)
+                        {
+                            //清屏
+                            DefaultButtonBackground();
+
+                            SetBackground(mousePoint, character.MoveAbility);
+                            game.CurrentCharacter.LabelDisplay.Background = Brushes.LightPink;
+                            character.LabelDisplay.Background = Brushes.LightBlue;
+                        }
+                    }
+
+                };
+                button.KeyUp += (s, ev) =>
+                {
+                    //如果不在行动阶段或仍有shift或ctrl在棋盘内则无效
+                    if (game.Section != Section.Round) return;
+                    if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift) ||
+                        Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) return;
+                    //恢复原本显示
+                    foreach (var b in game.Buttons)
+                    {
+                        b.Opacity = 0;
+                    }
+                    Paint();
+                    game.UpdateLabelBackground();
+                };
             }
+
+            gridWindow.Children.Add(game.LabelSection);
+            gridGame.Children.Add(game.LabelAttack);
+            gridGame.Children.Add(game.LabelMove);
         }
 
         /// <summary>退出菜单</summary>
@@ -369,6 +465,13 @@ namespace JLQ_MBE_BattleSimulation
             foreach (var l in labels)
             {
                 gridPad.Children.Remove(l);
+            }
+            var progressBars = game.Characters.Select(c => c.BarHp);
+            progressBars = progressBars.Concat(game.Characters.Select(c => c.BarTime));
+            progressBars = progressBars.Concat(game.Characters.Select(c => c.BarMp));
+            foreach (var p in progressBars)
+            {
+                gridPad.Children.Remove(p);
             }
             game.Characters.Clear();
             characterLastAdd = null;
@@ -408,6 +511,9 @@ namespace JLQ_MBE_BattleSimulation
         {
             if (characterLastAdd == null) return;
             gridPad.Children.Remove(characterLastAdd.LabelDisplay);
+            gridPad.Children.Remove(characterLastAdd.BarHp);
+            gridPad.Children.Remove(characterLastAdd.BarTime);
+            gridPad.Children.Remove(characterLastAdd.BarMp);
             game.Characters.Remove(characterLastAdd);
             labelID.Content = (--ID).ToString();
             if (game.Characters.Count == 0)
@@ -421,9 +527,37 @@ namespace JLQ_MBE_BattleSimulation
             }
         }
 
-        private void SC01_Click(object sender, RoutedEventArgs e)
+        private void buttonSC01_Click(object sender, RoutedEventArgs e)
         {
-            game.SC01();
+            if (game.HasAttacked)
+            {
+                MessageBox.Show("已攻击过", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            game.CurrentCharacter.SC01();
+            game.HasAttacked = true;
+        }
+
+        private void buttonSC02_Click(object sender, RoutedEventArgs e)
+        {
+            if (game.HasAttacked)
+            {
+                MessageBox.Show("已攻击过", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            game.CurrentCharacter.SC02();
+            game.HasAttacked = true;
+        }
+
+        private void buttonSC03_Click(object sender, RoutedEventArgs e)
+        {
+            if (game.HasAttacked)
+            {
+                MessageBox.Show("已攻击过", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            game.CurrentCharacter.SC03();
+            game.HasAttacked = true;
         }
     }
 }
