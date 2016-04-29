@@ -373,6 +373,23 @@ namespace JLQ_MBE_BattleSimulation
         public abstract void SC03();
         /// <summary>结束使用符卡03</summary>
         public abstract void EndSC03();
+        ///// <summary>成为当前行动角色时按钮的移动响应</summary>
+        //public abstract void SCShow();
+        ///// <summary>按钮移动响应复位</summary>
+        //public abstract void ResetSCShow();
+        //TODO back abstract
+        /// <summary>成为当前行动角色时按钮的移动响应</summary>
+        public virtual void SCShow()
+        {
+            
+        }
+
+        /// <summary>按钮移动响应复位</summary>
+        public virtual void ResetSCShow()
+        {
+            
+        }
+
 
 
         //以下为私有函数

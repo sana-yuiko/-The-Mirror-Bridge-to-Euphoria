@@ -485,6 +485,9 @@
         <member name="M:JLQ_MBE_BattleSimulation.Reimiria.EndSC03">
             <summary>结束符卡03</summary>
         </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Reimu.SC01Range">
+            <summary>符卡01的范围</summary>
+        </member>
         <member name="M:JLQ_MBE_BattleSimulation.Reimu.MpGain(System.Int32)">
             <summary>1.2倍灵力获取</summary>
             <param name="mp">获得的灵力量</param>
@@ -1004,6 +1007,12 @@
         <member name="M:JLQ_MBE_BattleSimulation.Character.EndSC03">
             <summary>结束使用符卡03</summary>
         </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.SCShow">
+            <summary>成为当前行动角色时按钮的移动响应</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.ResetSCShow">
+            <summary>按钮移动响应复位</summary>
+        </member>
         <member name="M:JLQ_MBE_BattleSimulation.Character.Damage(System.Int32)">
             <summary>受伤</summary>
             <param name="damage">伤害值</param>
@@ -1135,6 +1144,9 @@
         <member name="P:JLQ_MBE_BattleSimulation.Game.Buttons">
             <summary>用以响应鼠标事件的按钮</summary>
         </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Game.ButtonSC">
+            <summary>符卡按钮</summary>
+        </member>
         <member name="F:JLQ_MBE_BattleSimulation.Game.IsTargetLegal">
             <summary>传递参数，如何获取目标以及所需参数列表</summary>
         </member>
@@ -1216,6 +1228,17 @@
         <member name="M:JLQ_MBE_BattleSimulation.Game.TurnToBattle">
             <summary>改为战斗模式</summary>
         </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Game.DefaultButtonBackground">
+            <summary>恢复棋盘无人区正常颜色</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Game.SetBackground(System.Windows.Point,System.Int32)">
+            <summary>将与起始点距离小于等于范围的点设为淡黄色</summary>
+            <param name="origin">起始点</param>
+            <param name="range">范围</param>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Game.Paint">
+            <summary>生成正确的网格颜色</summary>
+        </member>
         <member name="M:JLQ_MBE_BattleSimulation.Game.SC(System.Int32)">
             <summary>SC</summary>
         </member>
@@ -1259,9 +1282,6 @@
         <member name="F:JLQ_MBE_BattleSimulation.MainWindow.mousePoint">
             <summary>鼠标的网格位置</summary>
         </member>
-        <member name="F:JLQ_MBE_BattleSimulation.MainWindow.scButtons">
-            <summary>符卡按钮</summary>
-        </member>
         <member name="F:JLQ_MBE_BattleSimulation.MainWindow.labels">
             <summary>角色数标签</summary>
         </member>
@@ -1292,16 +1312,6 @@
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.EndSection">
             <summary>结束阶段</summary>
-        </member>
-        <member name="M:JLQ_MBE_BattleSimulation.MainWindow.Paint">
-            <summary>生成正确的网格颜色</summary>
-        </member>
-        <member name="M:JLQ_MBE_BattleSimulation.MainWindow.SetBackground(System.Windows.Point,System.Int32)">
-            <summary>
-            将与起始点距离小于等于范围的点设为淡黄色
-            </summary>
-            <param name="origin">起始点</param>
-            <param name="range">范围</param>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.IsDead(JLQ_MBE_BattleSimulation.Character)">
             <summary>死亡结算</summary>

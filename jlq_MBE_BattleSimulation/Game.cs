@@ -75,6 +75,8 @@ namespace JLQ_MBE_BattleSimulation
         public Label LabelMove { get; set; }
         /// <summary>用以响应鼠标事件的按钮</summary>
         public Button[,] Buttons { get; set; }
+        /// <summary>符卡按钮</summary>
+        public Button[] ButtonSC { get; set; }
 
         //符卡相关
         /// <summary>传递参数，如何获取目标以及所需参数列表</summary>
@@ -172,6 +174,18 @@ namespace JLQ_MBE_BattleSimulation
                     Buttons[i, j].SetValue(Panel.ZIndexProperty, 1);
                 }
             }
+            //ButtonSC
+            ButtonSC = new Button[3];
+            for (var i = 0; i < 3; i++)
+            {
+                ButtonSC[i] = new Button
+                {
+                    Content = "SC0" + i.ToString(),
+                    IsEnabled = false,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Stretch
+                };
+            }
 
             this.Section = null;
         }
@@ -220,6 +234,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>更新下个行动的角色,取currentTime最小的角色中Interval最大的角色中的随机一个</summary>
         public void GetNextRoundCharacter()
         {
+            CurrentCharacter?.ResetSCShow();
             foreach(var c in Characters)
             {
                 c.LabelDisplay.BorderThickness = new Thickness(0);
@@ -262,6 +277,8 @@ namespace JLQ_MBE_BattleSimulation
             CurrentCharacter.CurrentTime = CurrentCharacter.Interval;
 
             Generate_CanReachPoint();
+
+            CurrentCharacter.SCShow();
         }
 
         /// <summary>更新角色显示的边框颜色</summary>
@@ -367,6 +384,54 @@ namespace JLQ_MBE_BattleSimulation
         public void TurnToBattle()
         {
             IsBattle = true;
+        }
+
+        /// <summary>恢复棋盘无人区正常颜色</summary>
+        public void DefaultButtonBackground()
+        {
+            foreach (var b in Buttons)
+            {
+                b.Opacity = 0;
+            }
+            foreach (var c in Characters)
+            {
+                c.LabelDisplay.Background = Brushes.White;
+            }
+        }
+
+        /// <summary>将与起始点距离小于等于范围的点设为淡黄色</summary>
+        /// <param name="origin">起始点</param>
+        /// <param name="range">范围</param>
+        public void SetBackground(Point origin, int range)
+        {
+            for (var i = 0; i < MainWindow.Column; i++)
+            {
+                for (var j = 0; j < MainWindow.Row; j++)
+                {
+                    var point1 = new Point(i, j);
+                    if (point1 != origin && Calculate.Distance(point1, origin) <= range &&
+                        point1 != CurrentPosition)
+                    {
+                        Buttons[i, j].Opacity = 1;
+                    }
+                }
+            }
+        }
+
+        /// <summary>生成正确的网格颜色</summary>
+        public void Paint()
+        {
+            for (var i = 0; i < MainWindow.Column; i++)
+            {
+                for (var j = 0; j < MainWindow.Row; j++)
+                {
+                    if (!CanReachPoint[i, j]) continue;
+                    if (new Point(i, j) != CurrentPosition)
+                    {
+                        Buttons[i, j].Opacity = 1;
+                    }
+                }
+            }
         }
 
         //SC

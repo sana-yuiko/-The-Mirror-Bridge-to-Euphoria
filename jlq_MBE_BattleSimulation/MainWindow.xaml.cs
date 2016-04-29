@@ -52,8 +52,6 @@ namespace JLQ_MBE_BattleSimulation
         private Character characterLastAdd = null;
         /// <summary>鼠标的网格位置</summary>
         private Point mousePoint = new Point(-1, -1);
-        /// <summary>符卡按钮</summary>
-        private Button[] scButtons = new Button[3];
         /// <summary>角色数标签</summary>
         private Label[] labels = new Label[3];
 
@@ -63,11 +61,11 @@ namespace JLQ_MBE_BattleSimulation
             InitializeComponent();
 
             //读取角色各数据
-            XmlDocument data = new XmlDocument();
-            XmlReader reader = XmlReader.Create("data.xml", new XmlReaderSettings {IgnoreComments = true /*忽略注释*/});
+            var data = new XmlDocument();
+            var reader = XmlReader.Create("data.xml", new XmlReaderSettings {IgnoreComments = true /*忽略注释*/});
             data.Load(reader);
-            XmlNodeList xnl = data.SelectSingleNode("/data/datas").ChildNodes;
-            XmlNodeList xnscl = data.SelectSingleNode("/data/sc").ChildNodes;
+            var xnl = data.SelectSingleNode("/data/datas").ChildNodes;
+            var xnscl = data.SelectSingleNode("/data/sc").ChildNodes;
             for (int i = 0, count = xnl.Count; i < count; i++)
             {
                 //读取角色数据
@@ -102,9 +100,6 @@ namespace JLQ_MBE_BattleSimulation
             }
             reader.Close();
             //加入数组
-            scButtons[0] = buttonSC01;
-            scButtons[1] = buttonSC02;
-            scButtons[2] = buttonSC03;
             labels[0] = labelEnemy;
             labels[1] = labelMiddle;
             labels[2] = labelFriend;
@@ -262,7 +257,7 @@ namespace JLQ_MBE_BattleSimulation
                     //死人提示
                     IsDead(target);
                     game.Generate_CanReachPoint();
-                    Paint();
+                    game.Paint();
 
                     //如果同时已经移动过则进入结束阶段
                     if (!game.HasMoved) return;
@@ -286,10 +281,10 @@ namespace JLQ_MBE_BattleSimulation
             game.GetNextRoundCharacter();
             for (var i = 0; i < 3; i++)
             {
-                scButtons[i].Content = currentCharacter.Data.ScName[i + 1];
-                scButtons[i].ToolTip = currentCharacter.Data.ScDisc[i + 1];
+                game.ButtonSC[i].Content = currentCharacter.Data.ScName[i + 1];
+                game.ButtonSC[i].ToolTip = currentCharacter.Data.ScDisc[i + 1];
             }
-            Paint();
+            game.Paint();
 
             //跳转阶段
             section = Section.Preparing;
@@ -318,54 +313,6 @@ namespace JLQ_MBE_BattleSimulation
             PreparingSection();
         }
 
-        /// <summary>生成正确的网格颜色</summary>
-        private void Paint()
-        {
-            for (var i = 0; i < Column; i++)
-            {
-                for (var j = 0; j < Row; j++)
-                {
-                    if (!game.CanReachPoint[i, j]) continue;
-                    if (new Point(i, j) != game.CurrentPosition)
-                    {
-                        game.Buttons[i, j].Opacity = 1;
-                    }
-                }
-            }
-        }
-
-        private void DefaultButtonBackground()
-        {
-            foreach (var b in game.Buttons)
-            {
-                b.Opacity = 0;
-            }
-            foreach (var c in game.Characters)
-            {
-                c.LabelDisplay.Background = Brushes.White;
-            }
-        }
-
-        /// <summary>
-        /// 将与起始点距离小于等于范围的点设为淡黄色
-        /// </summary>
-        /// <param name="origin">起始点</param>
-        /// <param name="range">范围</param>
-        private void SetBackground(Point origin, int range)
-        {
-            for (var i = 0; i < Column; i++)
-            {
-                for (var j = 0; j < Row; j++)
-                {
-                    var point1 = new Point(i, j);
-                    if (point1 != origin && Calculate.Distance(point1, origin) <= range &&
-                        point1 != game.CurrentPosition)
-                    {
-                        game.Buttons[i, j].Opacity = 1;
-                    }
-                }
-            }
-        }
 
         /// <summary>死亡结算</summary>
         /// <param name="target"></param>
@@ -434,7 +381,7 @@ namespace JLQ_MBE_BattleSimulation
             }
 
             game.Generate_CanReachPoint();
-            Paint();
+            game.Paint();
             //如果同时已经移动过则进入结束阶段
             if (!game.HasMoved) return;
             //Thread.Sleep(500);
@@ -543,9 +490,9 @@ namespace JLQ_MBE_BattleSimulation
                         if (character != null)
                         {
                             //清屏
-                            DefaultButtonBackground();
+                            game.DefaultButtonBackground();
 
-                            SetBackground(mousePoint, character.AttackRange);
+                            game.SetBackground(mousePoint, character.AttackRange);
                             currentCharacter.LabelDisplay.Background = Brushes.LightPink;
                             character.LabelDisplay.Background = Brushes.LightBlue;
                         }
@@ -557,9 +504,9 @@ namespace JLQ_MBE_BattleSimulation
                         if (character != null)
                         {
                             //清屏
-                            DefaultButtonBackground();
+                            game.DefaultButtonBackground();
 
-                            SetBackground(mousePoint, character.MoveAbility);
+                            game.SetBackground(mousePoint, character.MoveAbility);
                             currentCharacter.LabelDisplay.Background = Brushes.LightPink;
                             character.LabelDisplay.Background = Brushes.LightBlue;
                         }
@@ -577,7 +524,7 @@ namespace JLQ_MBE_BattleSimulation
                     {
                         b.Opacity = 0;
                     }
-                    Paint();
+                    game.Paint();
                     game.UpdateLabelBackground();
                 };
             }
@@ -585,6 +532,14 @@ namespace JLQ_MBE_BattleSimulation
             gridWindow.Children.Add(game.LabelSection);
             gridGame.Children.Add(game.LabelAttack);
             gridGame.Children.Add(game.LabelMove);
+            gridSC01.Children.Add(game.ButtonSC[0]);
+            gridSC02.Children.Add(game.ButtonSC[1]);
+            gridSC03.Children.Add(game.ButtonSC[2]);
+            for (var i = 0; i < 3; i++)
+            {
+                var j = i;
+                game.ButtonSC[i].Click += (s, ev) => SC(j);
+            }
         }
 
         /// <summary>退出菜单</summary>
@@ -662,9 +617,10 @@ namespace JLQ_MBE_BattleSimulation
             buttonGenerateFriend.IsEnabled = false;
             buttonGenerateEnemy.IsEnabled = false;
             buttonGenerateMiddle.IsEnabled = false;
-            buttonSC01.IsEnabled = true;
-            buttonSC02.IsEnabled = true;
-            buttonSC03.IsEnabled = true;
+            foreach (var b in game.ButtonSC)
+            {
+                b.IsEnabled = true;
+            }
             labelShow.Foreground = Brushes.Black;
             game.TurnToBattle();
             PreparingSection();
@@ -712,19 +668,5 @@ namespace JLQ_MBE_BattleSimulation
             RandomlyAddCharacters(Group.Middle, Int32.Parse(comboBoxMiddle.Text));
         }
 
-        private void buttonSC01_Click(object sender, RoutedEventArgs e)
-        {
-            SC(1);
-        }
-
-        private void buttonSC02_Click(object sender, RoutedEventArgs e)
-        {
-            SC(2);
-        }
-
-        private void buttonSC03_Click(object sender, RoutedEventArgs e)
-        {
-            SC(3);
-        }
     }
 }

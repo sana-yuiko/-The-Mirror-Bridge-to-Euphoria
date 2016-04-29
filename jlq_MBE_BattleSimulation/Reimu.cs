@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
 
 namespace JLQ_MBE_BattleSimulation
 {
@@ -12,8 +14,29 @@ namespace JLQ_MBE_BattleSimulation
         public Reimu(int id, Point position, Group group, Random random, Game game)
             : base(id, position, group, random, game)
         {
-
+            enter = (s, ev) =>
+            {
+                game.DefaultButtonBackground();
+                game.SetBackground(this.Position, SC01Range);
+                LabelDisplay.Background = Brushes.LightPink;
+            };
+            leave = (s, ev) =>
+            {
+                foreach (var b in game.Buttons)
+                {
+                    b.Opacity = 0;
+                }
+                game.Paint();
+                game.UpdateLabelBackground();
+            };
         }
+
+        /// <summary>符卡01的范围</summary>
+        private const int SC01Range = 4;
+
+        private MouseEventHandler enter;
+        private MouseEventHandler leave;
+
 
         /// <summary>1.2倍灵力获取</summary>
         /// <param name="mp">获得的灵力量</param>
@@ -27,7 +50,7 @@ namespace JLQ_MBE_BattleSimulation
         {
             game.IsTargetLegal =
                 (SCee, point) =>
-                    Calculate.Distance(this.Position, SCee.Position) <= 4 && game.EnemyAsCurrent.Contains(SCee);
+                    Calculate.Distance(this.Position, SCee.Position) <= SC01Range && game.EnemyAsCurrent.Contains(SCee);
             game.HandleTarget = t => DoAttack(t);
         }
 
@@ -58,6 +81,19 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>结束符卡03</summary>
         public override void EndSC03()
         {
+
+        }
+
+        public override void SCShow()
+        {
+            game.ButtonSC[0].MouseEnter += enter;
+            game.ButtonSC[0].MouseLeave += leave;
+        }
+
+        public override void ResetSCShow()
+        {
+            game.ButtonSC[0].MouseEnter -= enter;
+            game.ButtonSC[0].MouseLeave -= leave;
 
         }
     }
