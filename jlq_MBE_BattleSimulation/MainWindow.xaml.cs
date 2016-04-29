@@ -196,14 +196,15 @@ namespace JLQ_MBE_BattleSimulation
             {
                 //如果不是行动阶段则操作非法
                 if (section != Section.Round) return;
-                if (game.HasAttacked)
-                {
-                    MessageBox.Show("已攻击过不能使用符卡", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
                 //符卡
                 if (game.ScSelect != 0)
                 {
+                    //如果已攻击过
+                    if (game.HasAttacked)
+                    {
+                        MessageBox.Show("已攻击过不能使用符卡", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
                     //如果单击位置不合法
                     if (!game.IsLegalClick(mousePoint))
                     {
@@ -420,12 +421,20 @@ namespace JLQ_MBE_BattleSimulation
         private void DoSC()
         {
             var legalCharacters = game.Characters.Where(c => game.IsTargetLegal(c, mousePoint));
-            foreach (var c in legalCharacters)
+            var characterArray = legalCharacters.ToArray();
+            foreach (var c in characterArray)
             {
                 game.HandleTarget(c);
             }
             game.EndSC();
             game.HasAttacked = true;
+            for (int i = 0, length = characterArray.Length; i < length; i++)
+            {
+                IsDead(characterArray[i]);
+            }
+
+            game.Generate_CanReachPoint();
+            Paint();
             //如果同时已经移动过则进入结束阶段
             if (!game.HasMoved) return;
             //Thread.Sleep(500);

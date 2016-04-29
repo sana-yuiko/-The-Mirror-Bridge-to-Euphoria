@@ -714,41 +714,51 @@
             开发者备注：静态的buff需要有一系列参数，每人使用lambda表达式代入参数的具体值；
             </summary>
         </member>
-        <member name="P:JLQ_MBE_BattleSimulation.Buff.RoundNum">
+        <member name="P:JLQ_MBE_BattleSimulation.Buff.Interval">
             <summary>buff剩余轮数</summary>
         </member>
         <member name="F:JLQ_MBE_BattleSimulation.Buff.ExecuteSection">
             <summary>buff执行的阶段</summary>
         </member>
-        <member name="F:JLQ_MBE_BattleSimulation.Buff.buffAffect">
+        <member name="F:JLQ_MBE_BattleSimulation.Buff.Name">
+            <summary>buff名称</summary>
+        </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Buff.BuffAffect">
             <summary>buff效果的委托对象</summary>
         </member>
-        <member name="F:JLQ_MBE_BattleSimulation.Buff.buffCancels">
+        <member name="F:JLQ_MBE_BattleSimulation.Buff.BuffCancels">
             <summary>取消buff的委托对象</summary>
         </member>
-        <member name="F:JLQ_MBE_BattleSimulation.Buff.buffer">
+        <member name="F:JLQ_MBE_BattleSimulation.Buff.Buffer">
             <summary>buff发出者</summary>
         </member>
-        <member name="F:JLQ_MBE_BattleSimulation.Buff.buffee">
+        <member name="F:JLQ_MBE_BattleSimulation.Buff.Buffee">
             <summary>buff承受者</summary>
         </member>
-        <member name="M:JLQ_MBE_BattleSimulation.Buff.#ctor(JLQ_MBE_BattleSimulation.Character,JLQ_MBE_BattleSimulation.Character,System.Int32,JLQ_MBE_BattleSimulation.Section,JLQ_MBE_BattleSimulation.DBuffAffect)">
+        <member name="M:JLQ_MBE_BattleSimulation.Buff.#ctor(JLQ_MBE_BattleSimulation.Character,JLQ_MBE_BattleSimulation.Character,System.Int32,JLQ_MBE_BattleSimulation.Section,System.String,JLQ_MBE_BattleSimulation.DBuffAffect,JLQ_MBE_BattleSimulation.DBuffCancel)">
             <summary>Buff类的构造函数</summary>
             <param name="buffee">buff承受者</param>
             <param name="buffer">buff发出者</param>
             <param name="roundNum">buff持续回合数</param>
             <param name="executeSection">buff执行的阶段</param>
+            <param name="name">buff名称</param>
             <param name="affect">buff效果委托</param>
+            <param name="cancel">buff取消委托</param>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Buff.BuffTrigger">
             <summary>buff引发</summary>
         </member>
-        <member name="M:JLQ_MBE_BattleSimulation.Buff.Round">
-            <summary>轮数减少</summary>
-            <returns>减少后剩余轮数是否为0</returns>
+        <member name="M:JLQ_MBE_BattleSimulation.Buff.Round(System.Int32)">
+            <summary>buff剩余时间减少</summary>
+            <param name="time">减少的时间</param>
+            <returns>减少后剩余时间是否小于等于0</returns>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Buff.BuffEnd">
             <summary>buff结束</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Buff.ToString">
+            <summary>重写object类的ToString方法</summary>
+            <returns>转化为字符串的结果</returns>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Calculate.HitRate(System.Int32,System.Int32)">
             <summary>计算命中率</summary>

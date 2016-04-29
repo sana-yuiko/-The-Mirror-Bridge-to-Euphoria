@@ -350,14 +350,14 @@ namespace JLQ_MBE_BattleSimulation
             var buffLists = Characters.Select(c => c.BuffList);
             IEnumerable<Buff> buffs = new List<Buff>();
             buffs = buffLists.Select(
-                buffList => buffList.Where(b => b.buffer == CurrentCharacter && b.ExecuteSection == section))
+                buffList => buffList.Where(b => b.Buffer == CurrentCharacter && b.ExecuteSection == section))
                     .Aggregate(buffs, (current, buffsToOne) => current.Concat(buffsToOne));
             foreach (var buff in buffs)
             {
-                buff.buffAffect(buff.buffee, buff.buffer);
-                if (buff.Round())
+                buff.BuffAffect(buff.Buffee, buff.Buffer);
+                if (buff.Round(CurrentCharacter.Interval))
                 {
-                    buff.buffCancels();
+                    buff.BuffCancels();
                 }
                 Thread.Sleep(200);
             }

@@ -145,7 +145,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>伤害浮动</summary>
         private float DamageFloat => 0.1f;
         /// <summary>是否死亡</summary>
-        public bool IsDead => Hp <= 0;
+        public bool IsDead => 0 >= Hp;
         /// <summary>名字</summary>
         public string Name => Data.Name;
 
@@ -289,12 +289,17 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>将各数据转化为字符串显示</summary>
         /// <returns>各数据字符串化的结果</returns>
         public override string ToString()
-            =>
-                String.Format("HP: {0} / {1}\nMP: {2} / {3}\n攻击: {4}\n防御: {5}\n" +
-                              "命中率: {6}\n闪避率: {7}\n近战补正: {8}{9}\n" +
-                              "行动间隔: {10}\n机动: {11}\n攻击范围: {12}\n剩余冷却时间: {13}", Hp, Data.MaxHp, Mp, _maxMp,
-                    Attack, Defence, HitRate, DodgeRate, CloseAmendment, (CloseAmendment%1 == 0) ? ".0" : "", Interval,
-                    MoveAbility, AttackRange, CurrentTime);
+        {
+            var result = String.Format("HP: {0} / {1}\nMP: {2} / {3}\n攻击: {4}\n防御: {5}\n" +
+                                          "命中率: {6}\n闪避率: {7}\n近战补正: {8}{9}\n" +
+                                          "行动间隔: {10}\n机动: {11}\n攻击范围: {12}\n剩余冷却时间: {13}", Hp, Data.MaxHp, Mp,
+                _maxMp, Attack, Defence, HitRate, DodgeRate, CloseAmendment, (CloseAmendment%1 == 0) ? ".0" : "",
+                Interval, MoveAbility, AttackRange, CurrentTime);
+            if (!BuffList.Any()) return result;
+            result += "\nbuff:\n";
+            result = BuffList.Aggregate(result, (current, buff) => current + buff.ToString() + "\n");
+            return result;
+        }
 
         /// <summary>命中率和伤害值的信息提示</summary>
         /// <param name="target">攻击接受者</param>
