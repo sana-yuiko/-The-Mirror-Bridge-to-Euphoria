@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -209,17 +210,7 @@ namespace JLQ_MBE_BattleSimulation
                         MessageBox.Show("位置非法", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
                     }
-                    var legalCharacters = game.Characters.Where(c => game.IsTargetLegal(c, mousePoint));
-                    foreach (var c in legalCharacters)
-                    {
-                        game.HandleTarget(c);
-                    }
-                    game.EndSC();
-                    game.HasAttacked = true;
-                    //如果同时已经移动过则进入结束阶段
-                    if (!game.HasMoved) return;
-                    //Thread.Sleep(500);
-                    EndSection();
+                    DoSC();
                 }
                 //如果单击的位置是合法移动点
                 else if (game.CanReachPoint[column, row])
@@ -415,7 +406,30 @@ namespace JLQ_MBE_BattleSimulation
             }
             if (!(bool) checkBox.IsChecked) return;
             MessageBox.Show("生成成功", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
 
+        private void SC(int index)
+        {
+            game.SC(index);
+            if (game.IsLegalClick == null)
+            {
+                DoSC();
+            }
+        }
+
+        private void DoSC()
+        {
+            var legalCharacters = game.Characters.Where(c => game.IsTargetLegal(c, mousePoint));
+            foreach (var c in legalCharacters)
+            {
+                game.HandleTarget(c);
+            }
+            game.EndSC();
+            game.HasAttacked = true;
+            //如果同时已经移动过则进入结束阶段
+            if (!game.HasMoved) return;
+            //Thread.Sleep(500);
+            EndSection();
         }
 
 
@@ -605,16 +619,27 @@ namespace JLQ_MBE_BattleSimulation
         /// <param name="e"></param>
         private void menuPattern_Click(object sender, RoutedEventArgs e)
         {
+            //合法性
             if (game.Characters.Count == 0)
             {
                 MessageBox.Show("还未加人！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+            if (!game.FriendCharacters.Any())
+            {
+                MessageBox.Show("还未加己方角色！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (!game.EnemyCharacters.Any())
+            {
+                MessageBox.Show("还未加敌方角色！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            //控件操作
             menuPattern.IsEnabled = false;
             menuBackout.IsEnabled = false;
             menuClear.IsEnabled = false;
             labelShow.Content = "战斗模式";
-            //控件操作
             label2.Visibility = Visibility.Hidden;
             labelID.Visibility = Visibility.Hidden;
             comboBoxDisplay.Text = "";
@@ -628,10 +653,12 @@ namespace JLQ_MBE_BattleSimulation
             buttonGenerateFriend.IsEnabled = false;
             buttonGenerateEnemy.IsEnabled = false;
             buttonGenerateMiddle.IsEnabled = false;
+            buttonSC01.IsEnabled = true;
+            buttonSC02.IsEnabled = true;
+            buttonSC03.IsEnabled = true;
             labelShow.Foreground = Brushes.Black;
             game.TurnToBattle();
             PreparingSection();
-
         }
 
         /// <summary>撤销上一次添加的角色</summary>
@@ -678,17 +705,17 @@ namespace JLQ_MBE_BattleSimulation
 
         private void buttonSC01_Click(object sender, RoutedEventArgs e)
         {
-            game.SC(1);
+            SC(1);
         }
 
         private void buttonSC02_Click(object sender, RoutedEventArgs e)
         {
-            game.SC(2);
+            SC(2);
         }
 
         private void buttonSC03_Click(object sender, RoutedEventArgs e)
         {
-            game.SC(3);
+            SC(3);
         }
     }
 }

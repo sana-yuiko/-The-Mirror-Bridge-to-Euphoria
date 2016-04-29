@@ -76,11 +76,6 @@
         <member name="M:JLQ_MBE_BattleSimulation.Daiyousei.EndSC03">
             <summary>结束符卡03</summary>
         </member>
-        <member name="T:JLQ_MBE_BattleSimulation.DBeAttacked">
-            <summary>被攻击的委托</summary>
-            <param name="damage">伤害值</param>
-            <param name="attacker">伤害来源</param>
-        </member>
         <member name="T:JLQ_MBE_BattleSimulation.DBuffAffect">
             <summary>buff效果的委托</summary>
             <param name="buffee">buff承受者</param>
@@ -103,6 +98,26 @@
             <summary>所选位置是否为合法目标的委托</summary>
             <param name="clickPoint">单击位置</param>
             <returns>单击位置是否合法</returns>
+        </member>
+        <member name="T:JLQ_MBE_BattleSimulation.DCloseGain">
+            <summary>计算近战增益的委托</summary>
+            <param name="target">攻击目标</param>
+            <returns>近战增益</returns>
+        </member>
+        <member name="T:JLQ_MBE_BattleSimulation.DIsHit">
+            <summary>判断是否命中的委托</summary>
+            <param name="target">攻击目标</param>
+            <returns>是否命中</returns>
+        </member>
+        <member name="T:JLQ_MBE_BattleSimulation.DIsCriticalHit">
+            <summary>判断是否暴击的委托</summary>
+            <param name="target">攻击目标</param>
+            <returns>是否暴击</returns>
+        </member>
+        <member name="T:JLQ_MBE_BattleSimulation.DBeAttacked">
+            <summary>被攻击结算的委托</summary>
+            <param name="damage">伤害值</param>
+            <param name="attacker">伤害来源</param>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Eirin.SC01">
             <summary>符卡01</summary>
@@ -892,7 +907,16 @@
             <summary>名字</summary>
         </member>
         <member name="F:JLQ_MBE_BattleSimulation.Character.HandleBeAttacked">
-            <summary>被攻击的委托对象</summary>
+            <summary>被攻击结算的委托对象</summary>
+        </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Character.HandleIsHit">
+            <summary>是否命中的委托对象</summary>
+        </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Character.HandleCloseGain">
+            <summary>近战增益的委托对象</summary>
+        </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Character.HandleIsCriticalHit">
+            <summary>是否暴击的委托对象</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Character.#ctor(System.Int32,System.Windows.Point,JLQ_MBE_BattleSimulation.Group,System.Random,JLQ_MBE_BattleSimulation.Game)">
             <summary>Character类的构造函数</summary>
@@ -997,6 +1021,18 @@
             <summary>是否暴击</summary>
             <param name="target">攻击目标</param>
             <returns>是否暴击</returns>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.ResetHandleIsHit">
+            <summary>恢复是否命中的委托对象</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.ResetHandleCloseGain">
+            <summary>恢复近战增益的委托对象</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.ResetHandleIsCriticalHit">
+            <summary>恢复是否暴击的委托对象</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.ResetBeAttacked">
+            <summary>恢复被攻击结算的委托对象</summary>
         </member>
         <member name="T:JLQ_MBE_BattleSimulation.CharacterData">
             <summary>角色数据类</summary>
@@ -1134,9 +1170,7 @@
             <summary>对当前行动者的阻挡列表</summary>
         </member>
         <member name="P:JLQ_MBE_BattleSimulation.Game.EnemyAsCurrent">
-            <summary>
-            对当前行动者的移动列表
-            </summary>
+            <summary>对当前行动者的敌人列表</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Game.GetNextRoundCharacter">
             <summary>更新下个行动的角色,取currentTime最小的角色中Interval最大的角色中的随机一个</summary>
@@ -1177,6 +1211,9 @@
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Game.EndSC">
             <summary>结束符卡结算</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Game.DoSc">
+            <summary>执行符卡效果</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Game.MessageBeep(System.UInt32)">
             <summary>播放声音</summary>

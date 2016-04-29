@@ -149,8 +149,14 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>名字</summary>
         public string Name => Data.Name;
 
-        /// <summary>被攻击的委托对象</summary>
-        public DBeAttacked HandleBeAttacked;
+        /// <summary>被攻击结算的委托对象</summary>
+        protected DBeAttacked HandleBeAttacked;
+        /// <summary>是否命中的委托对象</summary>
+        protected DIsHit HandleIsHit;
+        /// <summary>近战增益的委托对象</summary>
+        protected DCloseGain HandleCloseGain;
+        /// <summary>是否暴击的委托对象</summary>
+        protected DIsCriticalHit HandleIsCriticalHit;
 
         /// <summary>Character类的构造函数</summary>
         /// <param name="id">角色ID</param>
@@ -235,6 +241,9 @@ namespace JLQ_MBE_BattleSimulation
             this.game = game;
             //初始化委托
             HandleBeAttacked = BeAttacked;
+            HandleIsHit = IsHit;
+            HandleCloseGain = t => 1.0f;
+            HandleIsCriticalHit = IsCriticalHit;
         }
 
         /// <summary>被攻击</summary>
@@ -261,14 +270,14 @@ namespace JLQ_MBE_BattleSimulation
         public bool DoAttack(Character target, float times)
         {
             //判断是否命中
-            if (IsHit(target)) return false;
+            if (HandleIsHit(target)) return false;
             //判断是否近战
-            var closeGain = CloseGain(target);
+            var closeGain = HandleCloseGain(target);
             //计算基础伤害
             var damage = /*基础伤害*/ Calculate.Damage(this.Attack, target.Defence)*
                                      /*近战补正*/closeGain* /*伤害浮动*/((2*random.NextDouble() - 1)*this.DamageFloat + 1)*times;
             //判断是否暴击
-            var isCriticalHit = IsCriticalHit(target);
+            var isCriticalHit = HandleIsCriticalHit(target);
             if (isCriticalHit)
             {
                 damage *= this.CriticalHitGain;
@@ -428,6 +437,28 @@ namespace JLQ_MBE_BattleSimulation
         protected virtual bool IsCriticalHit(Character target)
         {
             return random.NextDouble() <= this.CriticalHitRate;
+        }
+
+        //RESET
+        /// <summary>恢复是否命中的委托对象</summary>
+        protected void ResetHandleIsHit()
+        {
+            HandleIsHit = IsHit;
+        }
+        /// <summary>恢复近战增益的委托对象</summary>
+        protected void ResetHandleCloseGain()
+        {
+            HandleCloseGain = t => 1.0f;
+        }
+        /// <summary>恢复是否暴击的委托对象</summary>
+        protected void ResetHandleIsCriticalHit()
+        {
+            HandleIsCriticalHit = IsCriticalHit;
+        }
+        /// <summary>恢复被攻击结算的委托对象</summary>
+        protected void ResetBeAttacked()
+        {
+            HandleBeAttacked = BeAttacked;
         }
     }
 }

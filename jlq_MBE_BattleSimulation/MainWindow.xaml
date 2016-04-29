@@ -66,13 +66,13 @@
                 <RowDefinition Height="6*"/>
             </Grid.RowDefinitions>
             <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" CornerRadius="5">
-                <Button x:Name="buttonSC01" Content="SC01" Click="buttonSC01_Click"/>
+                <Button x:Name="buttonSC01" Content="SC01" Click="buttonSC01_Click" IsEnabled="False"/>
             </Border>
             <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Grid.Row="2" CornerRadius="5">
-                <Button x:Name="buttonSC02" Content="SC02" Click="buttonSC02_Click"/>
+                <Button x:Name="buttonSC02" Content="SC02" Click="buttonSC02_Click" IsEnabled="False"/>
             </Border>
             <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Grid.Row="4" CornerRadius="5">
-                <Button x:Name="buttonSC03" Content="SC03" Click="buttonSC03_Click"/>
+                <Button x:Name="buttonSC03" Content="SC03" Click="buttonSC03_Click" IsEnabled="False"/>
             </Border>
             <Button x:Name="buttonGenerateFriend" Content="随机生成友军" Grid.Column="2" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="5" VerticalAlignment="Top" Width="75" Height="27" Click="buttonGenerateFriend_Click"/>
             <Button x:Name="buttonGenerateEnemy" Content="随机生成敌军" Grid.Column="2" HorizontalAlignment="Left" Margin="10,78,0,0" Grid.Row="5" VerticalAlignment="Top" Width="75" Height="27" Click="buttonGenerateEnemy_Click"/>

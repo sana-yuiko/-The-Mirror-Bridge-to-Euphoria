@@ -25,8 +25,10 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>符卡01：梦想封印，对所有4格内的敌人造成1.0倍率的弹幕攻击</summary>
         public override void SC01()
         {
-            game.IsTargetLegal += (SCee, point) => Calculate.Distance(this.Position, SCee.Position) <= 4;
-            //TODO handle target
+            game.IsTargetLegal =
+                (SCee, point) =>
+                    Calculate.Distance(this.Position, SCee.Position) <= 4 && game.EnemyAsCurrent.Contains(SCee);
+            game.HandleTarget = t => DoAttack(t);
         }
 
         /// <summary>结束符卡01</summary>

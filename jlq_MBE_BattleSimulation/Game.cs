@@ -209,9 +209,7 @@ namespace JLQ_MBE_BattleSimulation
         public IEnumerable<Character> EnemyBlock
             => (CurrentCharacter is CharacterMovingIgnoreEnemy) ? new List<Character>() : EnemyAsCurrent;
 
-        /// <summary>
-        /// 对当前行动者的移动列表
-        /// </summary>
+        /// <summary>对当前行动者的敌人列表</summary>
         public IEnumerable<Character> EnemyAsCurrent =>
             Characters.Where(c => /*当前行动者中立且c非中立*/
                 (CurrentCharacter.Group == Group.Middle && c.Group != Group.Middle) ||
@@ -395,6 +393,9 @@ namespace JLQ_MBE_BattleSimulation
         {
             var index = ScSelect;
             ScSelect = 0;
+            IsTargetLegal = null;
+            HandleTarget = null;
+            IsLegalClick = null;
             switch (index)
             {
                 case 1:
@@ -407,6 +408,12 @@ namespace JLQ_MBE_BattleSimulation
                     CurrentCharacter.EndSC03();
                     return;
             }
+        }
+        
+        /// <summary>执行符卡效果</summary>
+        public void DoSc()
+        {
+            
         }
 
 

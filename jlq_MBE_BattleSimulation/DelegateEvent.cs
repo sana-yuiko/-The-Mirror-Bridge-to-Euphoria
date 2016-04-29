@@ -9,11 +9,6 @@ namespace JLQ_MBE_BattleSimulation
 {
     //委托声明
 
-    /// <summary>被攻击的委托</summary>
-    /// <param name="damage">伤害值</param>
-    /// <param name="attacker">伤害来源</param>
-    public delegate void DBeAttacked(int damage, Character attacker);
-
     /// <summary>buff效果的委托</summary>
     /// <param name="buffee">buff承受者</param>
     /// <param name="buffer">buff发出者</param>
@@ -37,7 +32,24 @@ namespace JLQ_MBE_BattleSimulation
     /// <returns>单击位置是否合法</returns>
     public delegate bool DIsLegalClick(Point clickPoint);
 
+    /// <summary>计算近战增益的委托</summary>
+    /// <param name="target">攻击目标</param>
+    /// <returns>近战增益</returns>
+    public delegate float DCloseGain(Character target);
 
+    /// <summary>判断是否命中的委托</summary>
+    /// <param name="target">攻击目标</param>
+    /// <returns>是否命中</returns>
+    public delegate bool DIsHit(Character target);
 
+    /// <summary>判断是否暴击的委托</summary>
+    /// <param name="target">攻击目标</param>
+    /// <returns>是否暴击</returns>
+    public delegate bool DIsCriticalHit(Character target);
+
+    /// <summary>被攻击结算的委托</summary>
+    /// <param name="damage">伤害值</param>
+    /// <param name="attacker">伤害来源</param>
+    public delegate void DBeAttacked(int damage, Character attacker);
 
 }
