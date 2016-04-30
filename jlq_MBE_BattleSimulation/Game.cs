@@ -180,7 +180,7 @@ namespace JLQ_MBE_BattleSimulation
             {
                 ButtonSC[i] = new Button
                 {
-                    Content = "SC0" + i.ToString(),
+                    Content = "SC0" + (i + 1),
                     IsEnabled = false,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     VerticalAlignment = VerticalAlignment.Stretch
@@ -220,15 +220,10 @@ namespace JLQ_MBE_BattleSimulation
                         Calculate.Distance(CurrentCharacter.Position, c.Position) <= CurrentCharacter.AttackRange);
 
         /// <summary>对当前行动者的阻挡列表</summary>
-        public IEnumerable<Character> EnemyBlock
-            => (CurrentCharacter is CharacterMovingIgnoreEnemy) ? new List<Character>() : EnemyAsCurrent;
+        public virtual IEnumerable<Character> EnemyBlock => CurrentCharacter.EnemyBlock;
 
         /// <summary>对当前行动者的敌人列表</summary>
-        public IEnumerable<Character> EnemyAsCurrent =>
-            Characters.Where(c => /*当前行动者中立且c非中立*/
-                (CurrentCharacter.Group == Group.Middle && c.Group != Group.Middle) ||
-                    /*当前行动者非中立且c与之敌对*/ (CurrentCharacter.Group != Group.Middle &&
-                        c.Group == (Group) (-(int) CurrentCharacter.Group)));
+        public IEnumerable<Character> EnemyAsCurrent => CurrentCharacter.Enemy;
 
 
         /// <summary>更新下个行动的角色,取currentTime最小的角色中Interval最大的角色中的随机一个</summary>
@@ -386,7 +381,7 @@ namespace JLQ_MBE_BattleSimulation
             IsBattle = true;
         }
 
-        /// <summary>恢复棋盘无人区正常颜色</summary>
+        /// <summary>恢复棋盘正常颜色</summary>
         public void DefaultButtonBackground()
         {
             foreach (var b in Buttons)
@@ -409,8 +404,7 @@ namespace JLQ_MBE_BattleSimulation
                 for (var j = 0; j < MainWindow.Row; j++)
                 {
                     var point1 = new Point(i, j);
-                    if (point1 != origin && Calculate.Distance(point1, origin) <= range &&
-                        point1 != CurrentPosition)
+                    if (this[point1] == null && Calculate.Distance(point1, origin) <= range)
                     {
                         Buttons[i, j].Opacity = 1;
                     }
@@ -431,6 +425,17 @@ namespace JLQ_MBE_BattleSimulation
                         Buttons[i, j].Opacity = 1;
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// 恢复棋盘按钮原本颜色
+        /// </summary>
+        public void ResetPadButtons()
+        {
+            foreach (var b in Buttons)
+            {
+                b.Opacity = 0;
             }
         }
 

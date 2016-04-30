@@ -22,10 +22,7 @@ namespace JLQ_MBE_BattleSimulation
             };
             leave = (s, ev) =>
             {
-                foreach (var b in game.Buttons)
-                {
-                    b.Opacity = 0;
-                }
+                this.game.ResetPadButtons();
                 game.Paint();
                 game.UpdateLabelBackground();
             };
@@ -57,7 +54,8 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>结束符卡01</summary>
         public override void EndSC01()
         {
-
+            game.IsTargetLegal = null;
+            game.HandleTarget = null;
         }
 
         /// <summary>符卡02</summary>

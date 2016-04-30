@@ -330,6 +330,15 @@ namespace JLQ_MBE_BattleSimulation
 
         }
 
+        /// <summary>对此角色而言的敌人列表</summary>
+        public IEnumerable<Character> Enemy => game.Characters.Where(c =>
+            /*当前角色中立且c非中立*/(this.Group == Group.Middle && c.Group != Group.Middle) ||
+                /*当前角色非中立且c与之敌对*/ (this.Group != Group.Middle && c.Group == (Group) (-(int) this.Group)));
+
+        /// <summary>阻挡行动的敌人列表</summary>
+        public virtual IEnumerable<Character> EnemyBlock => Enemy; 
+
+
         /// <summary>检测灵力是否足够</summary>
         /// <param name="mp">消耗的灵力量</param>
         /// <returns>灵力是否足够</returns>

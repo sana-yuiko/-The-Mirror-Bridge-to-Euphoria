@@ -24,5 +24,7 @@ namespace JLQ_MBE_BattleSimulation
         {
             
         }
+
+        public override IEnumerable<Character> EnemyBlock => new List<Character>();
     }
 }

@@ -975,6 +975,12 @@
             <param name="relativeX">移动的列向相对坐标</param>
             <param name="relativeY">移动的行向相对坐标</param>
         </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Character.Enemy">
+            <summary>对此角色而言的敌人列表</summary>
+        </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Character.EnemyBlock">
+            <summary>阻挡行动的敌人列表</summary>
+        </member>
         <member name="M:JLQ_MBE_BattleSimulation.Character.IsMpEnough(System.Int32)">
             <summary>检测灵力是否足够</summary>
             <param name="mp">消耗的灵力量</param>
@@ -1229,7 +1235,7 @@
             <summary>改为战斗模式</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Game.DefaultButtonBackground">
-            <summary>恢复棋盘无人区正常颜色</summary>
+            <summary>恢复棋盘正常颜色</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Game.SetBackground(System.Windows.Point,System.Int32)">
             <summary>将与起始点距离小于等于范围的点设为淡黄色</summary>
@@ -1238,6 +1244,11 @@
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Game.Paint">
             <summary>生成正确的网格颜色</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Game.ResetPadButtons">
+            <summary>
+            恢复棋盘按钮原本颜色
+            </summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Game.SC(System.Int32)">
             <summary>SC</summary>
@@ -1313,9 +1324,10 @@
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.EndSection">
             <summary>结束阶段</summary>
         </member>
-        <member name="M:JLQ_MBE_BattleSimulation.MainWindow.IsDead(JLQ_MBE_BattleSimulation.Character)">
+        <member name="M:JLQ_MBE_BattleSimulation.MainWindow.IsDead(JLQ_MBE_BattleSimulation.Character,JLQ_MBE_BattleSimulation.Character)">
             <summary>死亡结算</summary>
-            <param name="target"></param>
+            <param name="attacker">攻击者</param>
+            <param name="target">攻击目标</param>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.RandomlyAddCharacters(JLQ_MBE_BattleSimulation.Group,System.Int32)">
             <summary>随机添加角色</summary>

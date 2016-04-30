@@ -225,10 +225,7 @@ namespace JLQ_MBE_BattleSimulation
                     //移动
                     currentCharacter.Move(new Point(column, row));
                     game.HasMoved = true;
-                    foreach (var b in game.Buttons)
-                    {
-                        b.Opacity = 0;
-                    }
+                    game.ResetPadButtons();
                     game.UpdateLabelBackground();
                     //如果同时已经攻击过则进入结束阶段
                     if (!game.HasAttacked && game.EnemyCanAttack.Any()) return;
@@ -255,7 +252,7 @@ namespace JLQ_MBE_BattleSimulation
                     }
 
                     //死人提示
-                    IsDead(target);
+                    IsDead(currentCharacter, target);
                     game.Generate_CanReachPoint();
                     game.Paint();
 
@@ -315,14 +312,24 @@ namespace JLQ_MBE_BattleSimulation
 
 
         /// <summary>死亡结算</summary>
-        /// <param name="target"></param>
-        private void IsDead(Character target)
+        /// <param name="attacker">攻击者</param>
+        /// <param name="target">攻击目标</param>
+        private void IsDead(Character attacker, Character target)
         {
             if (!target.IsDead) return;
-            MessageBox.Show(
-                String.Format("{0}号{1}{2}被{3}号{4}{5}杀死", target.ID, Calculate.Convert(target.Group), target.Name,
-                    currentCharacter.ID, Calculate.Convert(currentCharacter.Group), currentCharacter.Name), "死亡",
-                MessageBoxButton.OK, MessageBoxImage.Hand);
+            if (attacker != null)
+            {
+                MessageBox.Show(
+                    string.Format("{0}号{1}{2}被{3}号{4}{5}杀死", target.ID, Calculate.Convert(target.Group), target.Name,
+                        attacker.ID, Calculate.Convert(attacker.Group), attacker.Name), "死亡",
+                    MessageBoxButton.OK, MessageBoxImage.Hand);
+            }
+            else
+            {
+                MessageBox.Show(
+                    string.Format("{0}号{1}{2}被无来源伤害杀死", target.ID, Calculate.Convert(target.Group), target.Name), "死亡",
+                    MessageBoxButton.OK, MessageBoxImage.Hand);
+            }
             RemoveCharacter(target);
         }
 
@@ -377,7 +384,7 @@ namespace JLQ_MBE_BattleSimulation
             game.HasAttacked = true;
             for (int i = 0, length = characterArray.Length; i < length; i++)
             {
-                IsDead(characterArray[i]);
+                IsDead(currentCharacter, characterArray[i]);
             }
 
             game.Generate_CanReachPoint();
@@ -520,10 +527,7 @@ namespace JLQ_MBE_BattleSimulation
                     if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift) ||
                         Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) return;
                     //恢复原本显示
-                    foreach (var b in game.Buttons)
-                    {
-                        b.Opacity = 0;
-                    }
+                    game.ResetPadButtons();
                     game.Paint();
                     game.UpdateLabelBackground();
                 };
@@ -537,7 +541,7 @@ namespace JLQ_MBE_BattleSimulation
             gridSC03.Children.Add(game.ButtonSC[2]);
             for (var i = 0; i < 3; i++)
             {
-                var j = i;
+                var j = i + 1;
                 game.ButtonSC[i].Click += (s, ev) => SC(j);
             }
         }
@@ -648,8 +652,8 @@ namespace JLQ_MBE_BattleSimulation
         private void menuShow_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show(
-                "红色字体为己方单位，黑色字体为中立单位，绿色字体为敌方单位；\n" + "战斗模式下：淡粉色为当前行动单位；\n淡蓝色为当前行动单位可攻击的单位；\n淡黄色为可以移动至的位置\n" +
-                "鼠标悬停在单位上方：\n按下Shift显示该角色的攻击范围；\n按下ctrl显示该角色的移动范围。", "显示", MessageBoxButton.OK,
+                "红色字体为己方单位，黑色字体为中立单位，绿色字体为敌方单位；\n" + "战斗模式下：\n淡粉色为当前行动单位；\n淡蓝色为当前行动单位可攻击的单位；\n淡黄色为可以移动至的位置\n" +
+                "鼠标悬停在单位上方：\n按下Shift显示该角色的攻击范围；\n按下Ctrl显示该角色的移动范围。", "显示", MessageBoxButton.OK,
                 MessageBoxImage.Information);
         }
 
