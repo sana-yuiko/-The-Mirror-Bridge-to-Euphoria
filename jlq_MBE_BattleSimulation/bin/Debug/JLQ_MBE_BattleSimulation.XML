@@ -485,6 +485,9 @@
         <member name="M:JLQ_MBE_BattleSimulation.Reimiria.EndSC03">
             <summary>结束符卡03</summary>
         </member>
+        <member name="T:JLQ_MBE_BattleSimulation.Reimu">
+            <summary>灵梦</summary>
+        </member>
         <member name="F:JLQ_MBE_BattleSimulation.Reimu.SC01Range">
             <summary>符卡01的范围</summary>
         </member>
@@ -528,20 +531,32 @@
         <member name="M:JLQ_MBE_BattleSimulation.Reisen.EndSC03">
             <summary>结束符卡03</summary>
         </member>
+        <member name="T:JLQ_MBE_BattleSimulation.Rin">
+            <summary>冴月麟</summary>
+        </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Rin.SC01Range">
+            <summary>符卡01的参数</summary>
+        </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Rin.SC02Range">
+            <summary>符卡02的参数</summary>
+        </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Rin.SC03Range">
+            <summary>符卡03的参数</summary>
+        </member>
         <member name="M:JLQ_MBE_BattleSimulation.Rin.SC01">
-            <summary>符卡01</summary>
+            <summary>符卡01：乘着风，瞬移到3格内一名敌方角色面前，并释放旋风对自身2格内所有敌方单位造成0.5倍率的伤害</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Rin.EndSC01">
             <summary>结束符卡01</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Rin.SC02">
-            <summary>符卡02</summary>
+            <summary>符卡02：孤独绽放的，对4格内一名敌方单位造成2.0倍率的伤害</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Rin.EndSC02">
             <summary>结束符卡02</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Rin.SC03">
-            <summary>符卡03</summary>
+            <summary>符卡03：对一点周围1格内所有敌方角色造成0.7倍率的伤害</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Rin.EndSC03">
             <summary>结束符卡03</summary>
@@ -1064,6 +1079,9 @@
         <member name="M:JLQ_MBE_BattleSimulation.Character.ResetBeAttacked">
             <summary>恢复被攻击结算的委托对象</summary>
         </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.EndSC">
+            <summary>结束符卡结算</summary>
+        </member>
         <member name="T:JLQ_MBE_BattleSimulation.CharacterData">
             <summary>角色数据类</summary>
         </member>
@@ -1130,6 +1148,9 @@
         </member>
         <member name="P:JLQ_MBE_BattleSimulation.Game.IsBattle">
             <summary>是否为战斗模式</summary>
+        </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Game.MousePoint">
+            <summary>鼠标的网格位置</summary>
         </member>
         <member name="P:JLQ_MBE_BattleSimulation.Game.Section">
             <summary>当前回合所在的阶段</summary>
@@ -1295,9 +1316,6 @@
         </member>
         <member name="F:JLQ_MBE_BattleSimulation.MainWindow.characterLastAdd">
             <summary>加人模式上一个添加的角色</summary>
-        </member>
-        <member name="F:JLQ_MBE_BattleSimulation.MainWindow.mousePoint">
-            <summary>鼠标的网格位置</summary>
         </member>
         <member name="F:JLQ_MBE_BattleSimulation.MainWindow.labelGroups">
             <summary>角色数标签</summary>

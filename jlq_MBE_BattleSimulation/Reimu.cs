@@ -9,17 +9,18 @@ using System.Windows.Media;
 
 namespace JLQ_MBE_BattleSimulation
 {
-    internal class Reimu : CharacterMovingIgnoreEnemy
+    /// <summary>灵梦</summary>
+    class Reimu : CharacterMovingIgnoreEnemy
     {
         public Reimu(int id, Point position, Group group, Random random, Game game)
             : base(id, position, group, random, game)
         {
-            enter = (s, ev) =>
+            enter01 = (s, ev) =>
             {
                 game.DefaultButtonAndLabels();
                 game.SetButtonBackground(this.Position, SC01Range);
             };
-            leave = (s, ev) =>
+            leave01 = (s, ev) =>
             {
                 this.game.ResetPadButtons();
                 game.PaintButton();
@@ -30,8 +31,8 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>符卡01的范围</summary>
         private const int SC01Range = 4;
 
-        private MouseEventHandler enter;
-        private MouseEventHandler leave;
+        private MouseEventHandler enter01;
+        private MouseEventHandler leave01;
 
 
         /// <summary>1.2倍灵力获取</summary>
@@ -53,8 +54,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>结束符卡01</summary>
         public override void EndSC01()
         {
-            game.IsTargetLegal = null;
-            game.HandleTarget = null;
+            base.EndSC01();
         }
 
         /// <summary>符卡02</summary>
@@ -83,14 +83,14 @@ namespace JLQ_MBE_BattleSimulation
 
         public override void SCShow()
         {
-            game.ButtonSC[0].MouseEnter += enter;
-            game.ButtonSC[0].MouseLeave += leave;
+            game.ButtonSC[0].MouseEnter += enter01;
+            game.ButtonSC[0].MouseLeave += leave01;
         }
 
         public override void ResetSCShow()
         {
-            game.ButtonSC[0].MouseEnter -= enter;
-            game.ButtonSC[0].MouseLeave -= leave;
+            game.ButtonSC[0].MouseEnter -= enter01;
+            game.ButtonSC[0].MouseLeave -= leave01;
 
         }
     }

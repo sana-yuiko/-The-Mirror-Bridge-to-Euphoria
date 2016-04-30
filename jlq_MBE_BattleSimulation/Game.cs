@@ -24,6 +24,9 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>是否为战斗模式</summary>
         public bool IsBattle { get; private set; }
 
+        /// <summary>鼠标的网格位置</summary>
+        public Point MousePoint = new Point(-1, -1);
+
         private Section? _section ;
         /// <summary>当前回合所在的阶段</summary>
         public Section? Section

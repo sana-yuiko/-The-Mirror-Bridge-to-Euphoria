@@ -368,16 +368,28 @@ namespace JLQ_MBE_BattleSimulation
 
         /// <summary>符卡01</summary>
         public abstract void SC01();
+
         /// <summary>结束使用符卡01</summary>
-        public abstract void EndSC01();
+        public virtual void EndSC01()
+        {
+            EndSC();
+        }
         /// <summary>符卡02</summary>
         public abstract void SC02();
+
         /// <summary>结束使用符卡02</summary>
-        public abstract void EndSC02();
+        public virtual void EndSC02()
+        {
+            EndSC();
+        }
         /// <summary>符卡03</summary>
         public abstract void SC03();
+
         /// <summary>结束使用符卡03</summary>
-        public abstract void EndSC03();
+        public virtual void EndSC03()
+        {
+            EndSC();
+        }
         ///// <summary>成为当前行动角色时按钮的移动响应</summary>
         //public abstract void SCShow();
         ///// <summary>按钮移动响应复位</summary>
@@ -480,6 +492,14 @@ namespace JLQ_MBE_BattleSimulation
         protected void ResetBeAttacked()
         {
             HandleBeAttacked = BeAttacked;
+        }
+
+        /// <summary>结束符卡结算</summary>
+        private void EndSC()
+        {
+            game.IsLegalClick = null;
+            game.IsTargetLegal = null;
+            game.HandleTarget = null;
         }
     }
 }

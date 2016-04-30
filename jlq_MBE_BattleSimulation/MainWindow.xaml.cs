@@ -37,7 +37,6 @@ namespace JLQ_MBE_BattleSimulation
         private readonly Game game;
 
         private int _id = 1;
-
         /// <summary>加人模式的当前ID</summary>
         private int ID
         {
@@ -50,8 +49,6 @@ namespace JLQ_MBE_BattleSimulation
         }
         /// <summary>加人模式上一个添加的角色</summary>
         private Character characterLastAdd = null;
-        /// <summary>鼠标的网格位置</summary>
-        private Point mousePoint = new Point(-1, -1);
         /// <summary>角色数标签</summary>
         private Label[] labelGroups = new Label[3];
 
@@ -86,14 +83,11 @@ namespace JLQ_MBE_BattleSimulation
                 cd.MoveAbility = Convert.ToInt32(xnll.Item(8).InnerText);
                 cd.AttackRange = Convert.ToInt32(xnll.Item(9).InnerText);
                 //读取符卡描述
-                cd.ScName[0] = xnscll.Item(0).InnerText;
-                cd.ScName[1] = xnscll.Item(1).InnerText;
-                cd.ScName[2] = xnscll.Item(2).InnerText;
-                cd.ScName[3] = xnscll.Item(3).InnerText;
-                cd.ScDisc[0] = xnscll.Item(4).InnerText;
-                cd.ScDisc[1] = xnscll.Item(5).InnerText;
-                cd.ScDisc[2] = xnscll.Item(6).InnerText;
-                cd.ScDisc[3] = xnscll.Item(7).InnerText;
+                for (var j = 0; j < 4; j++)
+                {
+                    cd.ScName[j] = xnscll.Item(j).InnerText;
+                    cd.ScDisc[j] = xnscll.Item(j + 4).InnerText;
+                }
 
                 Calculate.CharacterDataList.Add(cd);
                 comboBoxDisplay.Items.Add(cd.Display);
@@ -175,7 +169,7 @@ namespace JLQ_MBE_BattleSimulation
                     return;
                 }
                 //如果这个位置已添加则操作非法
-                if (game.Characters.Any(c => c.Position == new Point(column, row)))
+                if (game.Characters.Any(c => c.Position == game.MousePoint))
                 {
                     MessageBox.Show("此位置已有角色！", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
@@ -184,7 +178,7 @@ namespace JLQ_MBE_BattleSimulation
                 var group = (leftButton == MouseButtonState.Pressed)
                     ? Group.Friend
                     : ((middleButton == MouseButtonState.Pressed) ? Group.Middle : Group.Enemy);
-                AddCharacter(new Point(column, row), group, comboBoxDisplay.Text);
+                AddCharacter(game.MousePoint, group, comboBoxDisplay.Text);
             }
             //战斗模式
             else
@@ -195,7 +189,7 @@ namespace JLQ_MBE_BattleSimulation
                 if (game.ScSelect != 0)
                 {
                     //如果单击位置不合法
-                    if (!game.IsLegalClick(mousePoint))
+                    if (!game.IsLegalClick(game.MousePoint))
                     {
                         MessageBox.Show("位置非法", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
@@ -209,7 +203,7 @@ namespace JLQ_MBE_BattleSimulation
                     //如果已经移动过则操作非法
                     if (game.HasMoved)
                     {
-                        if (currentCharacter.Position != new Point(column, row))
+                        if (currentCharacter.Position != game.MousePoint)
                         {
                             MessageBox.Show("已移动过", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
                             return;
@@ -218,7 +212,7 @@ namespace JLQ_MBE_BattleSimulation
                         return;
                     }
                     //移动
-                    currentCharacter.Move(new Point(column, row));
+                    currentCharacter.Move(game.MousePoint);
                     game.HasMoved = true;
                     game.ResetPadButtons();
                     game.UpdateLabelBackground();
@@ -228,7 +222,7 @@ namespace JLQ_MBE_BattleSimulation
                     EndSection();
                 }
                 //如果单击的位置是合法攻击点
-                else if (game.EnemyCanAttack.Any(c => c.Position == new Point(column, row)))
+                else if (game.EnemyCanAttack.Any(c => c.Position == game.MousePoint))
                 {
                     //如果已经攻击过则操作非法
                     if (game.HasAttacked)
@@ -237,7 +231,7 @@ namespace JLQ_MBE_BattleSimulation
                         return;
                     }
                     //获取目标
-                    var target = game[new Point(column, row)];
+                    var target = game[game.MousePoint];
                     //攻击
                     currentCharacter.DoAttack(target);
                     game.HasAttacked = true;
@@ -377,7 +371,7 @@ namespace JLQ_MBE_BattleSimulation
                 MessageBox.Show("已攻击过不能使用符卡", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            var legalCharacters = game.Characters.Where(c => game.IsTargetLegal(c, mousePoint));
+            var legalCharacters = game.Characters.Where(c => game.IsTargetLegal(c, game.MousePoint));
             var characterArray = legalCharacters.ToArray();
             foreach (var c in characterArray)
             {
@@ -483,42 +477,42 @@ namespace JLQ_MBE_BattleSimulation
                 };
                 button.MouseEnter += (s, ev) =>
                 {
-                    mousePoint = new Point(column, row);
+                    game.MousePoint = new Point(column, row);
                 };
                 button.MouseLeave += (s, ev) =>
                 {
-                    mousePoint = new Point(-1, -1);
+                    game.MousePoint = new Point(-1, -1);
                 };
                 button.KeyDown += (s, ev) =>
                 {
                     //如果shift和ctrl都没被按下或不在行动阶段或不在棋盘内或该点无角色或该点角色为当前角色则无效
                     if ((!(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift) ||
                            Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))) ||
-                        section != Section.Round || mousePoint == new Point(-1, -1) ||
-                        game.Characters.All(c => c.Position != mousePoint) ||
-                        mousePoint == game.CurrentPosition) return;
+                        section != Section.Round || game.MousePoint == new Point(-1, -1) ||
+                        game.Characters.All(c => c.Position != game.MousePoint) ||
+                        game.MousePoint == game.CurrentPosition) return;
                     //如果shift被按下
                     if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
                     {
-                        var character = game[mousePoint];
+                        var character = game[game.MousePoint];
                         if (character != null)
                         {
                             //清屏
                             game.DefaultButtonAndLabels();
 
-                            game.SetButtonBackground(mousePoint, character.AttackRange);
+                            game.SetButtonBackground(game.MousePoint, character.AttackRange);
                             character.LabelDisplay.Background = Brushes.LightBlue;
                         }
                     }
                     //如果ctrl被按下
                     else if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
                     {
-                        var character = game[mousePoint];
+                        var character = game[game.MousePoint];
                         if (character == null) return;
                         //清屏
                         game.DefaultButtonAndLabels();
 
-                        game.SetButtonBackground(mousePoint, character.MoveAbility);
+                        game.SetButtonBackground(game.MousePoint, character.MoveAbility);
                         character.LabelDisplay.Background = Brushes.LightBlue;
                     }
 

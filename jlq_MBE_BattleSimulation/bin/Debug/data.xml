@@ -434,13 +434,13 @@
     </charc>
     <charc id="Rin">
       <name id="0">飞翔于天空中不可思议的巫女</name>
-      <name id="1">灵符「梦想封印」</name>
-      <name id="2">神技「八方鬼缚阵」</name>
-      <name id="3">博丽秘技「梦想天生」</name>
+      <name id="1">风符「乘着风」</name>
+      <name id="2">花符「孤独绽放的」</name>
+      <name id="3">花符「盛开的恶之花」</name>
       <disc id="0">你可以穿过敌方单位。</disc>
-      <disc id="1">梦想封印</disc>
-      <disc id="2">八方鬼缚阵</disc>
-      <disc id="3">梦想天生</disc>
+      <disc id="1">乘着风</disc>
+      <disc id="2">孤独绽放的</disc>
+      <disc id="3">盛开的恶之花</disc>
     </charc>
     <charc id="Rumia">
       <name id="0">飞翔于天空中不可思议的巫女</name>
