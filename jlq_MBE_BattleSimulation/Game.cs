@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -234,15 +233,11 @@ namespace JLQ_MBE_BattleSimulation
         public void GetNextRoundCharacter()
         {
             CurrentCharacter?.ResetSCShow();
-            foreach(var c in Characters)
-            {
-                c.LabelDisplay.BorderThickness = new Thickness(0);
-            }
             //currentCharacter?.Reset();
             HasMoved = false;
             HasAttacked = false;
             var stack = new Stack<Character>();
-            stack.Push(Characters.ElementAt(0));
+            stack.Push(Characters.First());
             foreach (var character in Characters)
             {
                 var temp = stack.Peek();
@@ -269,10 +264,7 @@ namespace JLQ_MBE_BattleSimulation
             UpdateLabelBackground();
 
             var ct = CurrentCharacter.CurrentTime;
-            foreach (var character in Characters)
-            {
-                character.CurrentTime -= ct;
-            }
+            Characters.Aggregate(0, (current, c) => c.CurrentTime -= ct);
             CurrentCharacter.CurrentTime = CurrentCharacter.Interval;
 
             Generate_CanReachPoint();
@@ -308,11 +300,9 @@ namespace JLQ_MBE_BattleSimulation
                 }
             }
             AssignPointCanReach(CurrentCharacter.Position, CurrentCharacter.MoveAbility);
-            var positionList = Characters.Where(c => c.Position != CurrentCharacter.Position).Select(c => c.Position);
-            foreach (var position in positionList)
-            {
-                CanReachPoint[(int) position.X, (int) position.Y] = false;
-            }
+            Characters.Where(c => c.Position != CurrentCharacter.Position)
+                .Select(c => c.Position)
+                .Aggregate(false, (current, position) => CanReachPoint[(int) position.X, (int) position.Y] = false);
         }
 
         /// <summary>将所有可以到达的点在bool二维数组中置为true</summary>

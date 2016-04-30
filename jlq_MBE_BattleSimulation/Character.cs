@@ -4,10 +4,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 
 namespace JLQ_MBE_BattleSimulation
@@ -29,22 +27,21 @@ namespace JLQ_MBE_BattleSimulation
         //可变字段
         //增益
         /// <summary>攻击增益</summary>
-        private float _attackX = 1.0f;
+        public float _attackX { private get; set; } = 1.0f;
         /// <summary>防御增益</summary>
-        private float _defenceX = 1.0f;
+        public float _defenceX { private get; set; } = 1.0f;
         /// <summary>命中率增益</summary>
-        private float _hitRateX = 1.0f;
+        public float _hitRateX { private get; set; } = 1.0f;
         /// <summary>闪避率增益</summary>
-        private float _dodgeRateX = 1.0f;
+        public float _dodgeRateX { private get; set; } = 1.0f;
         /// <summary>近战补正增益</summary>
-        private float _closeAmendmentX = 1.0f;
+        public float _closeAmendmentX { private get; set; } = 1.0f;
 
-        private float __intervalX;
-
+        private float __intervalX = 1.0f;
         /// <summary>行动间隔增益</summary>
-        private float _intervalX
+        public float _intervalX
         {
-            get { return __intervalX; }
+            private get { return __intervalX; }
             set
             {
                 __intervalX = value;
@@ -172,7 +169,7 @@ namespace JLQ_MBE_BattleSimulation
             HasMoved = false;
             HasAttacked = false;
             this.Data =
-                Calculate.CharacterDataList.Where(cd => cd.Name == this.GetType().ToString().Substring(25)).ElementAt(0);
+                Calculate.CharacterDataList.First(cd => cd.Name == this.GetType().ToString().Substring(25));
             this._maxMp = 1000;
             //初始化显示
             this.LabelDisplay = new Label
@@ -233,7 +230,6 @@ namespace JLQ_MBE_BattleSimulation
 
             this.Hp = this.Data.MaxHp;
             this.Mp = _maxMp;
-            _intervalX = 1.0f;
             this.CurrentTime = this.Data.Interval;
 
             BuffList = new List<Buff>();

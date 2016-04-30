@@ -53,7 +53,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>鼠标的网格位置</summary>
         private Point mousePoint = new Point(-1, -1);
         /// <summary>角色数标签</summary>
-        private Label[] labels = new Label[3];
+        private Label[] labelGroups = new Label[3];
 
         /// <summary>构造函数</summary>
         public MainWindow()
@@ -100,9 +100,9 @@ namespace JLQ_MBE_BattleSimulation
             }
             reader.Close();
             //加入数组
-            labels[0] = labelEnemy;
-            labels[1] = labelMiddle;
-            labels[2] = labelFriend;
+            labelGroups[0] = labelEnemy;
+            labelGroups[1] = labelMiddle;
+            labelGroups[2] = labelFriend;
             //初始化game对象
             game = new Game();
         }
@@ -141,13 +141,13 @@ namespace JLQ_MBE_BattleSimulation
             game.Characters.Add(characterLastAdd);
             ID++;
             menuBackout.IsEnabled = true;
-            var labelTemp = labels[(int) group + 1];
+            var labelTemp = labelGroups[(int) group + 1];
             labelTemp.Content = Convert.ToInt32(labelTemp.Content) + 1;
         }
 
         private void RemoveCharacter(Character target)
         {
-            var labelTemp = labels[(int) target.Group + 1];
+            var labelTemp = labelGroups[(int) target.Group + 1];
             labelTemp.Content = Convert.ToInt32(labelTemp.Content) - 1;
             gridPad.Children.Remove(target.LabelDisplay);
             gridPad.Children.Remove(target.BarHp);
@@ -341,8 +341,8 @@ namespace JLQ_MBE_BattleSimulation
                     points.Add(new Point(i, j));
                 }
             }
-            var pointsCanAdd = points.Where(p => game[p] == null);
-            if (pointsCanAdd.Count() < number)
+            var pointsCanAdd = points.Where(p => game[p] == null).ToList();
+            if (pointsCanAdd.Count < number)
             {
                 MessageBox.Show("空格不足！", "添加失败", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -350,11 +350,12 @@ namespace JLQ_MBE_BattleSimulation
             var count = Calculate.CharacterDataList.Count;
             for (var i = 0; i < number; i++)
             {
-                var index = game.Random.Next(pointsCanAdd.Count());
+                var index = game.Random.Next(pointsCanAdd.Count);
                 var displayIndex = game.Random.Next(count);
-                AddCharacter(pointsCanAdd.ElementAt(index), group, Calculate.CharacterDataList.ElementAt(displayIndex).Display);
+                AddCharacter(pointsCanAdd[index], group, Calculate.CharacterDataList.ElementAt(displayIndex).Display);
+                pointsCanAdd.RemoveAt(index);
             }
-            if (!(bool) checkBox.IsChecked) return;
+            if (checkBox.IsChecked == false) return;
             MessageBox.Show("生成成功", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
@@ -561,8 +562,8 @@ namespace JLQ_MBE_BattleSimulation
         /// <param name="e"></param>
         private void menuClear_Click(object sender, RoutedEventArgs e)
         {
-            var labels = game.Characters.Select(c => c.LabelDisplay);
-            foreach (var l in labels)
+            var characterLabels = game.Characters.Select(c => c.LabelDisplay).ToList();
+            foreach (var l in characterLabels)
             {
                 gridPad.Children.Remove(l);
             }
@@ -578,10 +579,7 @@ namespace JLQ_MBE_BattleSimulation
             menuBackout.IsEnabled = false;
             ID = 1;
             labelID.Content = "1";
-            foreach (var label in labels)
-            {
-                label.Content = "0";
-            }
+            characterLabels.Aggregate(new object(), (current, l) => l.Content = "0");
         }
 
         /// <summary>模式切换</summary>
@@ -623,10 +621,7 @@ namespace JLQ_MBE_BattleSimulation
             buttonGenerateFriend.IsEnabled = false;
             buttonGenerateEnemy.IsEnabled = false;
             buttonGenerateMiddle.IsEnabled = false;
-            foreach (var b in game.ButtonSC)
-            {
-                b.IsEnabled = true;
-            }
+            game.ButtonSC.Aggregate(false, (current, b) => b.IsEnabled = true);
             labelShow.Foreground = Brushes.Black;
             game.TurnToBattle();
             PreparingSection();
@@ -673,6 +668,5 @@ namespace JLQ_MBE_BattleSimulation
         {
             RandomlyAddCharacters(Group.Middle, Int32.Parse(comboBoxMiddle.Text));
         }
-
     }
 }

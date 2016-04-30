@@ -822,19 +822,19 @@
         <member name="F:JLQ_MBE_BattleSimulation.Character.Group">
             <summary>阵营</summary>
         </member>
-        <member name="F:JLQ_MBE_BattleSimulation.Character._attackX">
+        <member name="P:JLQ_MBE_BattleSimulation.Character._attackX">
             <summary>攻击增益</summary>
         </member>
-        <member name="F:JLQ_MBE_BattleSimulation.Character._defenceX">
+        <member name="P:JLQ_MBE_BattleSimulation.Character._defenceX">
             <summary>防御增益</summary>
         </member>
-        <member name="F:JLQ_MBE_BattleSimulation.Character._hitRateX">
+        <member name="P:JLQ_MBE_BattleSimulation.Character._hitRateX">
             <summary>命中率增益</summary>
         </member>
-        <member name="F:JLQ_MBE_BattleSimulation.Character._dodgeRateX">
+        <member name="P:JLQ_MBE_BattleSimulation.Character._dodgeRateX">
             <summary>闪避率增益</summary>
         </member>
-        <member name="F:JLQ_MBE_BattleSimulation.Character._closeAmendmentX">
+        <member name="P:JLQ_MBE_BattleSimulation.Character._closeAmendmentX">
             <summary>近战补正增益</summary>
         </member>
         <member name="P:JLQ_MBE_BattleSimulation.Character._intervalX">
@@ -1299,7 +1299,7 @@
         <member name="F:JLQ_MBE_BattleSimulation.MainWindow.mousePoint">
             <summary>鼠标的网格位置</summary>
         </member>
-        <member name="F:JLQ_MBE_BattleSimulation.MainWindow.labels">
+        <member name="F:JLQ_MBE_BattleSimulation.MainWindow.labelGroups">
             <summary>角色数标签</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.#ctor">
