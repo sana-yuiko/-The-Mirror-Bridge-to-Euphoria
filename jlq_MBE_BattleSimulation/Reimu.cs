@@ -16,14 +16,13 @@ namespace JLQ_MBE_BattleSimulation
         {
             enter = (s, ev) =>
             {
-                game.DefaultButtonBackground();
-                game.SetBackground(this.Position, SC01Range);
-                LabelDisplay.Background = Brushes.LightPink;
+                game.DefaultButtonAndLabels();
+                game.SetButtonBackground(this.Position, SC01Range);
             };
             leave = (s, ev) =>
             {
                 this.game.ResetPadButtons();
-                game.Paint();
+                game.PaintButton();
                 game.UpdateLabelBackground();
             };
         }
@@ -39,7 +38,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <param name="mp">获得的灵力量</param>
         public override void MpGain(int mp)
         {
-            base.MpGain((int) Math.Floor(1.2*mp));
+            base.MpGain(Calculate.Floor(1.2*mp));
         }
 
         /// <summary>符卡01：梦想封印，对所有4格内的敌人造成1.0倍率的弹幕攻击</summary>

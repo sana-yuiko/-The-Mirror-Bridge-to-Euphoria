@@ -123,17 +123,17 @@ namespace JLQ_MBE_BattleSimulation
 
         //只读属性
         /// <summary>攻击</summary>
-        public int Attack => (int) Math.Floor(Data.Attack*_attackX);
+        public int Attack => Calculate.Floor(Data.Attack*_attackX);
         /// <summary>防御</summary>
-        public int Defence => (int) Math.Floor(Data.Defence*_defenceX);
+        public int Defence => Calculate.Floor(Data.Defence*_defenceX);
         /// <summary>命中率</summary>
-        public int HitRate => (int) Math.Floor(Data.HitRate*_hitRateX);
+        public int HitRate => Calculate.Floor(Data.HitRate*_hitRateX);
         /// <summary>闪避率</summary>
-        public int DodgeRate => (int) Math.Floor(Data.DodgeRate*_dodgeRateX);
+        public int DodgeRate => Calculate.Floor(Data.DodgeRate*_dodgeRateX);
         /// <summary>近战补正</summary>
-        public int CloseAmendment => (int) Math.Floor(Data.CloseAmendment*_closeAmendmentX);
+        public int CloseAmendment => Calculate.Floor(Data.CloseAmendment*_closeAmendmentX);
         /// <summary>行动间隔</summary>
-        public int Interval => (int) Math.Floor(Data.Interval*_intervalX);
+        public int Interval => Calculate.Floor(Data.Interval*_intervalX);
         /// <summary>机动</summary>
         public int MoveAbility => Data.MoveAbility + _moveAbilityX;
         /// <summary>攻击范围</summary>
@@ -307,7 +307,7 @@ namespace JLQ_MBE_BattleSimulation
         public string Tip(Character target)
         {
             return String.Format("命中几率: {0}%\n平均伤害值: {1}",
-                Math.Floor(Calculate.HitRate(this, target)*100),
+                Calculate.Floor(Calculate.HitRate(this, target)*100),
                 Calculate.Damage(this.Attack, target.Defence));
         }
 
@@ -388,16 +388,10 @@ namespace JLQ_MBE_BattleSimulation
         //public abstract void ResetSCShow();
         //TODO back abstract
         /// <summary>成为当前行动角色时按钮的移动响应</summary>
-        public virtual void SCShow()
-        {
-            
-        }
+        public virtual void SCShow(){ }
 
         /// <summary>按钮移动响应复位</summary>
-        public virtual void ResetSCShow()
-        {
-            
-        }
+        public virtual void ResetSCShow(){ }
 
 
 

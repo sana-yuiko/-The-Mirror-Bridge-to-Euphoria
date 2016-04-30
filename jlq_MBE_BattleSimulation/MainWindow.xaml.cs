@@ -194,12 +194,6 @@ namespace JLQ_MBE_BattleSimulation
                 //符卡
                 if (game.ScSelect != 0)
                 {
-                    //如果已攻击过
-                    if (game.HasAttacked)
-                    {
-                        MessageBox.Show("已攻击过不能使用符卡", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
-                    }
                     //如果单击位置不合法
                     if (!game.IsLegalClick(mousePoint))
                     {
@@ -207,6 +201,7 @@ namespace JLQ_MBE_BattleSimulation
                         return;
                     }
                     DoSC();
+                    game.EndSC();
                 }
                 //如果单击的位置是合法移动点
                 else if (game.CanReachPoint[column, row])
@@ -254,7 +249,7 @@ namespace JLQ_MBE_BattleSimulation
                     //死人提示
                     IsDead(currentCharacter, target);
                     game.Generate_CanReachPoint();
-                    game.Paint();
+                    game.PaintButton();
 
                     //如果同时已经移动过则进入结束阶段
                     if (!game.HasMoved) return;
@@ -281,7 +276,7 @@ namespace JLQ_MBE_BattleSimulation
                 game.ButtonSC[i].Content = currentCharacter.Data.ScName[i + 1];
                 game.ButtonSC[i].ToolTip = currentCharacter.Data.ScDisc[i + 1];
             }
-            game.Paint();
+            game.PaintButton();
 
             //跳转阶段
             section = Section.Preparing;
@@ -295,17 +290,6 @@ namespace JLQ_MBE_BattleSimulation
             section = Section.End;
             game.BuffSettle(Section.End);
             //Thread.Sleep(1000);
-            //游戏是否结束
-            if (!game.FriendCharacters.Any())
-            {
-                MessageBox.Show("敌方获胜！", "游戏结束", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return;
-            }
-            if (!game.EnemyCharacters.Any())
-            {
-                MessageBox.Show("己方获胜！", "游戏结束", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return;
-            }
 
             PreparingSection();
         }
@@ -322,7 +306,7 @@ namespace JLQ_MBE_BattleSimulation
                 MessageBox.Show(
                     string.Format("{0}号{1}{2}被{3}号{4}{5}杀死", target.ID, Calculate.Convert(target.Group), target.Name,
                         attacker.ID, Calculate.Convert(attacker.Group), attacker.Name), "死亡",
-                    MessageBoxButton.OK, MessageBoxImage.Hand);
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             else
             {
@@ -331,6 +315,17 @@ namespace JLQ_MBE_BattleSimulation
                     MessageBoxButton.OK, MessageBoxImage.Hand);
             }
             RemoveCharacter(target);
+            //游戏是否结束
+            if (!game.FriendCharacters.Any())
+            {
+                MessageBox.Show("敌方获胜！", "游戏结束", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
+            if (!game.EnemyCharacters.Any())
+            {
+                MessageBox.Show("己方获胜！", "游戏结束", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
         }
 
         /// <summary>随机添加角色</summary>
@@ -369,11 +364,18 @@ namespace JLQ_MBE_BattleSimulation
             if (game.IsLegalClick == null)
             {
                 DoSC();
+                game.EndSC();
             }
         }
 
         private void DoSC()
         {
+            //如果已攻击过则操作非法
+            if (game.HasAttacked)
+            {
+                MessageBox.Show("已攻击过不能使用符卡", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             var legalCharacters = game.Characters.Where(c => game.IsTargetLegal(c, mousePoint));
             var characterArray = legalCharacters.ToArray();
             foreach (var c in characterArray)
@@ -382,13 +384,17 @@ namespace JLQ_MBE_BattleSimulation
             }
             game.EndSC();
             game.HasAttacked = true;
+            foreach (var c in game.EnemyCanAttack)
+            {
+                c.LabelDisplay.Background = Brushes.White;
+            }
             for (int i = 0, length = characterArray.Length; i < length; i++)
             {
                 IsDead(currentCharacter, characterArray[i]);
             }
 
             game.Generate_CanReachPoint();
-            game.Paint();
+            game.PaintButton();
             //如果同时已经移动过则进入结束阶段
             if (!game.HasMoved) return;
             //Thread.Sleep(500);
@@ -497,26 +503,22 @@ namespace JLQ_MBE_BattleSimulation
                         if (character != null)
                         {
                             //清屏
-                            game.DefaultButtonBackground();
+                            game.DefaultButtonAndLabels();
 
-                            game.SetBackground(mousePoint, character.AttackRange);
-                            currentCharacter.LabelDisplay.Background = Brushes.LightPink;
+                            game.SetButtonBackground(mousePoint, character.AttackRange);
                             character.LabelDisplay.Background = Brushes.LightBlue;
                         }
                     }
                     //如果ctrl被按下
-                    if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+                    else if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
                     {
                         var character = game[mousePoint];
-                        if (character != null)
-                        {
-                            //清屏
-                            game.DefaultButtonBackground();
+                        if (character == null) return;
+                        //清屏
+                        game.DefaultButtonAndLabels();
 
-                            game.SetBackground(mousePoint, character.MoveAbility);
-                            currentCharacter.LabelDisplay.Background = Brushes.LightPink;
-                            character.LabelDisplay.Background = Brushes.LightBlue;
-                        }
+                        game.SetButtonBackground(mousePoint, character.MoveAbility);
+                        character.LabelDisplay.Background = Brushes.LightBlue;
                     }
 
                 };
@@ -528,7 +530,7 @@ namespace JLQ_MBE_BattleSimulation
                         Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) return;
                     //恢复原本显示
                     game.ResetPadButtons();
-                    game.Paint();
+                    game.PaintButton();
                     game.UpdateLabelBackground();
                 };
             }

@@ -793,14 +793,19 @@
             <returns>距离值</returns>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Calculate.Convert(System.Nullable{JLQ_MBE_BattleSimulation.Section})">
-            <summary>将Section转化为label的文字提示</summary>
+            <summary>将Section转化为中文显示</summary>
             <param name="value">当前游戏阶段</param>
-            <returns>label的文字提示</returns>
+            <returns>中文显示</returns>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Calculate.Convert(JLQ_MBE_BattleSimulation.Group)">
-            <summary>将阵营转化为字符串</summary>
+            <summary>将阵营转化为中文名</summary>
             <param name="group">待转化的阵营</param>
             <returns>阵营中文名</returns>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Calculate.Floor(System.Double)">
+            <summary>向下取整</summary>
+            <param name="number">待取整的值</param>
+            <returns>取整结果</returns>
         </member>
         <member name="T:JLQ_MBE_BattleSimulation.Character">
             <summary>角色类</summary>
@@ -1138,6 +1143,9 @@
         <member name="P:JLQ_MBE_BattleSimulation.Game.Characters">
             <summary>游戏中所有角色列表</summary>
         </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Game.CanReachPoint">
+            <summary>每个格子能否被到达</summary>
+        </member>
         <member name="P:JLQ_MBE_BattleSimulation.Game.LabelSection">
             <summary>当前阶段</summary>
         </member>
@@ -1163,7 +1171,7 @@
             <summary>传递参数，判断单击位置是否有效</summary>
         </member>
         <member name="F:JLQ_MBE_BattleSimulation.Game.ScSelect">
-            <summary>是否处于符卡状态</summary>
+            <summary>当前符卡序号，0为不处于符卡状态</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Game.#ctor">
             <summary>Game类的构造函数</summary>
@@ -1203,12 +1211,6 @@
         <member name="M:JLQ_MBE_BattleSimulation.Game.GetNextRoundCharacter">
             <summary>更新下个行动的角色,取currentTime最小的角色中Interval最大的角色中的随机一个</summary>
         </member>
-        <member name="M:JLQ_MBE_BattleSimulation.Game.UpdateLabelBackground">
-            <summary>更新角色显示的边框颜色</summary>
-        </member>
-        <member name="F:JLQ_MBE_BattleSimulation.Game.CanReachPoint">
-            <summary>每个格子能否被到达</summary>
-        </member>
         <member name="M:JLQ_MBE_BattleSimulation.Game.StringShow(System.Windows.Point)">
             <summary>格子的文字显示</summary>
             <param name="position">格子</param>
@@ -1234,21 +1236,25 @@
         <member name="M:JLQ_MBE_BattleSimulation.Game.TurnToBattle">
             <summary>改为战斗模式</summary>
         </member>
-        <member name="M:JLQ_MBE_BattleSimulation.Game.DefaultButtonBackground">
-            <summary>恢复棋盘正常颜色</summary>
+        <member name="M:JLQ_MBE_BattleSimulation.Game.DefaultButtonAndLabels">
+            <summary>恢复棋盘和角色正常颜色</summary>
         </member>
-        <member name="M:JLQ_MBE_BattleSimulation.Game.SetBackground(System.Windows.Point,System.Int32)">
-            <summary>将与起始点距离小于等于范围的点设为淡黄色</summary>
+        <member name="M:JLQ_MBE_BattleSimulation.Game.SetButtonBackground(System.Windows.Point,System.Int32)">
+            <summary>生成与起始点距离小于等于范围的按钮的颜色</summary>
             <param name="origin">起始点</param>
             <param name="range">范围</param>
         </member>
-        <member name="M:JLQ_MBE_BattleSimulation.Game.Paint">
-            <summary>生成正确的网格颜色</summary>
+        <member name="M:JLQ_MBE_BattleSimulation.Game.PaintButton">
+            <summary>生成可到达点的按钮颜色</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Game.ResetPadButtons">
-            <summary>
-            恢复棋盘按钮原本颜色
-            </summary>
+            <summary>将全部棋盘按钮置透明</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Game.UpdateLabelBackground">
+            <summary>更新角色标签颜色</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Game.SetCurrentLabel">
+            <summary>将当前行动角色标签颜色设为淡粉色</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Game.SC(System.Int32)">
             <summary>SC</summary>

@@ -66,6 +66,10 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>游戏中所有角色列表</summary>
         public List<Character> Characters { get; }
 
+        /// <summary>每个格子能否被到达</summary>
+        public bool[,] CanReachPoint = new bool[MainWindow.Column, MainWindow.Row];
+
+
         //窗体显示
         /// <summary>当前阶段</summary>
         public Label LabelSection { get; set; }
@@ -85,7 +89,7 @@ namespace JLQ_MBE_BattleSimulation
         public DHandleTarget HandleTarget;
         /// <summary>传递参数，判断单击位置是否有效</summary>
         public DIsLegalClick IsLegalClick;
-        /// <summary>是否处于符卡状态</summary>
+        /// <summary>当前符卡序号，0为不处于符卡状态</summary>
         public int ScSelect;
 
         /// <summary>Game类的构造函数</summary>
@@ -276,24 +280,6 @@ namespace JLQ_MBE_BattleSimulation
             CurrentCharacter.SCShow();
         }
 
-        /// <summary>更新角色显示的边框颜色</summary>
-        public void UpdateLabelBackground()
-        {
-            foreach (var c in Characters)
-            {
-                c.LabelDisplay.Background = Brushes.White;
-            }
-            CurrentCharacter.LabelDisplay.Background = Brushes.LightPink;
-            foreach (var c in EnemyCanAttack)
-            {
-                c.LabelDisplay.Background = Brushes.LightBlue;
-            }
-
-        }
-
-        /// <summary>每个格子能否被到达</summary>
-        public bool[,] CanReachPoint = new bool[MainWindow.Column, MainWindow.Row];
-
         /// <summary>格子的文字显示</summary>
         /// <param name="position">格子</param>
         /// <returns>文字显示</returns>
@@ -336,7 +322,7 @@ namespace JLQ_MBE_BattleSimulation
         {
             CanReachPoint[(int)origin.X, (int)origin.Y] = true;
             if (step == 0) return;
-            var enm = this.EnemyBlock.Select(c => c.Position);
+            var enm = this.EnemyBlock.Select(c => c.Position).ToList();
             if (origin.Y < MainWindow.Row - 1 && !enm.Contains(new Point(origin.X, origin.Y + 1)))
             {
                 AssignPointCanReach(new Point(origin.X, origin.Y + 1), step - 1);
@@ -381,30 +367,29 @@ namespace JLQ_MBE_BattleSimulation
             IsBattle = true;
         }
 
-        /// <summary>恢复棋盘正常颜色</summary>
-        public void DefaultButtonBackground()
+        //棋盘绘制相关
+        /// <summary>恢复棋盘和角色正常颜色</summary>
+        public void DefaultButtonAndLabels()
         {
-            foreach (var b in Buttons)
-            {
-                b.Opacity = 0;
-            }
-            foreach (var c in Characters)
+            ResetPadButtons();
+            foreach (var c in Characters.Where(c => c != CurrentCharacter))
             {
                 c.LabelDisplay.Background = Brushes.White;
             }
+            SetCurrentLabel();
         }
 
-        /// <summary>将与起始点距离小于等于范围的点设为淡黄色</summary>
+        /// <summary>生成与起始点距离小于等于范围的按钮的颜色</summary>
         /// <param name="origin">起始点</param>
         /// <param name="range">范围</param>
-        public void SetBackground(Point origin, int range)
+        public void SetButtonBackground(Point origin, int range)
         {
             for (var i = 0; i < MainWindow.Column; i++)
             {
                 for (var j = 0; j < MainWindow.Row; j++)
                 {
                     var point1 = new Point(i, j);
-                    if (this[point1] == null && Calculate.Distance(point1, origin) <= range)
+                    if (Calculate.Distance(point1, origin) <= range && this[point1] == null)
                     {
                         Buttons[i, j].Opacity = 1;
                     }
@@ -412,9 +397,10 @@ namespace JLQ_MBE_BattleSimulation
             }
         }
 
-        /// <summary>生成正确的网格颜色</summary>
-        public void Paint()
+        /// <summary>生成可到达点的按钮颜色</summary>
+        public void PaintButton()
         {
+            if (HasMoved) return;
             for (var i = 0; i < MainWindow.Column; i++)
             {
                 for (var j = 0; j < MainWindow.Row; j++)
@@ -428,15 +414,34 @@ namespace JLQ_MBE_BattleSimulation
             }
         }
 
-        /// <summary>
-        /// 恢复棋盘按钮原本颜色
-        /// </summary>
+        /// <summary>将全部棋盘按钮置透明</summary>
         public void ResetPadButtons()
         {
             foreach (var b in Buttons)
             {
                 b.Opacity = 0;
             }
+        }
+
+        /// <summary>更新角色标签颜色</summary>
+        public void UpdateLabelBackground()
+        {
+            foreach (var c in Characters)
+            {
+                c.LabelDisplay.Background = Brushes.White;
+            }
+            SetCurrentLabel();
+            if (HasAttacked) return;
+            foreach (var c in EnemyCanAttack)
+            {
+                c.LabelDisplay.Background = Brushes.LightBlue;
+            }
+        }
+
+        /// <summary>将当前行动角色标签颜色设为淡粉色</summary>
+        public void SetCurrentLabel()
+        {
+            CurrentCharacter.LabelDisplay.Background = Brushes.LightPink;
         }
 
         //SC

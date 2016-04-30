@@ -17,7 +17,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <returns>命中率</returns>
         private static double HitRate(int relativeHitRate, int distance)
         {
-            double p = 1.0 / (1 + Math.Pow(0.93, relativeHitRate));
+            var p = 1.0 / (1 + Math.Pow(0.93, relativeHitRate));
             return (p > 0.95 ? 0.95 : (p < 0.05 ? 0.05 : p)) * (1.0f - 0.05f * distance);
         }
 
@@ -54,9 +54,9 @@ namespace JLQ_MBE_BattleSimulation
             return (int) (Math.Abs(point1.X - point2.X) + Math.Abs(point1.Y - point2.Y));
         }
 
-        /// <summary>将Section转化为label的文字提示</summary>
+        /// <summary>将Section转化为中文显示</summary>
         /// <param name="value">当前游戏阶段</param>
-        /// <returns>label的文字提示</returns>
+        /// <returns>中文显示</returns>
         public static string Convert(Section? value)
         {
             switch (value)
@@ -72,7 +72,7 @@ namespace JLQ_MBE_BattleSimulation
             }
         }
 
-        /// <summary>将阵营转化为字符串</summary>
+        /// <summary>将阵营转化为中文名</summary>
         /// <param name="group">待转化的阵营</param>
         /// <returns>阵营中文名</returns>
         public static string Convert(Group group)
@@ -86,6 +86,14 @@ namespace JLQ_MBE_BattleSimulation
                 default:
                     return "中立方";
             }
+        }
+
+        /// <summary>向下取整</summary>
+        /// <param name="number">待取整的值</param>
+        /// <returns>取整结果</returns>
+        public static int Floor(double number)
+        {
+            return (int) Math.Floor(number);
         }
     }
 }
