@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +16,11 @@ namespace JLQ_MBE_BattleSimulation
     /// </summary>
     public class Buff
     {
-        /// <summary>buff剩余轮数</summary>
+        /// <summary>
+        /// 将Interval设为此值，则buff无限剩余时间
+        /// </summary>
+        public const int Infinite = Int32.MaxValue;
+        /// <summary>buff剩余时间</summary>
         public int Interval { get; protected set; }
         /// <summary>buff执行的阶段</summary>
         public readonly Section ExecuteSection;
@@ -68,6 +73,7 @@ namespace JLQ_MBE_BattleSimulation
                 Interval = 0;
                 return true;
             }
+            if (Interval == Infinite) return false;
             Interval -= time;
             return false;
         } 

@@ -245,9 +245,10 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>被攻击</summary>
         /// <param name="damage">伤害值</param>
         /// <param name="attacker">伤害来源</param>
-        public void BeAttacked(int damage, Character attacker)
+        public virtual void BeAttacked(int damage, Character attacker)
         {
             Damage(damage);
+            game.CharactersMayDie.Add(new AttackModel(attacker, this));
         }
 
         /// <summary>攻击</summary>
@@ -257,9 +258,7 @@ namespace JLQ_MBE_BattleSimulation
         {
             return DoAttack(target, 1.0f);
         }
-        /// <summary>
-        /// 攻击
-        /// </summary>
+        /// <summary>攻击</summary>
         /// <param name="target">攻击目标</param>
         /// <param name="times">伤害值增益</param>
         /// <returns></returns>
@@ -270,8 +269,7 @@ namespace JLQ_MBE_BattleSimulation
             //判断是否近战
             var closeGain = HandleCloseGain(target);
             //计算基础伤害
-            var damage = /*基础伤害*/ Calculate.Damage(this.Attack, target.Defence)*
-                                     /*近战补正*/closeGain* /*伤害浮动*/((2*random.NextDouble() - 1)*this.DamageFloat + 1)*times;
+            var damage = /*基础伤害*/ Calculate.Damage(this.Attack, target.Defence)* /*近战补正*/closeGain*FloatDamage*times;
             //判断是否暴击
             var isCriticalHit = HandleIsCriticalHit(target);
             if (isCriticalHit)
@@ -286,7 +284,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <returns>各数据字符串化的结果</returns>
         public override string ToString()
         {
-            var result = String.Format("HP: {0} / {1}\nMP: {2} / {3}\n攻击: {4}\n防御: {5}\n" +
+            var result = string.Format("HP: {0} / {1}\nMP: {2} / {3}\n攻击: {4}\n防御: {5}\n" +
                                           "命中率: {6}\n闪避率: {7}\n近战补正: {8}{9}\n" +
                                           "行动间隔: {10}\n机动: {11}\n攻击范围: {12}\n剩余冷却时间: {13}", Hp, Data.MaxHp, Mp,
                 _maxMp, Attack, Defence, HitRate, DodgeRate, CloseAmendment, (CloseAmendment%1 == 0) ? ".0" : "",
@@ -302,7 +300,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <returns></returns>
         public string Tip(Character target)
         {
-            return String.Format("命中几率: {0}%\n平均伤害值: {1}",
+            return string.Format("命中几率: {0}%\n平均伤害值: {1}",
                 Calculate.Floor(Calculate.HitRate(this, target)*100),
                 Calculate.Damage(this.Attack, target.Defence));
         }
@@ -331,6 +329,11 @@ namespace JLQ_MBE_BattleSimulation
             /*当前角色中立且c非中立*/(this.Group == Group.Middle && c.Group != Group.Middle) ||
                 /*当前角色非中立且c与之敌对*/ (this.Group != Group.Middle && c.Group == (Group) (-(int) this.Group)));
 
+        /// <summary>准备阶段</summary>
+        public virtual void PreparingSection() { }
+        /// <summary>结束阶段</summary>
+        public virtual void EndSection() { }
+
         /// <summary>阻挡行动的敌人列表</summary>
         public virtual IEnumerable<Character> EnemyBlock => Enemy; 
 
@@ -348,10 +351,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <returns>灵力是否足够</returns>
         public bool MpUse(int mp)
         {
-            if (Mp < mp)
-            {
-                return false;
-            }
+            if (!IsMpEnough(mp)) return false;
             Mp -= mp;
             return true;
         }
@@ -493,6 +493,10 @@ namespace JLQ_MBE_BattleSimulation
         {
             HandleBeAttacked = BeAttacked;
         }
+
+        /// <summary>伤害浮动</summary>
+        /// <returns>浮动带来的伤害系数</returns>
+        protected double FloatDamage => (2*random.NextDouble() - 1)*this.DamageFloat + 1;
 
         /// <summary>结束符卡结算</summary>
         private void EndSC()

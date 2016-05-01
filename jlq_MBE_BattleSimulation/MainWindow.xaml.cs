@@ -241,7 +241,7 @@ namespace JLQ_MBE_BattleSimulation
                     }
 
                     //死人提示
-                    IsDead(currentCharacter, target);
+                    IsDead();
                     game.Generate_CanReachPoint();
                     game.PaintButton();
 
@@ -262,9 +262,9 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>准备阶段</summary>
         private void PreparingSection()
         {
-            //重置提示
             //获取下个行动的角色
             game.GetNextRoundCharacter();
+            currentCharacter.PreparingSection();
             for (var i = 0; i < 3; i++)
             {
                 game.ButtonSC[i].Content = currentCharacter.Data.ScName[i + 1];
@@ -281,7 +281,9 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>结束阶段</summary>
         private void EndSection()
         {
+            game.CharactersMayDie.Clear();
             section = Section.End;
+            currentCharacter.EndSection();
             game.BuffSettle(Section.End);
             //Thread.Sleep(1000);
 
@@ -290,25 +292,25 @@ namespace JLQ_MBE_BattleSimulation
 
 
         /// <summary>死亡结算</summary>
-        /// <param name="attacker">攻击者</param>
-        /// <param name="target">攻击目标</param>
-        private void IsDead(Character attacker, Character target)
+        private void IsDead()
         {
-            if (!target.IsDead) return;
-            if (attacker != null)
+            foreach (var model in game.CharactersMayDie.Where(m => m.Target.IsDead)) 
             {
-                MessageBox.Show(
-                    string.Format("{0}号{1}{2}被{3}号{4}{5}杀死", target.ID, Calculate.Convert(target.Group), target.Name,
-                        attacker.ID, Calculate.Convert(attacker.Group), attacker.Name), "死亡",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                if (model.Attacker != null)
+                {
+                    MessageBox.Show(
+                        string.Format("{0}号{1}{2}被{3}号{4}{5}杀死", model.Target.ID, Calculate.Convert(model.Target.Group),
+                            model.Target.Name, model.Attacker.ID, Calculate.Convert(model.Attacker.Group),
+                            model.Attacker.Name), "死亡", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+                else
+                {
+                    MessageBox.Show(
+                        string.Format("{0}号{1}{2}被无来源伤害杀死", model.Target.ID, Calculate.Convert(model.Target.Group),
+                            model.Target.Name), "死亡", MessageBoxButton.OK, MessageBoxImage.Hand);
+                }
+                RemoveCharacter(model.Target);
             }
-            else
-            {
-                MessageBox.Show(
-                    string.Format("{0}号{1}{2}被无来源伤害杀死", target.ID, Calculate.Convert(target.Group), target.Name), "死亡",
-                    MessageBoxButton.OK, MessageBoxImage.Hand);
-            }
-            RemoveCharacter(target);
             //游戏是否结束
             if (!game.FriendCharacters.Any())
             {
@@ -356,11 +358,9 @@ namespace JLQ_MBE_BattleSimulation
         private void SC(int index)
         {
             game.SC(index);
-            if (game.IsLegalClick == null)
-            {
-                DoSC();
-                game.EndSC();
-            }
+            if (game.IsLegalClick != null) return;
+            DoSC();
+            game.EndSC();
         }
 
         private void DoSC()
@@ -371,8 +371,7 @@ namespace JLQ_MBE_BattleSimulation
                 MessageBox.Show("已攻击过不能使用符卡", "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            var legalCharacters = game.Characters.Where(c => game.IsTargetLegal(c, game.MousePoint));
-            var characterArray = legalCharacters.ToArray();
+            var characterArray = game.Characters.Where(c => game.IsTargetLegal(c, game.MousePoint)).ToArray();
             foreach (var c in characterArray)
             {
                 game.HandleTarget(c);
@@ -383,13 +382,12 @@ namespace JLQ_MBE_BattleSimulation
             {
                 c.LabelDisplay.Background = Brushes.White;
             }
-            for (int i = 0, length = characterArray.Length; i < length; i++)
-            {
-                IsDead(currentCharacter, characterArray[i]);
-            }
+            IsDead();
 
+            game.DefaultButtonAndLabels();
             game.Generate_CanReachPoint();
             game.PaintButton();
+            game.SetCurrentLabel();
             //如果同时已经移动过则进入结束阶段
             if (!game.HasMoved) return;
             //Thread.Sleep(500);

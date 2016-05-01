@@ -57,6 +57,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Alice.cs" />
+    <Compile Include="AttackModel.cs" />
     <Compile Include="Chen.cs" />
     <Compile Include="Cirno.cs" />
     <Compile Include="Daiyousei.cs" />

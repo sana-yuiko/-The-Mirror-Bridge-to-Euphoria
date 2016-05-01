@@ -22,6 +22,20 @@
         <member name="M:JLQ_MBE_BattleSimulation.Alice.EndSC03">
             <summary>结束符卡03</summary>
         </member>
+        <member name="T:JLQ_MBE_BattleSimulation.AttackModel">
+            <summary>攻击模型</summary>
+        </member>
+        <member name="F:JLQ_MBE_BattleSimulation.AttackModel.Attacker">
+            <summary>攻击者</summary>
+        </member>
+        <member name="F:JLQ_MBE_BattleSimulation.AttackModel.Target">
+            <summary>攻击目标</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.AttackModel.#ctor(JLQ_MBE_BattleSimulation.Character,JLQ_MBE_BattleSimulation.Character)">
+            <summary>构造函数</summary>
+            <param name="attacker">攻击者</param>
+            <param name="target">攻击目标</param>
+        </member>
         <member name="M:JLQ_MBE_BattleSimulation.Chen.SC01">
             <summary>符卡01</summary>
         </member>
@@ -57,6 +71,12 @@
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Cirno.EndSC03">
             <summary>结束符卡03</summary>
+        </member>
+        <member name="T:JLQ_MBE_BattleSimulation.Daiyousei">
+            <summary>大妖精</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Daiyousei.PreparingSection">
+            <summary>天赋：雾之湖的恩惠</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Daiyousei.SC01">
             <summary>符卡01</summary>
@@ -492,7 +512,7 @@
             <summary>符卡01的范围</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Reimu.MpGain(System.Int32)">
-            <summary>1.2倍灵力获取</summary>
+            <summary>天赋：1.2倍灵力获取</summary>
             <param name="mp">获得的灵力量</param>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Reimu.SC01">
@@ -534,6 +554,9 @@
         <member name="T:JLQ_MBE_BattleSimulation.Rin">
             <summary>冴月麟</summary>
         </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Rin.skillRange">
+            <summary>天赋范围</summary>
+        </member>
         <member name="F:JLQ_MBE_BattleSimulation.Rin.SC01Range">
             <summary>符卡01的参数</summary>
         </member>
@@ -542,6 +565,11 @@
         </member>
         <member name="F:JLQ_MBE_BattleSimulation.Rin.SC03Range">
             <summary>符卡03的参数</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Rin.BeAttacked(System.Int32,JLQ_MBE_BattleSimulation.Character)">
+            <summary>天赋：当你受到攻击时，对2格内随机一名敌方单位造成所受伤害30%的真实伤害</summary>
+            <param name="damage">伤害值</param>
+            <param name="attacker">攻击者</param>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Rin.SC01">
             <summary>符卡01：乘着风，瞬移到3格内一名敌方角色面前，并释放旋风对自身2格内所有敌方单位造成0.5倍率的伤害</summary>
@@ -732,8 +760,13 @@
             开发者备注：静态的buff需要有一系列参数，每人使用lambda表达式代入参数的具体值；
             </summary>
         </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Buff.Infinite">
+            <summary>
+            将Interval设为此值，则buff无限剩余时间
+            </summary>
+        </member>
         <member name="P:JLQ_MBE_BattleSimulation.Buff.Interval">
-            <summary>buff剩余轮数</summary>
+            <summary>buff剩余时间</summary>
         </member>
         <member name="F:JLQ_MBE_BattleSimulation.Buff.ExecuteSection">
             <summary>buff执行的阶段</summary>
@@ -970,9 +1003,7 @@
             <returns>是否暴击</returns>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Character.DoAttack(JLQ_MBE_BattleSimulation.Character,System.Single)">
-            <summary>
-            攻击
-            </summary>
+            <summary>攻击</summary>
             <param name="target">攻击目标</param>
             <param name="times">伤害值增益</param>
             <returns></returns>
@@ -997,6 +1028,12 @@
         </member>
         <member name="P:JLQ_MBE_BattleSimulation.Character.Enemy">
             <summary>对此角色而言的敌人列表</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.PreparingSection">
+            <summary>准备阶段</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.EndSection">
+            <summary>结束阶段</summary>
         </member>
         <member name="P:JLQ_MBE_BattleSimulation.Character.EnemyBlock">
             <summary>阻挡行动的敌人列表</summary>
@@ -1078,6 +1115,10 @@
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Character.ResetBeAttacked">
             <summary>恢复被攻击结算的委托对象</summary>
+        </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Character.FloatDamage">
+            <summary>伤害浮动</summary>
+            <returns>浮动带来的伤害系数</returns>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Character.EndSC">
             <summary>结束符卡结算</summary>
@@ -1167,6 +1208,9 @@
         <member name="F:JLQ_MBE_BattleSimulation.Game.CanReachPoint">
             <summary>每个格子能否被到达</summary>
         </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Game.CharactersMayDie">
+            <summary>可能死亡的角色列表</summary>
+        </member>
         <member name="P:JLQ_MBE_BattleSimulation.Game.LabelSection">
             <summary>当前阶段</summary>
         </member>
@@ -1191,7 +1235,7 @@
         <member name="F:JLQ_MBE_BattleSimulation.Game.IsLegalClick">
             <summary>传递参数，判断单击位置是否有效</summary>
         </member>
-        <member name="F:JLQ_MBE_BattleSimulation.Game.ScSelect">
+        <member name="P:JLQ_MBE_BattleSimulation.Game.ScSelect">
             <summary>当前符卡序号，0为不处于符卡状态</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Game.#ctor">
@@ -1348,10 +1392,8 @@
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.EndSection">
             <summary>结束阶段</summary>
         </member>
-        <member name="M:JLQ_MBE_BattleSimulation.MainWindow.IsDead(JLQ_MBE_BattleSimulation.Character,JLQ_MBE_BattleSimulation.Character)">
+        <member name="M:JLQ_MBE_BattleSimulation.MainWindow.IsDead">
             <summary>死亡结算</summary>
-            <param name="attacker">攻击者</param>
-            <param name="target">攻击目标</param>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.RandomlyAddCharacters(JLQ_MBE_BattleSimulation.Group,System.Int32)">
             <summary>随机添加角色</summary>

@@ -35,7 +35,7 @@ namespace JLQ_MBE_BattleSimulation
         private MouseEventHandler leave01;
 
 
-        /// <summary>1.2倍灵力获取</summary>
+        /// <summary>天赋：1.2倍灵力获取</summary>
         /// <param name="mp">获得的灵力量</param>
         public override void MpGain(int mp)
         {
@@ -47,7 +47,7 @@ namespace JLQ_MBE_BattleSimulation
         {
             game.IsTargetLegal =
                 (SCee, point) =>
-                    Calculate.Distance(this.Position, SCee.Position) <= SC01Range && game.EnemyAsCurrent.Contains(SCee);
+                    Calculate.Distance(this.Position, SCee.Position) <= SC01Range && Enemy.Contains(SCee);
             game.HandleTarget = t => DoAttack(t);
         }
 

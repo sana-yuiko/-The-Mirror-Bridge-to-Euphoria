@@ -61,16 +61,22 @@ namespace JLQ_MBE_BattleSimulation
                 if (CurrentCharacter == null) return;
                 CurrentCharacter.HasAttacked = value;
                 LabelAttack.Content = value ? "已攻击" : "还未攻击";
+                foreach (var b in ButtonSC)
+                {
+                    b.IsEnabled = !value;
+                }
             }
         }
 
 
         /// <summary>游戏中所有角色列表</summary>
-        public List<Character> Characters { get; }
+        public List<Character> Characters { get; } = new List<Character>();
 
         /// <summary>每个格子能否被到达</summary>
         public bool[,] CanReachPoint = new bool[MainWindow.Column, MainWindow.Row];
 
+        /// <summary>可能死亡的角色列表</summary>
+        public List<AttackModel> CharactersMayDie { get; } = new List<AttackModel>();
 
         //窗体显示
         /// <summary>当前阶段</summary>
@@ -92,12 +98,11 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>传递参数，判断单击位置是否有效</summary>
         public DIsLegalClick IsLegalClick;
         /// <summary>当前符卡序号，0为不处于符卡状态</summary>
-        public int ScSelect;
+        public int ScSelect { get; set; }
 
         /// <summary>Game类的构造函数</summary>
         public Game()
         {
-            Characters = new List<Character>();
             this.Random = new Random();
             this.IsBattle = false;
 
@@ -398,11 +403,8 @@ namespace JLQ_MBE_BattleSimulation
             {
                 for (var j = 0; j < MainWindow.Row; j++)
                 {
-                    if (!CanReachPoint[i, j]) continue;
-                    if (new Point(i, j) != CurrentPosition)
-                    {
-                        Buttons[i, j].Opacity = 1;
-                    }
+                    if ((!CanReachPoint[i, j]) || CurrentPosition == new Point(i, j)) continue;
+                    Buttons[i, j].Opacity = 1;
                 }
             }
         }
@@ -442,6 +444,7 @@ namespace JLQ_MBE_BattleSimulation
         public void SC(int index)
         {
             ScSelect = index;
+            ButtonSC[index - 1].Background = Brushes.Red;
             switch (index)
             {
                 case 1:
@@ -459,25 +462,28 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>结束符卡结算</summary>
         public void EndSC()
         {
-            var index = ScSelect;
-            ScSelect = 0;
             IsTargetLegal = null;
             HandleTarget = null;
             IsLegalClick = null;
-            switch (index)
+            foreach (var b in ButtonSC)
+            {
+                b.Background = Brushes.LightGray;
+            }
+            switch (ScSelect)
             {
                 case 1:
                     CurrentCharacter.EndSC01();
-                    return;
+                    break;
                 case 2:
                     CurrentCharacter.EndSC02();
-                    return;
+                    break;
                 case 3:
                     CurrentCharacter.EndSC03();
-                    return;
+                    break;
             }
+            ScSelect = 0;
         }
-        
+
         /// <summary>执行符卡效果</summary>
         public void DoSc()
         {
