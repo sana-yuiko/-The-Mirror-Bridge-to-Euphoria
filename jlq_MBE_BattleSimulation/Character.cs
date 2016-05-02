@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace JLQ_MBE_BattleSimulation
@@ -155,6 +156,17 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>是否暴击的委托对象</summary>
         protected DIsCriticalHit HandleIsCriticalHit;
 
+        //符卡相关委托
+        /// <summary>进入符卡按钮01的委托</summary>
+        protected MouseEventHandler[] enterButton = new MouseEventHandler[3];
+        /// <summary>离开符卡按钮01的委托</summary>
+        protected MouseEventHandler[] leaveButton = new MouseEventHandler[3];
+        /// <summary>单击符卡按钮01后进入棋盘按钮的委托</summary>
+        protected MouseEventHandler[] enterPad = new MouseEventHandler[3];
+        /// <summary>单击符卡按钮01后离开棋盘按钮的委托</summary>
+        protected MouseEventHandler[] leavePad = new MouseEventHandler[3];
+
+
         /// <summary>Character类的构造函数</summary>
         /// <param name="id">角色ID</param>
         /// <param name="position">角色位置</param>
@@ -240,6 +252,13 @@ namespace JLQ_MBE_BattleSimulation
             HandleIsHit = IsHit;
             HandleCloseGain = t => 1.0f;
             HandleIsCriticalHit = IsCriticalHit;
+        }
+
+        /// <summary>治疗</summary>
+        /// <param name="hp">治疗的体力值</param>
+        public void Cure(int hp)
+        {
+            this.Hp = Math.Min(this.Data.MaxHp, this.Hp + hp);
         }
 
         /// <summary>被攻击</summary>
@@ -504,6 +523,56 @@ namespace JLQ_MBE_BattleSimulation
             game.IsLegalClick = null;
             game.IsTargetLegal = null;
             game.HandleTarget = null;
+        }
+
+        /// <summary>为符卡按钮事件添加对应委托</summary>
+        /// <param name="index">符卡按钮索引</param>
+        protected void AddSCButtonEvent(int index)
+        {
+            game.ButtonSC[index].MouseEnter += enterButton[index];
+            game.ButtonSC[index].MouseLeave += leaveButton[index];
+        }
+        /// <summary>为符卡按钮事件去除对应委托</summary>
+        /// <param name="index">符卡按钮索引</param>
+        protected void RemoveSCButtonEvent(int index)
+        {
+            game.ButtonSC[index].MouseEnter -= enterButton[index];
+            game.ButtonSC[index].MouseLeave -= leaveButton[index];
+        }
+
+        /// <summary>为棋盘按钮事件添加对应委托</summary>
+        /// <param name="index">符卡索引</param>
+        protected void AddPadButtonEvent(int index)
+        {
+            foreach (var b in game.Buttons)
+            {
+                b.MouseEnter += enterPad[index];
+                b.MouseLeave += leavePad[index];
+            }
+        }
+        /// <summary>为棋盘按钮事件去除对应委托</summary>
+        /// <param name="index">符卡索引</param>
+        protected void RemovePadButtonEvent(int index)
+        {
+            foreach (var b in game.Buttons)
+            {
+                b.MouseEnter -= enterPad[index];
+                b.MouseLeave -= leavePad[index];
+            }
+        }
+
+        /// <summary>设置离开棋盘按钮事件所添加的委托</summary>
+        /// <param name="index">符卡索引</param>
+        protected void SetDefaultLeaveSCButtonDelegate(int index)
+        {
+            leaveButton[index] = (s, ev) => this.game.ResetShow();
+        }
+
+        /// <summary>设置离开棋盘按钮事件所添加的委托</summary>
+        /// <param name="index">符卡索引</param>
+        protected void SetDefaultLeavePadButtonDelegate(int index)
+        {
+            leavePad[index] = (s, ev) => this.game.ResetShow();
         }
     }
 }

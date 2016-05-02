@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 
 namespace JLQ_MBE_BattleSimulation
 {
@@ -13,7 +14,66 @@ namespace JLQ_MBE_BattleSimulation
 		public Daiyousei(int id, Point position, Group group, Random random, Game game)
 			: base(id, position, group, random, game)
 		{
+            //符卡01
+            //显示有效单击点
+		    enterButton[0] = (s, ev) =>
+		    {
+		        foreach (var point in Game.PadPoints)
+		        {
+		            if (this.Position != point && SC01IsLegalClick(point)) 
+		            {
+		                game[point].LabelDisplay.Background = Brushes.LightBlue;
+		            }
+		        }
+		        pointTemp1 = Game.DefaultPoint;
+		    };
+            SetDefaultLeaveSCButtonDelegate(0);
+            //显示将瞬移到的点和将回血的角色
+		    enterPad[0] = (s, ev) =>
+		    {
+		        if (!game.IsLegalClick(game.MousePoint)) return;
+		        this.game.DefaultButtonAndLabels();
+		        if (this.Position == game.MousePoint) return;
+		        if (this.Position != pointTemp1)
+		        {
+		            game.Buttons[(int) pointTemp1.X, (int) pointTemp1.Y].Opacity = 1;
+		        }
+		        game[game.MousePoint].LabelDisplay.Background = Brushes.LightBlue;
 
+		        pointTemp1 = Game.DefaultPoint;
+		    };
+            SetDefaultLeavePadButtonDelegate(0);
+            //符卡02
+            //显示有效单击点
+		    enterButton[1] = (s, ev) =>
+		    {
+		        foreach (var point in Game.PadPoints)
+		        {
+		            if (SC02IsLegalClick(point))
+		            {
+		                game[point].LabelDisplay.Background = Brushes.LightBlue;
+		            }
+		        }
+		    };
+            SetDefaultLeaveSCButtonDelegate(1);
+            //显示将被攻击的角色
+		    enterPad[1] = (s, ev) =>
+		    {
+		        if (SC02IsLegalClick(game.MousePoint))
+		        {
+		            game[game.MousePoint].LabelDisplay.Background = Brushes.LightBlue;
+		        }
+		    };
+            SetDefaultLeavePadButtonDelegate(1);
+            //显示将回血的角色
+		    enterButton[2] = (s, ev) =>
+		    {
+		        foreach (var l in game.Characters.Where(c => c != this && SC03IsTargetLegal(c)).Select(c => c.LabelDisplay))
+		        {
+		            l.Background = Brushes.LightBlue;
+		        }
+		    };
+            SetDefaultLeaveSCButtonDelegate(2);
 		}
 
         private const int skillRange = 2;
@@ -22,58 +82,63 @@ namespace JLQ_MBE_BattleSimulation
         private const int SC02Range = 2;
         private const float SC02Gain = 1.5f;
 
+        private Point pointTemp1 = Game.DefaultPoint;
+
         /// <summary>天赋：雾之湖的恩惠</summary>
         public override void PreparingSection()
         {
-            foreach (
-                var c in
-                    game.Characters.Where(
-                        c =>
-                            c.Group == this.Group && c != this &&
+            foreach (var c in game.Characters.Where(
+                        c => c.Group == this.Group && c != this &&
                             Calculate.Distance(c.Position, this.Position) <= skillRange))
             {
-                c.Hp = Math.Min(c.Data.MaxHp, c.Hp + (int) (skillGain*c.Data.MaxHp));
+                c.Cure((int) (skillGain*c.Data.MaxHp));
             }
         }
 
         //符卡
-        /// <summary>符卡01</summary>
+        /// <summary>符卡01：贴心的妖精，选择4格内一个目标（可以是自己），瞬移到他背后（如果是自己就不用瞬移），并使目标回复自己攻击力0.7倍率的目标血量。</summary>
         public override void SC01()
         {
-            //TODO SC01
+            game.IsLegalClick = SC01IsLegalClick;
+            game.IsTargetLegal = (SCee, point) => SCee.Position == point;
+            game.HandleTarget = SCee =>
+            {
+                if (this.Position != pointTemp1)
+                {
+                    Move(pointTemp1);
+                }
+                SCee.Cure((int) (0.7*this.Attack));
+            };
+            AddPadButtonEvent(0);
         }
 
         /// <summary>结束符卡01</summary>
         public override void EndSC01()
         {
-            
+            base.EndSC01();
+            RemovePadButtonEvent(0);
         }
 
-        /// <summary>符卡02</summary>
+        /// <summary>符卡02：花仙炮，对4格内一敌方目标造成1.5倍率的伤害。</summary>
         public override void SC02()
         {
-            game.IsLegalClick = point =>
-            {
-                if (Calculate.Distance(point, this.Position) > SC01Range) return false;
-                var c = game[point];
-                return c != null && Enemy.Contains(c);
-            };
+            game.IsLegalClick = SC02IsLegalClick;
             game.IsTargetLegal = (SCee, point) => SCee.Position == point;
             game.HandleTarget = SCee => DoAttack(SCee, 1.5f);
+            AddPadButtonEvent(1);
         }
 
         /// <summary>结束符卡02</summary>
         public override void EndSC02()
         {
             base.EndSC02();
+            RemovePadButtonEvent(1);
         }
-        /// <summary>符卡03</summary>
+        /// <summary>符卡03：妖精狂欢，使2格内所有己方角色恢复自己攻击力1.5倍率的血量</summary>
         public override void SC03()
         {
-            game.IsTargetLegal =
-                (SCee, point) =>
-                    Calculate.Distance(SCee.Position, this.Position) <= SC02Range && SCee.Group == this.Group;
-            game.HandleTarget = SCee => SCee.Hp = Math.Min(SCee.Data.MaxHp, SCee.Hp + (int) (SCee.Attack*SC02Gain));
+            game.IsTargetLegal = (SCee, point) => SC03IsTargetLegal(SCee);
+            game.HandleTarget = SCee => SCee.Cure((int) (SCee.Attack*SC02Gain));
         }
         /// <summary>结束符卡03</summary>
         public override void EndSC03()
@@ -81,5 +146,71 @@ namespace JLQ_MBE_BattleSimulation
             base.EndSC03();
         }
 
+        public override void SCShow()
+        {
+            for (var i = 0; i < 3; i++)
+            {
+                AddSCButtonEvent(i);
+            }
+        }
+
+        public override void ResetSCShow()
+        {
+            for (var i = 0; i < 3; i++)
+            {
+                RemoveSCButtonEvent(i);
+            }
+        }
+
+        private bool SC01IsLegalClick(Point point)
+        {
+            if (Calculate.Distance(this.Position, point) > SC01Range || game[point] == null) return false;
+            if (point == this.Position)
+            {
+                pointTemp1 = point;
+                return true;
+            }
+            if (point.Y == this.Position.Y)
+            {
+                if (point.X > this.Position.X)
+                {
+                    if (point.X == 8) return false;
+                    pointTemp1 = new Point(point.X + 1, point.Y);
+                    if (game[pointTemp1] == null) return true;
+                    pointTemp1 = Game.DefaultPoint;
+                    return false;
+                }
+                if (point.X == 0) return false;
+                pointTemp1 = new Point(point.X - 1, point.Y);
+                if (game[pointTemp1] == null) return true;
+                pointTemp1 = Game.DefaultPoint;
+                return false;
+            }
+            if (point.Y > this.Position.Y)
+            {
+                if (point.Y == 8) return false;
+                pointTemp1 = new Point(point.X, point.Y + 1);
+                if (game[pointTemp1] == null) return true;
+                pointTemp1 = Game.DefaultPoint;
+                return false;
+            }
+            if (point.Y == 0) return false;
+            pointTemp1 = new Point(point.X, point.Y - 1);
+            if (game[pointTemp1] == null) return true;
+            pointTemp1 = Game.DefaultPoint;
+            return false;
+        }
+
+        private bool SC02IsLegalClick(Point point)
+        {
+            if (Calculate.Distance(point, this.Position) > SC01Range) return false;
+            var c = game[point];
+            return c != null && Enemy.Contains(c);
+        }
+
+        private bool SC03IsTargetLegal(Character SCee)
+        {
+            return Calculate.Distance(SCee.Position, this.Position) <= SC02Range && SCee.Group == this.Group;
+        }
     }
 }

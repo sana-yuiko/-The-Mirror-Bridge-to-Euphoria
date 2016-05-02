@@ -15,6 +15,21 @@ namespace JLQ_MBE_BattleSimulation
     /// <summary>游戏类</summary>
     public class Game
     {
+        /// <summary>默认点</summary>
+        public static Point DefaultPoint => new Point(-1, -1);
+        /// <summary>棋盘点集</summary>
+        public static Point[,] PadPoints
+        {
+            get
+            {
+                var points = new Point[MainWindow.Column, MainWindow.Row];
+                for (var i = 0; i < MainWindow.Column; i++)
+                    for (var j = 0; j < MainWindow.Row; j++)
+                        points[i, j] = new Point(i, j);
+                return points;
+            }
+        }
+
         /// <summary>随机数对象</summary>
         public Random Random;
 
@@ -382,15 +397,11 @@ namespace JLQ_MBE_BattleSimulation
         /// <param name="range">范围</param>
         public void SetButtonBackground(Point origin, int range)
         {
-            for (var i = 0; i < MainWindow.Column; i++)
+            foreach (var point in PadPoints)
             {
-                for (var j = 0; j < MainWindow.Row; j++)
+                if (Calculate.Distance(point, origin) <= range && this[point] == null)
                 {
-                    var point1 = new Point(i, j);
-                    if (Calculate.Distance(point1, origin) <= range && this[point1] == null)
-                    {
-                        Buttons[i, j].Opacity = 1;
-                    }
+                    Buttons[(int) point.X, (int) point.Y].Opacity = 1;
                 }
             }
         }
@@ -437,6 +448,14 @@ namespace JLQ_MBE_BattleSimulation
         public void SetCurrentLabel()
         {
             CurrentCharacter.LabelDisplay.Background = Brushes.LightPink;
+        }
+
+        /// <summary>恢复全盘显示</summary>
+        public void ResetShow()
+        {
+            ResetPadButtons();
+            PaintButton();
+            UpdateLabelBackground();
         }
 
         //SC

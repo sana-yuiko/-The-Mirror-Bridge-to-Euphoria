@@ -522,9 +522,7 @@ namespace JLQ_MBE_BattleSimulation
                     if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift) ||
                         Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) return;
                     //恢复原本显示
-                    game.ResetPadButtons();
-                    game.PaintButton();
-                    game.UpdateLabelBackground();
+                    game.ResetShow();
                 };
             }
 

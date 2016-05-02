@@ -15,25 +15,18 @@ namespace JLQ_MBE_BattleSimulation
         public Reimu(int id, Point position, Group group, Random random, Game game)
             : base(id, position, group, random, game)
         {
-            enter01 = (s, ev) =>
+            //符卡01
+            //显示将被攻击的目标
+            enterButton[0] = (s, ev) =>
             {
                 game.DefaultButtonAndLabels();
                 game.SetButtonBackground(this.Position, SC01Range);
             };
-            leave01 = (s, ev) =>
-            {
-                this.game.ResetPadButtons();
-                game.PaintButton();
-                game.UpdateLabelBackground();
-            };
+            SetDefaultLeaveSCButtonDelegate(0);
         }
 
         /// <summary>符卡01的范围</summary>
         private const int SC01Range = 4;
-
-        private MouseEventHandler enter01;
-        private MouseEventHandler leave01;
-
 
         /// <summary>天赋：1.2倍灵力获取</summary>
         /// <param name="mp">获得的灵力量</param>
@@ -83,14 +76,12 @@ namespace JLQ_MBE_BattleSimulation
 
         public override void SCShow()
         {
-            game.ButtonSC[0].MouseEnter += enter01;
-            game.ButtonSC[0].MouseLeave += leave01;
+            AddSCButtonEvent(0);
         }
 
         public override void ResetSCShow()
         {
-            game.ButtonSC[0].MouseEnter -= enter01;
-            game.ButtonSC[0].MouseLeave -= leave01;
+            RemoveSCButtonEvent(0);
 
         }
     }

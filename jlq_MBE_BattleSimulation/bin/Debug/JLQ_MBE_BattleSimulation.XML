@@ -79,19 +79,19 @@
             <summary>天赋：雾之湖的恩惠</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Daiyousei.SC01">
-            <summary>符卡01</summary>
+            <summary>符卡01：贴心的妖精，选择4格内一个目标（可以是自己），瞬移到他背后（如果是自己就不用瞬移），并使目标回复自己攻击力0.7倍率的目标血量。</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Daiyousei.EndSC01">
             <summary>结束符卡01</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Daiyousei.SC02">
-            <summary>符卡02</summary>
+            <summary>符卡02：花仙炮，对4格内一敌方目标造成1.5倍率的伤害。</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Daiyousei.EndSC02">
             <summary>结束符卡02</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Daiyousei.SC03">
-            <summary>符卡03</summary>
+            <summary>符卡03：妖精狂欢，使2格内所有己方角色恢复自己攻击力1.5倍率的血量</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Daiyousei.EndSC03">
             <summary>结束符卡03</summary>
@@ -984,6 +984,18 @@
         <member name="F:JLQ_MBE_BattleSimulation.Character.HandleIsCriticalHit">
             <summary>是否暴击的委托对象</summary>
         </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Character.enterButton">
+            <summary>进入符卡按钮01的委托</summary>
+        </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Character.leaveButton">
+            <summary>离开符卡按钮01的委托</summary>
+        </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Character.enterPad">
+            <summary>单击符卡按钮01后进入棋盘按钮的委托</summary>
+        </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Character.leavePad">
+            <summary>单击符卡按钮01后离开棋盘按钮的委托</summary>
+        </member>
         <member name="M:JLQ_MBE_BattleSimulation.Character.#ctor(System.Int32,System.Windows.Point,JLQ_MBE_BattleSimulation.Group,System.Random,JLQ_MBE_BattleSimulation.Game)">
             <summary>Character类的构造函数</summary>
             <param name="id">角色ID</param>
@@ -991,6 +1003,10 @@
             <param name="group">角色阵营</param>
             <param name="random">随机数对象</param>
             <param name="game">游戏对象</param>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.Cure(System.Int32)">
+            <summary>治疗</summary>
+            <param name="hp">治疗的体力值</param>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Character.BeAttacked(System.Int32,JLQ_MBE_BattleSimulation.Character)">
             <summary>被攻击</summary>
@@ -1123,6 +1139,30 @@
         <member name="M:JLQ_MBE_BattleSimulation.Character.EndSC">
             <summary>结束符卡结算</summary>
         </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.AddSCButtonEvent(System.Int32)">
+            <summary>为符卡按钮事件添加对应委托</summary>
+            <param name="index">符卡按钮索引</param>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.RemoveSCButtonEvent(System.Int32)">
+            <summary>为符卡按钮事件去除对应委托</summary>
+            <param name="index">符卡按钮索引</param>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.AddPadButtonEvent(System.Int32)">
+            <summary>为棋盘按钮事件添加对应委托</summary>
+            <param name="index">符卡索引</param>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.RemovePadButtonEvent(System.Int32)">
+            <summary>为棋盘按钮事件去除对应委托</summary>
+            <param name="index">符卡索引</param>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.SetDefaultLeaveSCButtonDelegate(System.Int32)">
+            <summary>设置离开棋盘按钮事件所添加的委托</summary>
+            <param name="index">符卡索引</param>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Character.SetDefaultLeavePadButtonDelegate(System.Int32)">
+            <summary>设置离开棋盘按钮事件所添加的委托</summary>
+            <param name="index">符卡索引</param>
+        </member>
         <member name="T:JLQ_MBE_BattleSimulation.CharacterData">
             <summary>角色数据类</summary>
         </member>
@@ -1180,6 +1220,12 @@
         </member>
         <member name="T:JLQ_MBE_BattleSimulation.Game">
             <summary>游戏类</summary>
+        </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Game.DefaultPoint">
+            <summary>默认点</summary>
+        </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Game.PadPoints">
+            <summary>棋盘点集</summary>
         </member>
         <member name="F:JLQ_MBE_BattleSimulation.Game.Random">
             <summary>随机数对象</summary>
@@ -1320,6 +1366,9 @@
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Game.SetCurrentLabel">
             <summary>将当前行动角色标签颜色设为淡粉色</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Game.ResetShow">
+            <summary>恢复全盘显示</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Game.SC(System.Int32)">
             <summary>SC</summary>
