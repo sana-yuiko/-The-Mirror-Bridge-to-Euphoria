@@ -40,7 +40,7 @@ namespace JLQ_MBE_BattleSimulation
 		        foreach (
 		            var l in
 		                Enemy.Where(
-		                    SCee => Calculate.Distance(SCee.Position, pointTemp1) <= SC01Range2 && Enemy.Contains(SCee))
+		                    SCee => Calculate.Distance(pointTemp1, SCee) <= SC01Range2 && Enemy.Contains(SCee))
 		                    .Select(c => c.LabelDisplay))
 		        {
 		            l.Background = Brushes.LightBlue;
@@ -53,10 +53,7 @@ namespace JLQ_MBE_BattleSimulation
             enterButton[1] = (s, ev) =>
 		    {
 		        this.game.DefaultButtonAndLabels();
-		        foreach (
-		            var l in
-		                this.Enemy.Where(c => Calculate.Distance(c.Position, this.Position) <= SC02Range)
-		                    .Select(c => c.LabelDisplay))
+		        foreach (var l in this.Enemy.Where(c => Calculate.Distance(c, this) <= SC02Range).Select(c => c.LabelDisplay))
 		        {
 		            l.Background = Brushes.LightBlue;
 		        }
@@ -76,9 +73,7 @@ namespace JLQ_MBE_BattleSimulation
 		    {
 		        this.game.DefaultButtonAndLabels();
 		        foreach (
-		            var l in
-		                Enemy.Where(c => Calculate.Distance(c.Position, game.MousePoint) <= SC03Range)
-		                    .Select(c => c.LabelDisplay))
+		            var l in Enemy.Where(c => Calculate.Distance(game.MousePoint, c) <= SC03Range).Select(c => c.LabelDisplay))
 		        {
 		            l.Background = Brushes.LightBlue;
 		        }
@@ -108,8 +103,7 @@ namespace JLQ_MBE_BattleSimulation
         public override void BeAttacked(int damage, Character attacker)
         {
             base.BeAttacked(damage, attacker);
-            var legalTarget =
-                this.Enemy.Where(c => Calculate.Distance(c.Position, this.Position) <= skillRange).ToArray();
+            var legalTarget = this.Enemy.Where(c => Calculate.Distance(c, this) <= skillRange).ToArray();
             if (legalTarget.Length == 0) return;
             var index = random.Next(legalTarget.Length);
             var target = legalTarget[index];
@@ -128,8 +122,7 @@ namespace JLQ_MBE_BattleSimulation
             game.IsTargetLegal = (SCee, point) =>
             {
                 if (this.Position != pointTemp1) Move(pointTemp1);
-                return Calculate.Distance(SCee.Position, pointTemp1) <= SC01Range2 &&
-                       Enemy.Contains(SCee);
+                return Calculate.Distance(pointTemp1, SCee) <= SC01Range2 && Enemy.Contains(SCee);
             };
             game.HandleTarget = SCee => DoAttack(SCee, SC01DamageGain);
             AddPadButtonEvent(0);
@@ -148,8 +141,7 @@ namespace JLQ_MBE_BattleSimulation
             game.IsLegalClick = point =>
             {
                 var c = game[point];
-                return c != null && Calculate.Distance(point, this.Position) <= SC02Range &&
-                       Enemy.Contains(c);
+                return c != null && Calculate.Distance(point, this) <= SC02Range && Enemy.Contains(c);
             };
             game.IsTargetLegal = (SCee, point) => SCee.Position == point;
             game.HandleTarget = SCee => DoAttack(SCee, SC02DamageGain);
@@ -166,8 +158,7 @@ namespace JLQ_MBE_BattleSimulation
         public override void SC03()
         {
             game.IsLegalClick = point => true;
-            game.IsTargetLegal = (SCee, point) =>
-                Calculate.Distance(SCee.Position, point) <= SC03Range && Enemy.Contains(SCee);
+            game.IsTargetLegal = (SCee, point) => Calculate.Distance(point, SCee) <= SC03Range && Enemy.Contains(SCee);
             game.HandleTarget = SCee => DoAttack(SCee, SC03DamageGain);
             AddPadButtonEvent(2);
         }
@@ -197,8 +188,7 @@ namespace JLQ_MBE_BattleSimulation
         private bool SC01IsLegalClick(Point point)
         {
             var c = game[point];
-            if (c == null || Calculate.Distance(point, this.Position) > SC01Range ||
-                (!Enemy.Contains(c)))
+            if (c == null || Calculate.Distance(point, this) > SC01Range || (!Enemy.Contains(c)))
             {
                 return false;
             }

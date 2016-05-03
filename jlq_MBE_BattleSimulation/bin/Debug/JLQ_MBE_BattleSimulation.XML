@@ -103,6 +103,8 @@
         </member>
         <member name="T:JLQ_MBE_BattleSimulation.DBuffCancel">
             <summary>取消buff的委托</summary>
+            <param name="buffee">buff承受者</param>
+            <param name="buffer">buff发出者</param>
         </member>
         <member name="T:JLQ_MBE_BattleSimulation.DHandleTarget">
             <summary>如何处理目标的委托</summary>
@@ -138,6 +140,17 @@
             <summary>被攻击结算的委托</summary>
             <param name="damage">伤害值</param>
             <param name="attacker">伤害来源</param>
+        </member>
+        <member name="T:JLQ_MBE_BattleSimulation.DAssignPointCanReach">
+            <summary>生成可到达点</summary>
+            <param name="origin">起点</param>
+            <param name="step">步数</param>
+        </member>
+        <member name="T:JLQ_MBE_BattleSimulation.DPreparingSection">
+            <summary>角色独立的准备阶段</summary>
+        </member>
+        <member name="T:JLQ_MBE_BattleSimulation.DEndSection">
+            <summary>角色独立的结束阶段</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Eirin.SC01">
             <summary>符卡01</summary>
@@ -509,7 +522,10 @@
             <summary>灵梦</summary>
         </member>
         <member name="F:JLQ_MBE_BattleSimulation.Reimu.SC01Range">
-            <summary>符卡01的范围</summary>
+            <summary>符卡01的参数</summary>
+        </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Reimu.SC02Range1">
+            <summary>符卡02的参数</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Reimu.MpGain(System.Int32)">
             <summary>天赋：1.2倍灵力获取</summary>
@@ -790,7 +806,7 @@
             <summary>Buff类的构造函数</summary>
             <param name="buffee">buff承受者</param>
             <param name="buffer">buff发出者</param>
-            <param name="roundNum">buff持续回合数</param>
+            <param name="interval">buff持续时间</param>
             <param name="executeSection">buff执行的阶段</param>
             <param name="name">buff名称</param>
             <param name="affect">buff效果委托</param>
@@ -840,6 +856,18 @@
             <param name="point2">点2</param>
             <returns>距离值</returns>
         </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Calculate.Distance(System.Windows.Point,JLQ_MBE_BattleSimulation.Character)">
+            <summary>求一点和一角色的距离</summary>
+            <param name="point1">点1</param>
+            <param name="character1">角色1</param>
+            <returns></returns>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Calculate.Distance(JLQ_MBE_BattleSimulation.Character,JLQ_MBE_BattleSimulation.Character)">
+            <summary>求两角色的距离</summary>
+            <param name="character1">角色1</param>
+            <param name="character2">角色2</param>
+            <returns></returns>
+        </member>
         <member name="M:JLQ_MBE_BattleSimulation.Calculate.Convert(System.Nullable{JLQ_MBE_BattleSimulation.Section})">
             <summary>将Section转化为中文显示</summary>
             <param name="value">当前游戏阶段</param>
@@ -854,6 +882,12 @@
             <summary>向下取整</summary>
             <param name="number">待取整的值</param>
             <returns>取整结果</returns>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Calculate.IsIn33(System.Windows.Point,System.Windows.Point)">
+            <summary>目标点是否在源点3*3范围内</summary>
+            <param name="origin">源点</param>
+            <param name="point">待测点</param>
+            <returns>是否在范围内</returns>
         </member>
         <member name="T:JLQ_MBE_BattleSimulation.Character">
             <summary>角色类</summary>
@@ -888,6 +922,9 @@
         <member name="P:JLQ_MBE_BattleSimulation.Character._intervalX">
             <summary>行动间隔增益</summary>
         </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Character._intervalAdd">
+            <summary>行动间隔增加量</summary>
+        </member>
         <member name="F:JLQ_MBE_BattleSimulation.Character._moveAbilityX">
             <summary>机动增量</summary>
         </member>
@@ -919,7 +956,7 @@
             <summary>是否已攻击</summary>
         </member>
         <member name="P:JLQ_MBE_BattleSimulation.Character.BuffList">
-            <summary>buff列表</summary>
+            <summary>作为buff承受者的buff列表</summary>
         </member>
         <member name="P:JLQ_MBE_BattleSimulation.Character.LabelDisplay">
             <summary>显示Display的Label</summary>
@@ -983,6 +1020,12 @@
         </member>
         <member name="F:JLQ_MBE_BattleSimulation.Character.HandleIsCriticalHit">
             <summary>是否暴击的委托对象</summary>
+        </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Character.HandlePreparingSection">
+            <summary>准备阶段委托</summary>
+        </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Character.HandleEndSection">
+            <summary>结束阶段委托</summary>
         </member>
         <member name="F:JLQ_MBE_BattleSimulation.Character.enterButton">
             <summary>进入符卡按钮01的委托</summary>
@@ -1284,6 +1327,9 @@
         <member name="P:JLQ_MBE_BattleSimulation.Game.LabelID">
             <summary>显示当前添加ID的标签</summary>
         </member>
+        <member name="F:JLQ_MBE_BattleSimulation.Game.HandleAssignPointCanReach">
+            <summary>生成可到达点矩阵</summary>
+        </member>
         <member name="F:JLQ_MBE_BattleSimulation.Game.IsTargetLegal">
             <summary>传递参数，如何获取目标以及所需参数列表</summary>
         </member>
@@ -1294,7 +1340,7 @@
             <summary>传递参数，判断单击位置是否有效</summary>
         </member>
         <member name="P:JLQ_MBE_BattleSimulation.Game.ScSelect">
-            <summary>当前符卡序号，0为不处于符卡状态</summary>
+            <summary>当前符卡序号，0为不处于符卡状态</summary> 
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Game.#ctor">
             <summary>Game类的构造函数</summary>

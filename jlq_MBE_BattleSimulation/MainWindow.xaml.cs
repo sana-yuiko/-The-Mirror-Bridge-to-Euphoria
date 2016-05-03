@@ -325,7 +325,7 @@ namespace JLQ_MBE_BattleSimulation
         {
             //获取下个行动的角色
             game.GetNextRoundCharacter();
-            currentCharacter.PreparingSection();
+            currentCharacter.HandlePreparingSection();
             for (var i = 0; i < 3; i++)
             {
                 game.ButtonSC[i].Content = currentCharacter.Data.ScName[i + 1];
@@ -344,7 +344,7 @@ namespace JLQ_MBE_BattleSimulation
         {
             game.CharactersMayDie.Clear();
             section = Section.End;
-            currentCharacter.EndSection();
+            currentCharacter.HandleEndSection();
             game.BuffSettle(Section.End);
             //Thread.Sleep(1000);
 

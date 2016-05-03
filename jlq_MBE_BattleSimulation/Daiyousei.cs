@@ -85,7 +85,7 @@ namespace JLQ_MBE_BattleSimulation
         {
             foreach (var c in game.Characters.Where(
                         c => c.Group == this.Group && c != this &&
-                            Calculate.Distance(c.Position, this.Position) <= skillRange))
+                            Calculate.Distance(c, this) <= skillRange))
             {
                 c.Cure((int) (skillGain*c.Data.MaxHp));
             }
@@ -160,7 +160,7 @@ namespace JLQ_MBE_BattleSimulation
 
         private bool SC01IsLegalClick(Point point)
         {
-            if (Calculate.Distance(this.Position, point) > SC01Range || game[point] == null) return false;
+            if (Calculate.Distance(point, this) > SC01Range || game[point] == null) return false;
             if (point == this.Position)
             {
                 pointTemp1 = point;
@@ -199,14 +199,14 @@ namespace JLQ_MBE_BattleSimulation
 
         private bool SC02IsLegalClick(Point point)
         {
-            if (Calculate.Distance(point, this.Position) > SC01Range) return false;
+            if (Calculate.Distance(point, this) > SC01Range) return false;
             var c = game[point];
             return c != null && Enemy.Contains(c);
         }
 
         private bool SC03IsTargetLegal(Character SCee)
         {
-            return Calculate.Distance(SCee.Position, this.Position) <= SC02Range && SCee.Group == this.Group;
+            return Calculate.Distance(SCee, this) <= SC02Range && SCee.Group == this.Group;
         }
     }
 }

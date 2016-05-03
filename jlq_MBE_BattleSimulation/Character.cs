@@ -28,7 +28,7 @@ namespace JLQ_MBE_BattleSimulation
         //可变字段
         //增益
         /// <summary>攻击增益</summary>
-        public float _attackX { private get; set; } = 1.0f;
+        public virtual float _attackX { private get; set; } = 1.0f;
         /// <summary>防御增益</summary>
         public float _defenceX { private get; set; } = 1.0f;
         /// <summary>命中率增益</summary>
@@ -46,6 +46,19 @@ namespace JLQ_MBE_BattleSimulation
             set
             {
                 __intervalX = value;
+                CurrentTime = Math.Min(CurrentTime, Interval);
+                BarTime.Maximum = Interval;
+            }
+        }
+
+        private int __intervalAdd;
+        /// <summary>行动间隔增加量</summary>
+        public int _intervalAdd
+        {
+            get { return __intervalAdd; }
+            set
+            {
+                __intervalAdd = value;
                 CurrentTime = Math.Min(CurrentTime, Interval);
                 BarTime.Maximum = Interval;
             }
@@ -105,7 +118,7 @@ namespace JLQ_MBE_BattleSimulation
         public bool HasMoved { get; set; }
         /// <summary>是否已攻击</summary>
         public bool HasAttacked { get; set; }
-        /// <summary>buff列表</summary>
+        /// <summary>作为buff承受者的buff列表</summary>
         public List<Buff> BuffList { get; protected set; }
 
         //显示
@@ -131,7 +144,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>近战补正</summary>
         public int CloseAmendment => Calculate.Floor(Data.CloseAmendment*_closeAmendmentX);
         /// <summary>行动间隔</summary>
-        public int Interval => Calculate.Floor(Data.Interval*_intervalX);
+        public int Interval => Calculate.Floor(Data.Interval*_intervalX + _intervalAdd);
         /// <summary>机动</summary>
         public int MoveAbility => Data.MoveAbility + _moveAbilityX;
         /// <summary>攻击范围</summary>
@@ -155,6 +168,10 @@ namespace JLQ_MBE_BattleSimulation
         protected DCloseGain HandleCloseGain;
         /// <summary>是否暴击的委托对象</summary>
         protected DIsCriticalHit HandleIsCriticalHit;
+        /// <summary>准备阶段委托</summary>
+        public DPreparingSection HandlePreparingSection { get; set; }
+        /// <summary>结束阶段委托</summary>
+        public DEndSection HandleEndSection { get; protected set; }
 
         //符卡相关委托
         /// <summary>进入符卡按钮01的委托</summary>
@@ -252,6 +269,8 @@ namespace JLQ_MBE_BattleSimulation
             HandleIsHit = IsHit;
             HandleCloseGain = t => 1.0f;
             HandleIsCriticalHit = IsCriticalHit;
+            HandlePreparingSection = PreparingSection;
+            HandleEndSection = EndSection;
         }
 
         /// <summary>治疗</summary>
@@ -472,7 +491,7 @@ namespace JLQ_MBE_BattleSimulation
         protected virtual float CloseGain(Character target)
         {
             float closeGain;
-            var distance = Calculate.Distance(this.Position, target.Position);
+            var distance = Calculate.Distance(this, target);
             if (distance == 1)
             {
                 closeGain = this.CloseAmendment;

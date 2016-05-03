@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -25,8 +26,15 @@ namespace JLQ_MBE_BattleSimulation
             SetDefaultLeaveSCButtonDelegate(0);
         }
 
-        /// <summary>符卡01的范围</summary>
+        /// <summary>符卡01的参数</summary>
         private const int SC01Range = 4;
+        /// <summary>符卡02的参数</summary>
+        private const int SC02Range1 = 1;
+        private const int SC02Range2 = 1;
+
+        private Point SC02PointTemp = Game.DefaultPoint;
+        private List<Character> SC02CharactersBeSlowed = new List<Character>();
+
 
         /// <summary>天赋：1.2倍灵力获取</summary>
         /// <param name="mp">获得的灵力量</param>
@@ -40,7 +48,7 @@ namespace JLQ_MBE_BattleSimulation
         {
             game.IsTargetLegal =
                 (SCee, point) =>
-                    Calculate.Distance(this.Position, SCee.Position) <= SC01Range && Enemy.Contains(SCee);
+                    Calculate.Distance(this, SCee) <= SC01Range && Enemy.Contains(SCee);
             game.HandleTarget = t => DoAttack(t);
         }
 
@@ -53,13 +61,32 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>符卡02</summary>
         public override void SC02()
         {
-            //TODO SC02
+            game.IsLegalClick =
+                point => point.X > 0 && point.X < MainWindow.Column - 1 && point.Y > 0 && point.Y < MainWindow.Row - 1;
+            game.IsTargetLegal = (SCee, point) =>
+            {
+                if (!Calculate.IsIn33(point, SCee.Position) || !Enemy.Contains(SCee)) return false;
+                SC02PointTemp = point;
+                return true;
+            };
+            game.HandleTarget = SCee =>
+            {
+                if (!SC02CharactersBeSlowed.Contains(SCee))
+                {
+                    var buff1 = new Buff(SCee, this, 3*this.Interval, Section.Preparing, "缓慢：行动间隔+10",
+                        (buffee, buffer) => buffee._intervalAdd += 10,
+                        (buffer, buffee) => buffee._intervalAdd = Math.Max(0, _intervalAdd - 10));
+                    SCee.BuffList.Add(buff1);
+                }
+                SC02PointTemp = Game.DefaultPoint;
+                //TODO another buff
+            };
         }
 
         /// <summary>结束符卡02</summary>
         public override void EndSC02()
         {
-
+            base.EndSC02();
         }
 
         /// <summary>符卡03</summary>

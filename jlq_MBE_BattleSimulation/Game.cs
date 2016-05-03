@@ -113,6 +113,8 @@ namespace JLQ_MBE_BattleSimulation
         public Label[] LabelsGroup { get; set; } = new Label[3];
         /// <summary>显示当前添加ID的标签</summary>
         public Label LabelID { get; set; }
+        /// <summary>生成可到达点矩阵</summary>
+        public DAssignPointCanReach HandleAssignPointCanReach;
 
 
         //符卡相关
@@ -122,7 +124,7 @@ namespace JLQ_MBE_BattleSimulation
         public DHandleTarget HandleTarget;
         /// <summary>传递参数，判断单击位置是否有效</summary>
         public DIsLegalClick IsLegalClick;
-        /// <summary>当前符卡序号，0为不处于符卡状态</summary>
+        /// <summary>当前符卡序号，0为不处于符卡状态</summary> 
         public int ScSelect { get; set; }
 
         /// <summary>Game类的构造函数</summary>
@@ -130,6 +132,7 @@ namespace JLQ_MBE_BattleSimulation
         {
             this.Random = new Random();
             this.IsBattle = false;
+            HandleAssignPointCanReach = AssignPointCanReach;
 
             //LabelSection
             LabelSection = new Label
@@ -312,10 +315,9 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>攻击范围内的可攻击角色</summary>
         public IEnumerable<Character> EnemyCanAttack
             =>
-                EnemyAsCurrent.Where(
-                    c =>
-                        c.Group != CurrentCharacter.Group &&
-                        Calculate.Distance(CurrentCharacter.Position, c.Position) <= CurrentCharacter.AttackRange);
+                EnemyAsCurrent.Where(c =>
+                    c.Group != CurrentCharacter.Group &&
+                        Calculate.Distance(CurrentCharacter, c) <= CurrentCharacter.AttackRange);
 
         /// <summary>对当前行动者的阻挡列表</summary>
         public virtual IEnumerable<Character> EnemyBlock => CurrentCharacter.EnemyBlock;
@@ -462,7 +464,7 @@ namespace JLQ_MBE_BattleSimulation
                     CanReachPoint[i, j] = false;
                 }
             }
-            AssignPointCanReach(CurrentCharacter.Position, CurrentCharacter.MoveAbility);
+            HandleAssignPointCanReach(CurrentCharacter.Position, CurrentCharacter.MoveAbility);
             Characters.Where(c => c.Position != CurrentCharacter.Position)
                 .Select(c => c.Position)
                 .Aggregate(false, (current, position) => CanReachPoint[(int) position.X, (int) position.Y] = false);
@@ -505,10 +507,10 @@ namespace JLQ_MBE_BattleSimulation
                     .Aggregate(buffs, (current, buffsToOne) => current.Concat(buffsToOne));
             foreach (var buff in buffs)
             {
-                buff.BuffAffect(buff.Buffee, buff.Buffer);
+                buff.BuffTrigger();
                 if (buff.Round(CurrentCharacter.Interval))
                 {
-                    buff.BuffCancels();
+                    buff.BuffEnd();
                 }
                 Thread.Sleep(200);
             }

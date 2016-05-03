@@ -28,7 +28,7 @@ namespace JLQ_MBE_BattleSimulation
         public readonly string Name;
 
         /// <summary>buff效果的委托对象</summary>
-        public DBuffAffect BuffAffect;
+        private DBuffAffect BuffAffect;
         /// <summary>取消buff的委托对象</summary>
         public DBuffCancel BuffCancels;
 
@@ -40,17 +40,17 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>Buff类的构造函数</summary>
         /// <param name="buffee">buff承受者</param>
         /// <param name="buffer">buff发出者</param>
-        /// <param name="roundNum">buff持续回合数</param>
+        /// <param name="interval">buff持续时间</param>
         /// <param name="executeSection">buff执行的阶段</param>
         /// <param name="name">buff名称</param>
         /// <param name="affect">buff效果委托</param>
         /// <param name="cancel">buff取消委托</param>
-        public Buff(Character buffee, Character buffer, int roundNum, Section executeSection, string name,
-            DBuffAffect affect, DBuffCancel cancel = null)
+        public Buff(Character buffee, Character buffer, int interval, Section executeSection, string name,
+            DBuffAffect affect, DBuffCancel cancel)
         {
             this.Buffer = buffer;
             this.Buffee = buffee;
-            this.Interval = roundNum;
+            this.Interval = interval;
             this.ExecuteSection = executeSection;
             this.Name = name;
             this.BuffAffect = affect;
@@ -60,7 +60,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>buff引发</summary>
         public void BuffTrigger()
         {
-            BuffAffect(this.Buffer, this.Buffee);
+            BuffAffect(Buffee, Buffer);
         }
 
         /// <summary>buff剩余时间减少</summary>
@@ -81,11 +81,11 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>buff结束</summary>
         public void BuffEnd()
         {
-            BuffCancels();
+            BuffCancels(Buffee, Buffer);
         }
 
         /// <summary>重写object类的ToString方法</summary>
         /// <returns>转化为字符串的结果</returns>
-        public override string ToString() => String.Format("{0} 剩余时间：{1}", Name, Interval);
+        public override string ToString() => string.Format("{0} 剩余时间：{1}", Name, Interval);
     }
 }

@@ -27,7 +27,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <returns>命中率</returns>
         public static double HitRate(Character attacker, Character target)
         {
-            return HitRate(attacker.HitRate - target.DodgeRate, Distance(attacker.Position, target.Position));
+            return HitRate(attacker.HitRate - target.DodgeRate, Distance(attacker, target));
         }
 
         //伤害公式
@@ -52,6 +52,22 @@ namespace JLQ_MBE_BattleSimulation
         public static int Distance(Point point1, Point point2)
         {
             return (int) (Math.Abs(point1.X - point2.X) + Math.Abs(point1.Y - point2.Y));
+        }
+        /// <summary>求一点和一角色的距离</summary>
+        /// <param name="point1">点1</param>
+        /// <param name="character1">角色1</param>
+        /// <returns></returns>
+        public static int Distance(Point point1, Character character1)
+        {
+            return Distance(point1, character1.Position);
+        }
+        /// <summary>求两角色的距离</summary>
+        /// <param name="character1">角色1</param>
+        /// <param name="character2">角色2</param>
+        /// <returns></returns>
+        public static int Distance(Character character1, Character character2)
+        {
+            return Distance(character1.Position, character2);
         }
 
         /// <summary>将Section转化为中文显示</summary>
@@ -95,5 +111,15 @@ namespace JLQ_MBE_BattleSimulation
         {
             return (int) Math.Floor(number);
         }
+
+        /// <summary>目标点是否在源点3*3范围内</summary>
+        /// <param name="origin">源点</param>
+        /// <param name="point">待测点</param>
+        /// <returns>是否在范围内</returns>
+        public static bool IsIn33(Point origin, Point point)
+        {
+            return Math.Abs(origin.X - point.X) <= 1 && Math.Abs(origin.Y - point.Y) <= 1;
+        }
+
     }
 }
