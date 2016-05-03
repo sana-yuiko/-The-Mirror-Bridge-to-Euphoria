@@ -9,6 +9,7 @@ using System.Windows.Media.TextFormatting;
 using System.Windows.Media;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 
 namespace JLQ_MBE_BattleSimulation
 {
@@ -18,14 +19,14 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>默认点</summary>
         public static Point DefaultPoint => new Point(-1, -1);
         /// <summary>棋盘点集</summary>
-        public static Point[,] PadPoints
+        public static List<Point> PadPoints
         {
             get
             {
-                var points = new Point[MainWindow.Column, MainWindow.Row];
+                var points = new List<Point>();
                 for (var i = 0; i < MainWindow.Column; i++)
                     for (var j = 0; j < MainWindow.Row; j++)
-                        points[i, j] = new Point(i, j);
+                        points.Add(new Point(i, j));
                 return points;
             }
         }
@@ -101,9 +102,18 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>是否已移动</summary>
         public Label LabelMove { get; set; }
         /// <summary>用以响应鼠标事件的按钮</summary>
-        public Button[,] Buttons { get; set; }
+        public Button[,] Buttons { get; set; } = new Button[MainWindow.Column, MainWindow.Row];
         /// <summary>符卡按钮</summary>
         public Button[] ButtonSC { get; set; }
+        /// <summary>棋盘网格控件</summary>
+        public Grid GridPad { get; set; }
+        /// <summary>棋盘网格线</summary>
+        private Border[,] borders { get; } = new Border[MainWindow.Column, MainWindow.Row];
+        /// <summary>显示每阵营剩余人数的标签</summary>
+        public Label[] LabelsGroup { get; set; } = new Label[3];
+        /// <summary>显示当前添加ID的标签</summary>
+        public Label LabelID { get; set; }
+
 
         //符卡相关
         /// <summary>传递参数，如何获取目标以及所需参数列表</summary>
@@ -180,7 +190,6 @@ namespace JLQ_MBE_BattleSimulation
             };
             LabelAttack.SetBinding(Label.ForegroundProperty, binding3);
             //Buttons
-            Buttons = new Button[MainWindow.Column, MainWindow.Row];
             for (var i = 0; i < MainWindow.Column; i++)
             {
                 for (var j = 0; j < MainWindow.Row; j++)
@@ -212,6 +221,69 @@ namespace JLQ_MBE_BattleSimulation
                     VerticalAlignment = VerticalAlignment.Stretch
                 };
             }
+            //LabelsGroup
+            for (var i = 0; i < 3; i++)
+            {
+                LabelsGroup[i] = new Label
+                {
+                    Content = 0,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Top
+                };
+                LabelsGroup[i].SetValue(Grid.RowProperty, 1);
+                LabelsGroup[i].SetValue(Grid.ColumnProperty, 5 - 2*i);
+            }
+            //PadBorders
+            for (var i = 0; i < MainWindow.Column; i++)
+            {
+                for (var j = 0; j < MainWindow.Row; j++)
+                {
+                    //生成网格线
+                    borders[i, j] = new Border
+                    {
+                        BorderBrush = new SolidColorBrush(Colors.Black),
+                        BorderThickness = new Thickness(1),
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        VerticalAlignment = VerticalAlignment.Stretch,
+                    };
+                    borders[i, j].SetValue(Grid.ColumnProperty, i);
+                    borders[i, j].SetValue(Grid.RowProperty, j);
+                    borders[i, j].SetValue(Grid.ColumnSpanProperty, 1);
+                    borders[i, j].SetValue(Grid.RowSpanProperty, 1);
+                    borders[i, j].SetValue(Panel.ZIndexProperty, 0);
+                }
+            }
+            //LabelID
+            LabelID = new Label
+            {
+                Content = "1",
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                FontWeight = FontWeights.SemiBold
+            };
+            LabelID.SetValue(Grid.ColumnProperty, 1);
+            LabelID.SetValue(Grid.RowProperty, 1);
+            //GridPad
+            GridPad = new Grid();
+            for (var i = 0; i < MainWindow.Column; i++)
+            {
+                GridPad.ColumnDefinitions.Add(new ColumnDefinition());
+            }
+            for (var i = 0; i < MainWindow.Row; i++)
+            {
+                GridPad.RowDefinitions.Add(new RowDefinition());
+            }
+            GridPad.Loaded += (sender, e) =>
+            {
+                foreach (var border in borders)
+                {
+                    GridPad.Children.Add(border);
+                }
+                foreach (var button in Buttons)
+                {
+                    GridPad.Children.Add(button);
+                }
+            };
 
             this.Section = null;
         }
@@ -250,7 +322,33 @@ namespace JLQ_MBE_BattleSimulation
 
         /// <summary>对当前行动者的敌人列表</summary>
         public IEnumerable<Character> EnemyAsCurrent => CurrentCharacter.Enemy;
+        /// <summary>棋盘按钮数组的一维数组形式</summary>
+        public Button[] ArrayButtons
+        {
+            get
+            {
+                var result = new Button[MainWindow.Column * MainWindow.Row];
+                for(var i = 0; i < MainWindow.Column; i++) 
+                    for (var j = 0; j < MainWindow.Row; j++)
+                    {
+                        result[j*MainWindow.Column + i] = Buttons[i, j];
+                    }
+                return result;
+            }
+        }
 
+        /// <summary>移除角色</summary>
+        /// <param name="target">待移除的角色</param>
+        public void RemoveCharacter(Character target)
+        {
+            var labelTemp = LabelsGroup[(int)target.Group + 1];
+            labelTemp.Content = Convert.ToInt32(labelTemp.Content) - 1;
+            GridPad.Children.Remove(target.LabelDisplay);
+            GridPad.Children.Remove(target.BarHp);
+            GridPad.Children.Remove(target.BarTime);
+            GridPad.Children.Remove(target.BarMp);
+            Characters.Remove(target);
+        }
 
         /// <summary>更新下个行动的角色,取currentTime最小的角色中Interval最大的角色中的随机一个</summary>
         public void GetNextRoundCharacter()
@@ -295,6 +393,36 @@ namespace JLQ_MBE_BattleSimulation
             CurrentCharacter.SCShow();
         }
 
+        /// <summary>死亡结算</summary>
+        public void IsDead()
+        {
+            foreach (var model in CharactersMayDie.Where(m => m.Target.IsDead))
+            {
+                if (model.Attacker != null)
+                {
+                    MessageBox.Show(
+                        string.Format("{0}号{1}{2}被{3}号{4}{5}杀死", model.Target.ID, Calculate.Convert(model.Target.Group),
+                            model.Target.Name, model.Attacker.ID, Calculate.Convert(model.Attacker.Group),
+                            model.Attacker.Name), "死亡", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+                else
+                {
+                    MessageBox.Show(
+                        string.Format("{0}号{1}{2}被无来源伤害杀死", model.Target.ID, Calculate.Convert(model.Target.Group),
+                            model.Target.Name), "死亡", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+                RemoveCharacter(model.Target);
+            }
+            //游戏是否结束
+            if (!FriendCharacters.Any())
+            {
+                MessageBox.Show("敌方获胜！", "游戏结束", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
+            if (EnemyCharacters.Any()) return;
+            MessageBox.Show("己方获胜！", "游戏结束", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+        }
+
         /// <summary>格子的文字显示</summary>
         /// <param name="position">格子</param>
         /// <returns>文字显示</returns>
@@ -302,7 +430,6 @@ namespace JLQ_MBE_BattleSimulation
         {
             return Characters.FirstOrDefault(c => c.Position == position)?.ToString() ?? null;
         }
-
         /// <summary>格子的信息提示</summary>
         /// <param name="position">格子</param>
         /// <returns>信息提示</returns>
@@ -310,6 +437,19 @@ namespace JLQ_MBE_BattleSimulation
         {
             if (CurrentCharacter == null) return null;
             return Characters.FirstOrDefault(c => c.Position == position)?.Tip(CurrentCharacter) ?? null;
+        }
+
+        /// <summary>错误提示</summary>
+        /// <param name="message">提示信息</param>
+        public static void ErrorMessageBox(string message)
+        {
+            MessageBox.Show(message, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        /// <summary>非法操作提示</summary>
+        /// <param name="message">提示信息</param>
+        public static void IllegalMessageBox(string message)
+        {
+            MessageBox.Show(message, "操作非法", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         /// <summary>生成bool二维数组</summary>
@@ -397,13 +537,8 @@ namespace JLQ_MBE_BattleSimulation
         /// <param name="range">范围</param>
         public void SetButtonBackground(Point origin, int range)
         {
-            foreach (var point in PadPoints)
-            {
-                if (Calculate.Distance(point, origin) <= range && this[point] == null)
-                {
-                    Buttons[(int) point.X, (int) point.Y].Opacity = 1;
-                }
-            }
+            PadPoints.Where(point => Calculate.Distance(point, origin) <= range && this[point] == null)
+                .Aggregate(0.0, (current, point) => Buttons[(int) point.X, (int) point.Y].Opacity = 1);
         }
 
         /// <summary>生成可到达点的按钮颜色</summary>
@@ -423,10 +558,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>将全部棋盘按钮置透明</summary>
         public void ResetPadButtons()
         {
-            foreach (var b in Buttons)
-            {
-                b.Opacity = 0;
-            }
+            ArrayButtons.Aggregate(0.0, (current, b) => b.Opacity = 0);
         }
 
         /// <summary>更新角色标签颜色</summary>
@@ -501,12 +633,6 @@ namespace JLQ_MBE_BattleSimulation
                     break;
             }
             ScSelect = 0;
-        }
-
-        /// <summary>执行符卡效果</summary>
-        public void DoSc()
-        {
-            
         }
 
 

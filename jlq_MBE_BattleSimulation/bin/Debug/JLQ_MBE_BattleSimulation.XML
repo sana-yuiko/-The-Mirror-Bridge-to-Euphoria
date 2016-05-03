@@ -1272,6 +1272,18 @@
         <member name="P:JLQ_MBE_BattleSimulation.Game.ButtonSC">
             <summary>符卡按钮</summary>
         </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Game.GridPad">
+            <summary>棋盘网格控件</summary>
+        </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Game.borders">
+            <summary>棋盘网格线</summary>
+        </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Game.LabelsGroup">
+            <summary>显示每阵营剩余人数的标签</summary>
+        </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Game.LabelID">
+            <summary>显示当前添加ID的标签</summary>
+        </member>
         <member name="F:JLQ_MBE_BattleSimulation.Game.IsTargetLegal">
             <summary>传递参数，如何获取目标以及所需参数列表</summary>
         </member>
@@ -1319,8 +1331,18 @@
         <member name="P:JLQ_MBE_BattleSimulation.Game.EnemyAsCurrent">
             <summary>对当前行动者的敌人列表</summary>
         </member>
+        <member name="P:JLQ_MBE_BattleSimulation.Game.ArrayButtons">
+            <summary>棋盘按钮数组的一维数组形式</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Game.RemoveCharacter(JLQ_MBE_BattleSimulation.Character)">
+            <summary>移除角色</summary>
+            <param name="target">待移除的角色</param>
+        </member>
         <member name="M:JLQ_MBE_BattleSimulation.Game.GetNextRoundCharacter">
             <summary>更新下个行动的角色,取currentTime最小的角色中Interval最大的角色中的随机一个</summary>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Game.IsDead">
+            <summary>死亡结算</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Game.StringShow(System.Windows.Point)">
             <summary>格子的文字显示</summary>
@@ -1331,6 +1353,14 @@
             <summary>格子的信息提示</summary>
             <param name="position">格子</param>
             <returns>信息提示</returns>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Game.ErrorMessageBox(System.String)">
+            <summary>错误提示</summary>
+            <param name="message">提示信息</param>
+        </member>
+        <member name="M:JLQ_MBE_BattleSimulation.Game.IllegalMessageBox(System.String)">
+            <summary>非法操作提示</summary>
+            <param name="message">提示信息</param>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.Game.Generate_CanReachPoint">
             <summary>生成bool二维数组</summary>
@@ -1376,9 +1406,6 @@
         <member name="M:JLQ_MBE_BattleSimulation.Game.EndSC">
             <summary>结束符卡结算</summary>
         </member>
-        <member name="M:JLQ_MBE_BattleSimulation.Game.DoSc">
-            <summary>执行符卡效果</summary>
-        </member>
         <member name="M:JLQ_MBE_BattleSimulation.Game.MessageBeep(System.UInt32)">
             <summary>播放声音</summary>
             <param name="uType"></param>
@@ -1398,9 +1425,6 @@
         <member name="F:JLQ_MBE_BattleSimulation.MainWindow.Row">
             <summary>棋盘行数</summary>
         </member>
-        <member name="F:JLQ_MBE_BattleSimulation.MainWindow.borders">
-            <summary>棋盘网格线</summary>
-        </member>
         <member name="F:JLQ_MBE_BattleSimulation.MainWindow.game">
             <summary>game对象</summary>
         </member>
@@ -1409,9 +1433,6 @@
         </member>
         <member name="F:JLQ_MBE_BattleSimulation.MainWindow.characterLastAdd">
             <summary>加人模式上一个添加的角色</summary>
-        </member>
-        <member name="F:JLQ_MBE_BattleSimulation.MainWindow.labelGroups">
-            <summary>角色数标签</summary>
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.#ctor">
             <summary>构造函数</summary>
@@ -1441,9 +1462,6 @@
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.EndSection">
             <summary>结束阶段</summary>
         </member>
-        <member name="M:JLQ_MBE_BattleSimulation.MainWindow.IsDead">
-            <summary>死亡结算</summary>
-        </member>
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.RandomlyAddCharacters(JLQ_MBE_BattleSimulation.Group,System.Int32)">
             <summary>随机添加角色</summary>
             <param name="group">角色阵营</param>
@@ -1456,11 +1474,6 @@
         </member>
         <member name="M:JLQ_MBE_BattleSimulation.MainWindow.window_Closing(System.Object,System.ComponentModel.CancelEventArgs)">
             <summary>关闭时询问是否关闭窗口</summary>
-            <param name="sender"></param>
-            <param name="e"></param>
-        </member>
-        <member name="M:JLQ_MBE_BattleSimulation.MainWindow.gridPad_Loaded(System.Object,System.Windows.RoutedEventArgs)">
-            <summary>生成棋盘网格内的控件</summary>
             <param name="sender"></param>
             <param name="e"></param>
         </member>

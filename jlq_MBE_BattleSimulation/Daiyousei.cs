@@ -18,12 +18,10 @@ namespace JLQ_MBE_BattleSimulation
             //显示有效单击点
 		    enterButton[0] = (s, ev) =>
 		    {
-		        foreach (var point in Game.PadPoints)
+		        this.game.DefaultButtonAndLabels();
+		        foreach (var point in Game.PadPoints.Where(point => this.Position != point && SC01IsLegalClick(point)))
 		        {
-		            if (this.Position != point && SC01IsLegalClick(point)) 
-		            {
-		                game[point].LabelDisplay.Background = Brushes.LightBlue;
-		            }
+		            game[point].LabelDisplay.Background = Brushes.LightBlue;
 		        }
 		        pointTemp1 = Game.DefaultPoint;
 		    };
@@ -47,27 +45,25 @@ namespace JLQ_MBE_BattleSimulation
             //显示有效单击点
 		    enterButton[1] = (s, ev) =>
 		    {
-		        foreach (var point in Game.PadPoints)
+                this.game.DefaultButtonAndLabels();
+		        foreach (var point in Game.PadPoints.Where(point => SC02IsLegalClick(point)))
 		        {
-		            if (SC02IsLegalClick(point))
-		            {
-		                game[point].LabelDisplay.Background = Brushes.LightBlue;
-		            }
+		            game[point].LabelDisplay.Background = Brushes.LightBlue;
 		        }
 		    };
             SetDefaultLeaveSCButtonDelegate(1);
             //显示将被攻击的角色
 		    enterPad[1] = (s, ev) =>
 		    {
-		        if (SC02IsLegalClick(game.MousePoint))
-		        {
-		            game[game.MousePoint].LabelDisplay.Background = Brushes.LightBlue;
-		        }
+		        if (!SC02IsLegalClick(game.MousePoint)) return;
+		        this.game.DefaultButtonAndLabels();
+		        game[game.MousePoint].LabelDisplay.Background = Brushes.LightBlue;
 		    };
             SetDefaultLeavePadButtonDelegate(1);
             //显示将回血的角色
 		    enterButton[2] = (s, ev) =>
 		    {
+                this.game.DefaultButtonAndLabels();
 		        foreach (var l in game.Characters.Where(c => c != this && SC03IsTargetLegal(c)).Select(c => c.LabelDisplay))
 		        {
 		            l.Background = Brushes.LightBlue;

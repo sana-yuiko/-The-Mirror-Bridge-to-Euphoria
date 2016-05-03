@@ -82,7 +82,6 @@ namespace JLQ_MBE_BattleSimulation
         public override void ResetSCShow()
         {
             RemoveSCButtonEvent(0);
-
         }
     }
 }

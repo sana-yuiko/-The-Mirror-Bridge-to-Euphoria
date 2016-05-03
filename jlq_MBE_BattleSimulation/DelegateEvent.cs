@@ -51,5 +51,4 @@ namespace JLQ_MBE_BattleSimulation
     /// <param name="damage">伤害值</param>
     /// <param name="attacker">伤害来源</param>
     public delegate void DBeAttacked(int damage, Character attacker);
-
 }

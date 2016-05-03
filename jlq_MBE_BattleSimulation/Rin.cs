@@ -21,13 +21,10 @@ namespace JLQ_MBE_BattleSimulation
 		    enterButton[0] = (s, ev) =>
 		    {
 		        this.game.DefaultButtonAndLabels();
-		        foreach (var point in Game.PadPoints)
+		        foreach (var point in Game.PadPoints.Where(SC01IsLegalClick))
 		        {
-		            if (SC01IsLegalClick(point))
-		            {
-		                game[point].LabelDisplay.Background = Brushes.LightBlue;
-		            }
-                }
+		            game[point].LabelDisplay.Background = Brushes.LightBlue;
+		        }
 		        pointTemp1 = Game.DefaultPoint;
 		    };
             SetDefaultLeaveSCButtonDelegate(0);
@@ -68,10 +65,9 @@ namespace JLQ_MBE_BattleSimulation
             //显示将被攻击的目标
 		    enterPad[1] = (s, ev) =>
 		    {
-		        if (game.IsLegalClick(game.MousePoint))
-		        {
-		            game[game.MousePoint].LabelDisplay.Background = Brushes.LightBlue;
-		        }
+		        if (!this.game.IsLegalClick(game.MousePoint)) return;
+		        this.game.DefaultButtonAndLabels();
+		        game[game.MousePoint].LabelDisplay.Background = Brushes.LightBlue;
 		    };
             SetDefaultLeavePadButtonDelegate(1);
             //符卡03

@@ -454,13 +454,13 @@
     </charc>
     <charc id="Daiyousei">
       <name id="0">飞翔于天空中不可思议的巫女</name>
-      <name id="1">灵符「梦想封印」</name>
-      <name id="2">神技「八方鬼缚阵」</name>
-      <name id="3">博丽秘技「梦想天生」</name>
+      <name id="1">妖精「贴心的妖精」</name>
+      <name id="2">花符「花仙炮」</name>
+      <name id="3">妖精「妖精狂欢」</name>
       <disc id="0">你可以穿过敌方单位。</disc>
-      <disc id="1">梦想封印</disc>
-      <disc id="2">八方鬼缚阵</disc>
-      <disc id="3">梦想天生</disc>
+      <disc id="1">贴心的妖精</disc>
+      <disc id="2">花仙炮</disc>
+      <disc id="3">妖精狂欢</disc>
     </charc>
     <charc id="Cirno">
       <name id="0">飞翔于天空中不可思议的巫女</name>

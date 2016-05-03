@@ -12,7 +12,7 @@
         <local:ConverterHasMovedToColor x:Key="converterMove"/>
         <local:ConverterHasAttackedToColor x:Key="converterAttack"/>
     </Window.Resources>
-    <Grid x:Name="gridWindow">
+    <Grid x:Name="gridWindow" Loaded="gridWindow_Loaded">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="4*"/>
             <ColumnDefinition Width="5*"/>
@@ -23,34 +23,7 @@
             <RowDefinition Height="3*"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" Grid.Row="1" VerticalAlignment="Stretch">
-            <Grid x:Name="gridPad" Loaded="gridPad_Loaded">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-
-                </Grid.RowDefinitions>
-            </Grid>
-        </Border>
+        <Border x:Name="borderPad" BorderBrush="Black" BorderThickness="1" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" Grid.Row="1" VerticalAlignment="Stretch" Loaded="borderPad_Loaded"/>
         <Grid HorizontalAlignment="Stretch" Margin="0" Grid.Row="1" VerticalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -66,7 +39,7 @@
                 <RowDefinition Height="6*"/>
             </Grid.RowDefinitions>
             <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" CornerRadius="5">
-                <Grid x:Name="gridSC01"/>
+                <Grid x:Name="gridSC01" Loaded="gridSC01_Loaded"/>
             </Border>
             <Border BorderBrush="Blue" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Grid.Row="2" CornerRadius="5">
                 <Grid x:Name="gridSC02"/>
@@ -135,13 +108,9 @@
         <ComboBox x:Name="comboBoxDisplay" HorizontalAlignment="Left" Margin="22,44,0,0" VerticalAlignment="Top" Width="120"/>
         <Button x:Name="buttonSave" Content="Save" HorizontalAlignment="Left" Margin="162,44,0,0" VerticalAlignment="Top" Width="75" Height="21"/>
         <Button x:Name="buttonLoad" Content="Load" HorizontalAlignment="Left" Margin="274,44,0,0" VerticalAlignment="Top" Width="75" Height="21"/>
-        <Label x:Name="label" Content="当前模式：" Grid.Column="1" HorizontalAlignment="Left" Margin="36,33,0,0" VerticalAlignment="Top" Width="117" Height="37" FontSize="16" HorizontalContentAlignment="Right"/>
-        <Label x:Name="labelShow" Content="加人模式" Grid.Column="1" HorizontalAlignment="Left" Margin="158,33,0,0" VerticalAlignment="Top" Height="37" Width="132" FontWeight="SemiBold" FontSize="16" Foreground="Red"/>
         <Label x:Name="label1" Content="当前阶段：" HorizontalAlignment="Left" Margin="104,47,0,0" Grid.Row="2" VerticalAlignment="Top" Width="73"/>
-        <Label x:Name="label2" Content="当前添加ID：" Grid.Column="1" HorizontalAlignment="Left" Margin="36,75,0,0" VerticalAlignment="Top" Width="117" Height="34" FontSize="16" HorizontalContentAlignment="Right" RenderTransformOrigin="0.256,0.471"/>
-        <Label x:Name="labelID" Content="1" Grid.Column="1" HorizontalAlignment="Left" Margin="158,75,0,0" VerticalAlignment="Top" Height="34" Width="132" FontSize="16" FontWeight="SemiBold"/>
         <Border BorderBrush="Red" BorderThickness="2" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="2" VerticalAlignment="Stretch" Padding="1" CornerRadius="5" Margin="2,5,2,2">
-            <Grid x:Name="gridGame" >
+            <Grid x:Name="gridGame" Loaded="gridGame_Loaded" >
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
@@ -155,12 +124,22 @@
                     <ColumnDefinition Width="3*"/>
                 </Grid.ColumnDefinitions>
                 <Label x:Name="label3" Content="己方角色数量：" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Top"/>
-                <Label x:Name="labelFriend" Content="0" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Top" Grid.Column="1"/>
                 <Label x:Name="label5" Content="中立角色数量:" Grid.Column="2" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Top"/>
-                <Label x:Name="labelMiddle" Content="0" Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Top"/>
                 <Label x:Name="label7" Content="敌方角色数量:" Grid.Column="4" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Top"/>
-                <Label x:Name="labelEnemy" Content="0" Grid.Column="5" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Top"/>
             </Grid>
         </Border>
+        <Grid x:Name="gridGameInformation" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="239" Margin="36,28,0,0" Height="81" Loaded="gridGameInformation_Loaded">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label x:Name="labelShow" Content="加人模式" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontWeight="SemiBold" FontSize="16" Foreground="Red" Grid.Column="1"/>
+            <Label x:Name="label" Content="当前模式：" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="16" HorizontalContentAlignment="Right"/>
+            <Label x:Name="label2" Content="当前添加ID：" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="16" HorizontalContentAlignment="Right" Grid.Row="1"/>
+        </Grid>
     </Grid>
 </Window>
