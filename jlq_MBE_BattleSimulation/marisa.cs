@@ -13,26 +13,24 @@ namespace JLQ_MBE_BattleSimulation
         public Marisa(int id, Point position, Group group, Random random, Game game)
             : base(id, position, group, random, game)
         {
+            //显示将被攻击的角色
             enterPad[0] = (s, ev) =>
             {
                 if (!SC01IsLegalClick(game.MousePoint)) return;
                 game.DefaultButtonAndLabels();
-                foreach (var l in game.Characters.Where(c => SC01IsTargetLegal(c, game.MousePoint))
-                    .Select(c => c.LabelDisplay))
-                {
-                    l.Background = Brushes.LightBlue;
-                }
+                game.Characters.Where(c => SC01IsTargetLegal(c, game.MousePoint))
+                    .Aggregate((Brush) Brushes.White, (cu, c) => c.LabelDisplay.Background = Brushes.LightBlue);
             };
             leavePad[0] = (s, ev) => SetDefaultLeavePadButtonDelegate(0);
         }
 
 
         //符卡
-        /// <summary>符卡01</summary>
+        /// <summary>符卡01：星屑幻想，选定一块3*3的区域，对其内敌人造成1.0倍率的弹幕攻击。</summary>
         public override void SC01()
         {
-            game.IsLegalClick = SC01IsLegalClick;
-            game.IsTargetLegal = SC01IsTargetLegal;
+            game.HandleIsLegalClick = SC01IsLegalClick;
+            game.HandleIsTargetLegal = SC01IsTargetLegal;
             game.HandleTarget = SCee => DoAttack(SCee);
             AddPadButtonEvent(0);
         }
@@ -66,7 +64,7 @@ namespace JLQ_MBE_BattleSimulation
 
         }
 
-        private bool SC01IsLegalClick(Point point)
+        private static bool SC01IsLegalClick(Point point)
         {
             return point.X > 0 && point.X < MainWindow.Column - 1 && point.Y > 0 && point.Y < MainWindow.Row - 1;
         }

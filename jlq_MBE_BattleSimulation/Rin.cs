@@ -21,30 +21,22 @@ namespace JLQ_MBE_BattleSimulation
 		    enterButton[0] = (s, ev) =>
 		    {
 		        this.game.DefaultButtonAndLabels();
-		        foreach (var point in Game.PadPoints.Where(SC01IsLegalClick))
-		        {
-		            game[point].LabelDisplay.Background = Brushes.LightBlue;
-		        }
+		        Game.PadPoints.Where(SC01IsLegalClick)
+		            .Aggregate((Brush) Brushes.White, (c, point) => game[point].LabelDisplay.Background = Brushes.LightBlue);
 		        pointTemp1 = Game.DefaultPoint;
 		    };
             SetDefaultLeaveSCButtonDelegate(0);
             //显示将瞬移到的点和将被攻击的目标
 		    enterPad[0] = (s, ev) =>
 		    {
-		        if (!this.game.IsLegalClick(this.game.MousePoint)) return;
+		        if (!this.game.HandleIsLegalClick(this.game.MousePoint)) return;
 		        this.game.DefaultButtonAndLabels();
 		        if (this.Position != pointTemp1)
 		        {
 		            game.Buttons[(int) pointTemp1.X, (int) pointTemp1.Y].Opacity = 1;
 		        }
-		        foreach (
-		            var l in
-		                Enemy.Where(
-		                    SCee => Calculate.Distance(pointTemp1, SCee) <= SC01Range2 && Enemy.Contains(SCee))
-		                    .Select(c => c.LabelDisplay))
-		        {
-		            l.Background = Brushes.LightBlue;
-		        }
+		        game.Characters.Where(SCee => IsInRangeAndEnemy(pointTemp1, SC01Range2, SCee))
+		            .Aggregate((Brush) Brushes.White, (cu, c) => c.LabelDisplay.Background = Brushes.LightBlue);
                 pointTemp1 = Game.DefaultPoint;
             };
             SetDefaultLeavePadButtonDelegate(0);
@@ -53,16 +45,14 @@ namespace JLQ_MBE_BattleSimulation
             enterButton[1] = (s, ev) =>
 		    {
 		        this.game.DefaultButtonAndLabels();
-		        foreach (var l in this.Enemy.Where(c => Calculate.Distance(c, this) <= SC02Range).Select(c => c.LabelDisplay))
-		        {
-		            l.Background = Brushes.LightBlue;
-		        }
+		        game.Characters.Where(c => IsInRangeAndEnemy(this.Position, SC02Range, c))
+		            .Aggregate((Brush) Brushes.White, (cu, c) => c.LabelDisplay.Background = Brushes.LightBlue);
 		    };
             SetDefaultLeaveSCButtonDelegate(1);
             //显示将被攻击的目标
 		    enterPad[1] = (s, ev) =>
 		    {
-		        if (!this.game.IsLegalClick(game.MousePoint)) return;
+		        if (!this.game.HandleIsLegalClick(game.MousePoint)) return;
 		        this.game.DefaultButtonAndLabels();
 		        game[game.MousePoint].LabelDisplay.Background = Brushes.LightBlue;
 		    };
@@ -72,11 +62,8 @@ namespace JLQ_MBE_BattleSimulation
             enterPad[2] = (s, ev) =>
 		    {
 		        this.game.DefaultButtonAndLabels();
-		        foreach (
-		            var l in Enemy.Where(c => Calculate.Distance(game.MousePoint, c) <= SC03Range).Select(c => c.LabelDisplay))
-		        {
-		            l.Background = Brushes.LightBlue;
-		        }
+		        game.Characters.Where(c => IsInRangeAndEnemy(game.MousePoint, SC03Range, c))
+		            .Aggregate((Brush) Brushes.White, (cu, c) => c.LabelDisplay.Background = Brushes.LightBlue);
 		    };
             SetDefaultLeavePadButtonDelegate(2);
 		}
@@ -96,14 +83,13 @@ namespace JLQ_MBE_BattleSimulation
 
 	    private Point pointTemp1 = Game.DefaultPoint;
 
-        //TODO 天赋
         /// <summary>天赋：当你受到攻击时，对2格内随机一名敌方单位造成所受伤害30%的真实伤害</summary>
         /// <param name="damage">伤害值</param>
         /// <param name="attacker">攻击者</param>
         public override void BeAttacked(int damage, Character attacker)
         {
             base.BeAttacked(damage, attacker);
-            var legalTarget = this.Enemy.Where(c => Calculate.Distance(c, this) <= skillRange).ToArray();
+            var legalTarget = game.Characters.Where(c => IsInRangeAndEnemy(this.Position, skillRange, c)).ToArray();
             if (legalTarget.Length == 0) return;
             var index = random.Next(legalTarget.Length);
             var target = legalTarget[index];
@@ -118,12 +104,13 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>符卡01：乘着风，瞬移到3格内一名敌方角色面前，并释放旋风对自身2格内所有敌方单位造成0.5倍率的伤害</summary>
         public override void SC01()
         {
-            game.IsLegalClick = SC01IsLegalClick;
-            game.IsTargetLegal = (SCee, point) =>
+            game.HandleIsLegalClick = SC01IsLegalClick;
+            game.HandleIsTargetLegal = (SCee, point) =>
             {
                 if (this.Position != pointTemp1) Move(pointTemp1);
                 return Calculate.Distance(pointTemp1, SCee) <= SC01Range2 && Enemy.Contains(SCee);
             };
+            game.HandleSelf = () => Move(pointTemp1);
             game.HandleTarget = SCee => DoAttack(SCee, SC01DamageGain);
             AddPadButtonEvent(0);
         }
@@ -138,12 +125,12 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>符卡02：孤独绽放的，对4格内一名敌方单位造成2.0倍率的伤害</summary>
         public override void SC02()
         {
-            game.IsLegalClick = point =>
+            game.HandleIsLegalClick = point =>
             {
                 var c = game[point];
                 return c != null && Calculate.Distance(point, this) <= SC02Range && Enemy.Contains(c);
             };
-            game.IsTargetLegal = (SCee, point) => SCee.Position == point;
+            game.HandleIsTargetLegal = (SCee, point) => SCee.Position == point;
             game.HandleTarget = SCee => DoAttack(SCee, SC02DamageGain);
             enterButton[1](null, null);
 
@@ -157,8 +144,8 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>符卡03：对一点周围1格内所有敌方角色造成0.7倍率的伤害</summary>
         public override void SC03()
         {
-            game.IsLegalClick = point => true;
-            game.IsTargetLegal = (SCee, point) => Calculate.Distance(point, SCee) <= SC03Range && Enemy.Contains(SCee);
+            game.HandleIsLegalClick = point => true;
+            game.HandleIsTargetLegal = (SCee, point) => Calculate.Distance(point, SCee) <= SC03Range && Enemy.Contains(SCee);
             game.HandleTarget = SCee => DoAttack(SCee, SC03DamageGain);
             AddPadButtonEvent(2);
         }

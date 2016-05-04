@@ -138,14 +138,11 @@ namespace JLQ_MBE_BattleSimulation
                     if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
                     {
                         var character = game[game.MousePoint];
-                        if (character != null)
-                        {
-                            //清屏
-                            game.DefaultButtonAndLabels();
-
-                            game.SetButtonBackground(game.MousePoint, character.AttackRange);
-                            character.LabelDisplay.Background = Brushes.LightBlue;
-                        }
+                        if (character == null) return;
+                        //清屏
+                        game.DefaultButtonAndLabels();
+                        game.SetButtonBackground(game.MousePoint, character.AttackRange);
+                        character.LabelDisplay.Background = Brushes.LightBlue;
                     }
                     //如果ctrl被按下
                     else if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
@@ -199,10 +196,7 @@ namespace JLQ_MBE_BattleSimulation
                     Type.GetType("JLQ_MBE_BattleSimulation." + characterData.Name).GetConstructors()[0].Invoke(
                         parameters);
             //各种加入列表
-            game.GridPad.Children.Add(characterLastAdd.LabelDisplay);
-            game.GridPad.Children.Add(characterLastAdd.BarHp);
-            game.GridPad.Children.Add(characterLastAdd.BarTime);
-            game.GridPad.Children.Add(characterLastAdd.BarMp);
+            characterLastAdd.ListControls.Aggregate(0, (cu, c) => game.GridPad.Children.Add(c));
             game.Characters.Add(characterLastAdd);
             ID++;
             menuBackout.IsEnabled = true;
@@ -250,7 +244,7 @@ namespace JLQ_MBE_BattleSimulation
                 if (game.ScSelect != 0)
                 {
                     //如果单击位置不合法
-                    if (!game.IsLegalClick(game.MousePoint))
+                    if (!game.HandleIsLegalClick(game.MousePoint))
                     {
                         Game.IllegalMessageBox("符卡选择位置非法");
                         return;
@@ -296,13 +290,11 @@ namespace JLQ_MBE_BattleSimulation
                     //攻击
                     currentCharacter.DoAttack(target);
                     game.HasAttacked = true;
-                    foreach (var c in game.EnemyCanAttack)
-                    {
-                        c.LabelDisplay.Background = Brushes.White;
-                    }
+                    game.EnemyCanAttack.Aggregate((Brush) Brushes.White,
+                        (cu, c) => c.LabelDisplay.Background = Brushes.White);
 
                     //死人提示
-                    game.IsDead();
+                    game.HandleIsDead();
                     game.Generate_CanReachPoint();
                     game.PaintButton();
 
@@ -385,7 +377,7 @@ namespace JLQ_MBE_BattleSimulation
         private void SC(int index)
         {
             game.SC(index);
-            if (game.IsLegalClick != null) return;
+            if (game.HandleIsLegalClick != null) return;
             DoSC();
             game.EndSC();
         }
@@ -398,18 +390,16 @@ namespace JLQ_MBE_BattleSimulation
                 Game.IllegalMessageBox("已攻击过不能使用符卡");
                 return;
             }
-            var characterArray = game.Characters.Where(c => game.IsTargetLegal(c, game.MousePoint)).ToArray();
+            game.HandleSelf?.Invoke();
+            var characterArray = game.Characters.Where(c => game.HandleIsTargetLegal(c, game.MousePoint)).ToArray();
             foreach (var c in characterArray)
             {
                 game.HandleTarget(c);
             }
             game.EndSC();
             game.HasAttacked = true;
-            foreach (var c in game.EnemyCanAttack)
-            {
-                c.LabelDisplay.Background = Brushes.White;
-            }
-            game.IsDead();
+            game.EnemyCanAttack.Aggregate((Brush) Brushes.White, (cu, c) => c.LabelDisplay.Background = Brushes.White);
+            game.HandleIsDead();
 
             game.DefaultButtonAndLabels();
             game.Generate_CanReachPoint();
@@ -459,24 +449,21 @@ namespace JLQ_MBE_BattleSimulation
         /// <param name="e"></param>
         private void menuClear_Click(object sender, RoutedEventArgs e)
         {
-            var characterLabels = game.Characters.Select(c => c.LabelDisplay).ToList();
-            foreach (var l in characterLabels)
+            IEnumerable<FrameworkElement> controls = new List<FrameworkElement>();
+            controls = game.Characters.Select(c => c.ListControls).Aggregate(controls, (current, l) => current.Concat(l));
+            foreach (var c in controls)
             {
-                game.GridPad.Children.Remove(l);
-            }
-            var progressBars = game.Characters.Select(c => c.BarHp);
-            progressBars = progressBars.Concat(game.Characters.Select(c => c.BarTime));
-            progressBars = progressBars.Concat(game.Characters.Select(c => c.BarMp));
-            foreach (var p in progressBars)
-            {
-                game.GridPad.Children.Remove(p);
+                game.GridPad.Children.Remove(c);
             }
             game.Characters.Clear();
             characterLastAdd = null;
             menuBackout.IsEnabled = false;
             ID = 1;
             game.LabelID.Content = "1";
-            characterLabels.Aggregate(new object(), (current, l) => l.Content = "0");
+            foreach (var l in game.LabelsGroup)
+            {
+                l.Content = "0";
+            }
         }
 
         /// <summary>模式切换</summary>
@@ -518,7 +505,7 @@ namespace JLQ_MBE_BattleSimulation
             buttonGenerateFriend.IsEnabled = false;
             buttonGenerateEnemy.IsEnabled = false;
             buttonGenerateMiddle.IsEnabled = false;
-            game.ButtonSC.Aggregate(false, (current, b) => b.IsEnabled = true);
+            game.ButtonSC.Aggregate(false, (c, b) => b.IsEnabled = true);
             labelShow.Foreground = Brushes.Black;
             game.TurnToBattle();
             PreparingSection();
@@ -580,10 +567,7 @@ namespace JLQ_MBE_BattleSimulation
         {
             gridGame.Children.Add(game.LabelAttack);
             gridGame.Children.Add(game.LabelMove);
-            foreach (var l in game.LabelsGroup)
-            {
-                gridGame.Children.Add(l);
-            }
+            game.LabelsGroup.Aggregate(0, (c, l) => gridGame.Children.Add(l));
         }
 
         private void gridSC01_Loaded(object sender, RoutedEventArgs e)

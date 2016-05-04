@@ -19,17 +19,14 @@ namespace JLQ_MBE_BattleSimulation
 		    enterButton[0] = (s, ev) =>
 		    {
 		        this.game.DefaultButtonAndLabels();
-		        foreach (var point in Game.PadPoints.Where(point => this.Position != point && SC01IsLegalClick(point)))
-		        {
-		            game[point].LabelDisplay.Background = Brushes.LightBlue;
-		        }
+		        Game.PadPoints.Where(point => this.Position != point && SC01IsLegalClick(point))
 		        pointTemp1 = Game.DefaultPoint;
 		    };
             SetDefaultLeaveSCButtonDelegate(0);
             //显示将瞬移到的点和将回血的角色
 		    enterPad[0] = (s, ev) =>
 		    {
-		        if (!game.IsLegalClick(game.MousePoint)) return;
+		        if (!game.HandleIsLegalClick(game.MousePoint)) return;
 		        this.game.DefaultButtonAndLabels();
 		        if (this.Position == game.MousePoint) return;
 		        if (this.Position != pointTemp1)
@@ -37,7 +34,6 @@ namespace JLQ_MBE_BattleSimulation
 		            game.Buttons[(int) pointTemp1.X, (int) pointTemp1.Y].Opacity = 1;
 		        }
 		        game[game.MousePoint].LabelDisplay.Background = Brushes.LightBlue;
-
 		        pointTemp1 = Game.DefaultPoint;
 		    };
             SetDefaultLeavePadButtonDelegate(0);
@@ -46,10 +42,7 @@ namespace JLQ_MBE_BattleSimulation
 		    enterButton[1] = (s, ev) =>
 		    {
                 this.game.DefaultButtonAndLabels();
-		        foreach (var point in Game.PadPoints.Where(point => SC02IsLegalClick(point)))
-		        {
-		            game[point].LabelDisplay.Background = Brushes.LightBlue;
-		        }
+		        Game.PadPoints.Where(SC02IsLegalClick)
 		    };
             SetDefaultLeaveSCButtonDelegate(1);
             //显示将被攻击的角色
@@ -64,10 +57,7 @@ namespace JLQ_MBE_BattleSimulation
 		    enterButton[2] = (s, ev) =>
 		    {
                 this.game.DefaultButtonAndLabels();
-		        foreach (var l in game.Characters.Where(c => c != this && SC03IsTargetLegal(c)).Select(c => c.LabelDisplay))
-		        {
-		            l.Background = Brushes.LightBlue;
-		        }
+		        game.Characters.Where(c => c != this && SC03IsTargetLegal(c))
 		    };
             SetDefaultLeaveSCButtonDelegate(2);
 		}
@@ -95,16 +85,10 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>符卡01：贴心的妖精，选择4格内一个目标（可以是自己），瞬移到他背后（如果是自己就不用瞬移），并使目标回复自己攻击力0.7倍率的目标血量。</summary>
         public override void SC01()
         {
-            game.IsLegalClick = SC01IsLegalClick;
-            game.IsTargetLegal = (SCee, point) => SCee.Position == point;
-            game.HandleTarget = SCee =>
-            {
-                if (this.Position != pointTemp1)
-                {
-                    Move(pointTemp1);
-                }
-                SCee.Cure((int) (0.7*this.Attack));
-            };
+            game.HandleIsLegalClick = SC01IsLegalClick;
+            game.HandleIsTargetLegal = (SCee, point) => SCee.Position == point;
+            game.HandleSelf = () => Move(pointTemp1);
+            game.HandleTarget = SCee => SCee.Cure((int) (0.7*this.Attack));
             AddPadButtonEvent(0);
         }
 
@@ -118,8 +102,8 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>符卡02：花仙炮，对4格内一敌方目标造成1.5倍率的伤害。</summary>
         public override void SC02()
         {
-            game.IsLegalClick = SC02IsLegalClick;
-            game.IsTargetLegal = (SCee, point) => SCee.Position == point;
+            game.HandleIsLegalClick = SC02IsLegalClick;
+            game.HandleIsTargetLegal = (SCee, point) => SCee.Position == point;
             game.HandleTarget = SCee => DoAttack(SCee, 1.5f);
             AddPadButtonEvent(1);
         }
@@ -133,7 +117,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>符卡03：妖精狂欢，使2格内所有己方角色恢复自己攻击力1.5倍率的血量</summary>
         public override void SC03()
         {
-            game.IsTargetLegal = (SCee, point) => SC03IsTargetLegal(SCee);
+            game.HandleIsTargetLegal = (SCee, point) => SC03IsTargetLegal(SCee);
             game.HandleTarget = SCee => SCee.Cure((int) (SCee.Attack*SC02Gain));
         }
         /// <summary>结束符卡03</summary>

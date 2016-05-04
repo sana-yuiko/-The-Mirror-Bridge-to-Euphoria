@@ -38,6 +38,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -58,8 +59,10 @@
     </ApplicationDefinition>
     <Compile Include="Alice.cs" />
     <Compile Include="AttackModel.cs" />
+    <Compile Include="BuffSlowDown.cs" />
     <Compile Include="Chen.cs" />
     <Compile Include="Cirno.cs" />
+    <Compile Include="Comparer.cs" />
     <Compile Include="Daiyousei.cs" />
     <Compile Include="DelegateEvent.cs" />
     <Compile Include="Eirin.cs" />

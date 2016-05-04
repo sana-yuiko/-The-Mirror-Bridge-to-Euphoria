@@ -77,10 +77,7 @@ namespace JLQ_MBE_BattleSimulation
                 if (CurrentCharacter == null) return;
                 CurrentCharacter.HasAttacked = value;
                 LabelAttack.Content = value ? "已攻击" : "还未攻击";
-                foreach (var b in ButtonSC)
-                {
-                    b.IsEnabled = !value;
-                }
+                ButtonSC.Aggregate(false, (c, b) => b.IsEnabled = !value);
             }
         }
 
@@ -115,15 +112,19 @@ namespace JLQ_MBE_BattleSimulation
         public Label LabelID { get; set; }
         /// <summary>生成可到达点矩阵</summary>
         public DAssignPointCanReach HandleAssignPointCanReach;
+        /// <summary>判断是否死亡</summary>
+        public DIsDead HandleIsDead;
 
 
         //符卡相关
         /// <summary>传递参数，如何获取目标以及所需参数列表</summary>
-        public DIsTargetLegal IsTargetLegal;
+        public DIsTargetLegal HandleIsTargetLegal;
+        /// <summary>传递参数，如何处理自己</summary>
+        public DHandleSelf HandleSelf;
         /// <summary>传递参数，如何处理目标</summary>
         public DHandleTarget HandleTarget;
         /// <summary>传递参数，判断单击位置是否有效</summary>
-        public DIsLegalClick IsLegalClick;
+        public DIsLegalClick HandleIsLegalClick;
         /// <summary>当前符卡序号，0为不处于符卡状态</summary> 
         public int ScSelect { get; set; }
 
@@ -133,6 +134,7 @@ namespace JLQ_MBE_BattleSimulation
             this.Random = new Random();
             this.IsBattle = false;
             HandleAssignPointCanReach = AssignPointCanReach;
+            HandleIsDead = IsDead;
 
             //LabelSection
             LabelSection = new Label
@@ -345,10 +347,10 @@ namespace JLQ_MBE_BattleSimulation
         {
             var labelTemp = LabelsGroup[(int)target.Group + 1];
             labelTemp.Content = Convert.ToInt32(labelTemp.Content) - 1;
-            GridPad.Children.Remove(target.LabelDisplay);
-            GridPad.Children.Remove(target.BarHp);
-            GridPad.Children.Remove(target.BarTime);
-            GridPad.Children.Remove(target.BarMp);
+            foreach (var c in target.ListControls)
+            {
+                GridPad.Children.Remove(c);
+            }
             Characters.Remove(target);
         }
 
@@ -387,7 +389,11 @@ namespace JLQ_MBE_BattleSimulation
             UpdateLabelBackground();
 
             var ct = CurrentCharacter.CurrentTime;
-            Characters.Aggregate(0, (current, c) => c.CurrentTime -= ct);
+            Characters.Aggregate(0, (cu, c) => c.CurrentTime -= ct);
+            foreach (var b in from l in Characters.Select(c => c.BuffList) from b in l where b.Round(ct) select b)
+            {
+                b.BuffEnd();
+            }
             CurrentCharacter.CurrentTime = CurrentCharacter.Interval;
 
             Generate_CanReachPoint();
@@ -466,8 +472,7 @@ namespace JLQ_MBE_BattleSimulation
             }
             HandleAssignPointCanReach(CurrentCharacter.Position, CurrentCharacter.MoveAbility);
             Characters.Where(c => c.Position != CurrentCharacter.Position)
-                .Select(c => c.Position)
-                .Aggregate(false, (current, position) => CanReachPoint[(int) position.X, (int) position.Y] = false);
+                .Aggregate(false, (cu, c) => CanReachPoint[(int) c.Position.X, (int) c.Position.Y] = false);
         }
 
         /// <summary>将所有可以到达的点在bool二维数组中置为true</summary>
@@ -508,10 +513,6 @@ namespace JLQ_MBE_BattleSimulation
             foreach (var buff in buffs)
             {
                 buff.BuffTrigger();
-                if (buff.Round(CurrentCharacter.Interval))
-                {
-                    buff.BuffEnd();
-                }
                 Thread.Sleep(200);
             }
         }
@@ -527,10 +528,8 @@ namespace JLQ_MBE_BattleSimulation
         public void DefaultButtonAndLabels()
         {
             ResetPadButtons();
-            foreach (var c in Characters.Where(c => c != CurrentCharacter))
-            {
-                c.LabelDisplay.Background = Brushes.White;
-            }
+            Characters.Where(c => c != CurrentCharacter)
+                .Aggregate((Brush) Brushes.White, (cu, c) => c.LabelDisplay.Background = Brushes.White);
             SetCurrentLabel();
         }
 
@@ -540,7 +539,7 @@ namespace JLQ_MBE_BattleSimulation
         public void SetButtonBackground(Point origin, int range)
         {
             PadPoints.Where(point => Calculate.Distance(point, origin) <= range && this[point] == null)
-                .Aggregate(0.0, (current, point) => Buttons[(int) point.X, (int) point.Y].Opacity = 1);
+                .Aggregate(0.0, (c, point) => Buttons[(int) point.X, (int) point.Y].Opacity = 1);
         }
 
         /// <summary>生成可到达点的按钮颜色</summary>
@@ -560,16 +559,13 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>将全部棋盘按钮置透明</summary>
         public void ResetPadButtons()
         {
-            ArrayButtons.Aggregate(0.0, (current, b) => b.Opacity = 0);
+            ArrayButtons.Aggregate(0.0, (c, b) => b.Opacity = 0);
         }
 
         /// <summary>更新角色标签颜色</summary>
         public void UpdateLabelBackground()
         {
-            foreach (var c in Characters)
-            {
-                c.LabelDisplay.Background = Brushes.White;
-            }
+            Characters.Aggregate((Brush) Brushes.White, (cu, c) => c.LabelDisplay.Background = Brushes.White);
             SetCurrentLabel();
             if (HasAttacked) return;
             foreach (var c in EnemyCanAttack)
@@ -615,13 +611,10 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>结束符卡结算</summary>
         public void EndSC()
         {
-            IsTargetLegal = null;
+            HandleIsTargetLegal = null;
             HandleTarget = null;
-            IsLegalClick = null;
-            foreach (var b in ButtonSC)
-            {
-                b.Background = Brushes.LightGray;
-            }
+            HandleIsLegalClick = null;
+            ButtonSC.Aggregate((Brush) Brushes.White, (c, b) => b.Background = Brushes.LightGray);
             switch (ScSelect)
             {
                 case 1:

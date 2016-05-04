@@ -31,9 +31,7 @@ namespace JLQ_MBE_BattleSimulation
         }
 
         //伤害公式
-        /// <summary>
-        /// 计算伤害值
-        /// </summary>
+        /// <summary>计算伤害值</summary>
         /// <param name="attack">攻击者的攻击值</param>
         /// <param name="defence">防御者的防御值</param>
         /// <returns>伤害值</returns>

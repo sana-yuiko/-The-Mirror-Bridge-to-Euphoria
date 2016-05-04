@@ -14,23 +14,25 @@ namespace JLQ_MBE_BattleSimulation
     /// 每个角色的buff效果自己编写，会有一些静态的buff供调用；
     /// 开发者备注：静态的buff需要有一系列参数，每人使用lambda表达式代入参数的具体值；
     /// </summary>
-    public class Buff
+    public abstract class Buff
     {
         /// <summary>
         /// 将Interval设为此值，则buff无限剩余时间
         /// </summary>
         public const int Infinite = Int32.MaxValue;
         /// <summary>buff剩余时间</summary>
-        public int Interval { get; protected set; }
+        public int Time { get; protected set; }
         /// <summary>buff执行的阶段</summary>
         public readonly Section ExecuteSection;
         /// <summary>buff名称</summary>
         public readonly string Name;
 
         /// <summary>buff效果的委托对象</summary>
-        private DBuffAffect BuffAffect;
+        protected DBuffAffect BuffAffect;
         /// <summary>取消buff的委托对象</summary>
-        public DBuffCancel BuffCancels;
+        protected DBuffCancel BuffCancels;
+        /// <summary>游戏对象</summary>
+        protected Game game;
 
         /// <summary>buff发出者</summary>
         public Character Buffer;
@@ -40,21 +42,19 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>Buff类的构造函数</summary>
         /// <param name="buffee">buff承受者</param>
         /// <param name="buffer">buff发出者</param>
-        /// <param name="interval">buff持续时间</param>
+        /// <param name="time">buff持续时间</param>
         /// <param name="executeSection">buff执行的阶段</param>
         /// <param name="name">buff名称</param>
-        /// <param name="affect">buff效果委托</param>
-        /// <param name="cancel">buff取消委托</param>
-        public Buff(Character buffee, Character buffer, int interval, Section executeSection, string name,
-            DBuffAffect affect, DBuffCancel cancel)
+        /// <param name="game">游戏对象</param>
+        protected Buff(Character buffee, Character buffer, int time, Section executeSection, string name, Game game)
         {
             this.Buffer = buffer;
             this.Buffee = buffee;
-            this.Interval = interval;
+            this.Time = time;
             this.ExecuteSection = executeSection;
             this.Name = name;
-            this.BuffAffect = affect;
-            this.BuffCancels = cancel;
+            this.game = game;
+            BuffCancels = Cancel;
         }
 
         /// <summary>buff引发</summary>
@@ -68,13 +68,13 @@ namespace JLQ_MBE_BattleSimulation
         /// <returns>减少后剩余时间是否小于等于0</returns>
         public bool Round(int time)
         {
-            if (Interval <= time)
+            if (Time < time)
             {
-                Interval = 0;
+                Time = 0;
                 return true;
             }
-            if (Interval == Infinite) return false;
-            Interval -= time;
+            if (Time == Infinite) return false;
+            Time -= time;
             return false;
         } 
 
@@ -86,6 +86,13 @@ namespace JLQ_MBE_BattleSimulation
 
         /// <summary>重写object类的ToString方法</summary>
         /// <returns>转化为字符串的结果</returns>
-        public override string ToString() => string.Format("{0} 剩余时间：{1}", Name, Interval);
+        public override string ToString() => string.Format("{0} By:{1} 剩余时间：{2}", Name, Buffer.Data.Name, Time);
+        /// <summary>从buff列表中删除buff</summary>
+        /// <param name="buffee">buff承受者</param>
+        /// <param name="buffer">buff发出者</param>
+        protected void Cancel(Character buffee,Character buffer)
+        {
+            buffee.BuffList.Remove(this);
+        }
     }
 }

@@ -22,13 +22,13 @@ namespace JLQ_MBE_BattleSimulation
     /// <summary>如何处理目标的委托</summary>
     /// <param name="SCee">被使用符卡者</param>
     public delegate void DHandleTarget(Character SCee);
-
+    /// <summary>如何处理自己的委托</summary>
+    public delegate void DHandleSelf();
     /// <summary>如何选择目标的委托</summary>
     /// <param name="SCee">符卡目标</param>
     /// <param name="clickPoint">单击位置</param>
     /// <returns>该目标是否是符卡的合法目标</returns>
     public delegate bool DIsTargetLegal(Character SCee, Point clickPoint);
-
     /// <summary>所选位置是否为合法目标的委托</summary>
     /// <param name="clickPoint">单击位置</param>
     /// <returns>单击位置是否合法</returns>
@@ -38,12 +38,10 @@ namespace JLQ_MBE_BattleSimulation
     /// <param name="target">攻击目标</param>
     /// <returns>近战增益</returns>
     public delegate float DCloseGain(Character target);
-
     /// <summary>判断是否命中的委托</summary>
     /// <param name="target">攻击目标</param>
     /// <returns>是否命中</returns>
     public delegate bool DIsHit(Character target);
-
     /// <summary>判断是否暴击的委托</summary>
     /// <param name="target">攻击目标</param>
     /// <returns>是否暴击</returns>
@@ -61,4 +59,6 @@ namespace JLQ_MBE_BattleSimulation
     public delegate void DPreparingSection();
     /// <summary>角色独立的结束阶段</summary>
     public delegate void DEndSection();
+    /// <summary>判断死亡角色的委托</summary>
+    public delegate void DIsDead();
 }

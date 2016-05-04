@@ -21,7 +21,8 @@ namespace JLQ_MBE_BattleSimulation
             enterButton[0] = (s, ev) =>
             {
                 game.DefaultButtonAndLabels();
-                game.SetButtonBackground(this.Position, SC01Range);
+                game.Characters.Where(c => IsInRangeAndEnemy(this.Position, SC01Range, c))
+                    .Aggregate((Brush) Brushes.White, (cu, c) => c.LabelDisplay.Background = Brushes.LightBlue);
             };
             SetDefaultLeaveSCButtonDelegate(0);
         }
@@ -31,6 +32,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>符卡02的参数</summary>
         private const int SC02Range1 = 1;
         private const int SC02Range2 = 1;
+        private const int SC02Gain = 10;
 
         private Point SC02PointTemp = Game.DefaultPoint;
         private List<Character> SC02CharactersBeSlowed = new List<Character>();
@@ -46,9 +48,7 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>符卡01：梦想封印，对所有4格内的敌人造成1.0倍率的弹幕攻击</summary>
         public override void SC01()
         {
-            game.IsTargetLegal =
-                (SCee, point) =>
-                    Calculate.Distance(this, SCee) <= SC01Range && Enemy.Contains(SCee);
+            game.HandleIsTargetLegal = (SCee, point) => IsInRangeAndEnemy(this.Position, SC01Range, SCee);
             game.HandleTarget = t => DoAttack(t);
         }
 
@@ -61,9 +61,9 @@ namespace JLQ_MBE_BattleSimulation
         /// <summary>符卡02</summary>
         public override void SC02()
         {
-            game.IsLegalClick =
+            game.HandleIsLegalClick =
                 point => point.X > 0 && point.X < MainWindow.Column - 1 && point.Y > 0 && point.Y < MainWindow.Row - 1;
-            game.IsTargetLegal = (SCee, point) =>
+            game.HandleIsTargetLegal = (SCee, point) =>
             {
                 if (!Calculate.IsIn33(point, SCee.Position) || !Enemy.Contains(SCee)) return false;
                 SC02PointTemp = point;
@@ -71,13 +71,7 @@ namespace JLQ_MBE_BattleSimulation
             };
             game.HandleTarget = SCee =>
             {
-                if (!SC02CharactersBeSlowed.Contains(SCee))
-                {
-                    var buff1 = new Buff(SCee, this, 3*this.Interval, Section.Preparing, "缓慢：行动间隔+10",
-                        (buffee, buffer) => buffee._intervalAdd += 10,
-                        (buffer, buffee) => buffee._intervalAdd = Math.Max(0, _intervalAdd - 10));
-                    SCee.BuffList.Add(buff1);
-                }
+                SCee.BuffList.Add(new BuffSlowDown(SCee, this, 3*this.Interval, SC02Gain, game));
                 SC02PointTemp = Game.DefaultPoint;
                 //TODO another buff
             };
